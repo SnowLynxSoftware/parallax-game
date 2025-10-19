@@ -66,8 +66,7 @@ func (s *AuthService) RegisterNewUser(dto *models.UserCreateDTO) (*repositories.
 	var emailOptions = &EmailSendOptions{}
 	emailOptions.FromEmail = "do-not-reply@smarterlynx.com"
 	emailOptions.ToEmail = newUser.Email
-	emailOptions.Subject = "Smarter Lynx - Verify Your Account"
-	// TODO: Update this to use the correct URL
+	emailOptions.Subject = "Parallax - Verify Your Account"
 	emailOptions.HTMLContent = s.emailService.GetTemplates().GetNewUserEmailTemplate(s.configService.GetBaseURL(), *verificationToken)
 	var isEmailSuccess = s.emailService.SendEmail(emailOptions)
 	if isEmailSuccess {
@@ -92,7 +91,7 @@ func (s *AuthService) SendLoginEmail(email string) (*repositories.UserEntity, er
 	var emailOptions = &EmailSendOptions{}
 	emailOptions.FromEmail = "do-not-reply@smarterlynx.com"
 	emailOptions.ToEmail = user.Email
-	emailOptions.Subject = "Smarter Lynx - Login Email"
+	emailOptions.Subject = "Parallax - Login Email"
 	emailOptions.HTMLContent = s.emailService.GetTemplates().GetLoginEmailTemplate(s.configService.GetBaseURL(), *verificationToken)
 	var isEmailSuccess = s.emailService.SendEmail(emailOptions)
 	if isEmailSuccess {
@@ -117,7 +116,7 @@ func (s *AuthService) SendResetPasswordEmail(email string) (*repositories.UserEn
 	var emailOptions = &EmailSendOptions{}
 	emailOptions.FromEmail = "do-not-reply@smarterlynx.com"
 	emailOptions.ToEmail = user.Email
-	emailOptions.Subject = "Smarter Lynx - Password Reset Request"
+	emailOptions.Subject = "Parallax - Password Reset Request"
 	emailOptions.HTMLContent = s.emailService.GetTemplates().GetPasswordResetEmailTemplate(s.configService.GetBaseURL(), *verificationToken)
 	var isEmailSuccess = s.emailService.SendEmail(emailOptions)
 	if isEmailSuccess {

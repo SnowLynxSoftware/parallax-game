@@ -31,9 +31,9 @@ func (e *EmailTemplates) GetNewUserEmailTemplate(baseURL string, verificationTok
 	}
 
 	mainContent := fmt.Sprintf(`
-		<h1 style="margin:0 0 16px 0; font-size:28px; font-weight:700; color:#0f172a;">Welcome to Smarter Lynx!</h1>
+		<h1 style="margin:0 0 16px 0; font-size:28px; font-weight:700; color:#0f172a;">Welcome to Parallax!</h1>
 		<p style="margin:0 0 24px 0; font-size:16px; line-height:1.6; color:#1f2937;">
-			Hello and Welcome to Smarter Lynx! Please verify your account by using the secure button below.
+			Hello and Welcome to Parallax! Please verify your account by using the secure button below.
 		</p>
 		<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px auto;">
 			<tr>
@@ -127,7 +127,7 @@ func (e *EmailTemplates) wrapEmail(baseURL string, mainContent string) string {
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Smarter Lynx</title>
+	<title>Parallax</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f5f7fb; font-family:'Helvetica Neue', Arial, sans-serif; color:#0f172a;">
 	<table role="presentation" width="100%%" cellpadding="0" cellspacing="0">
@@ -166,7 +166,7 @@ func (e *EmailTemplates) buildFooter(baseURL string) string {
 	<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="max-width:600px; margin-top:24px;">
 		<tr>
 			<td style="text-align:center; color:#64748b; font-size:13px; line-height:1.7;">
-				<p style="margin:0 0 8px 0; font-weight:600; color:#475569;">Smarter Lynx</p>
+				<p style="margin:0 0 8px 0; font-weight:600; color:#475569;">Parallax</p>
 				<p style="margin:0 0 12px 0;">
 					<a href="%s" style="color:#2563eb; text-decoration:none; font-weight:600;">Website</a>
 					<span style="margin:0 10px; color:#cbd5f5;">•</span>
@@ -174,7 +174,7 @@ func (e *EmailTemplates) buildFooter(baseURL string) string {
 					<span style="margin:0 10px; color:#cbd5f5;">•</span>
 					<a href="%s" style="color:#2563eb; text-decoration:none; font-weight:600;">Facebook</a>
 				</p>
-				<p style="margin:0;">You're receiving this email because you requested it from Smarter Lynx.</p>
+				<p style="margin:0;">You're receiving this email because you requested it from Parallax.</p>
 			</td>
 		</tr>
 	</table>
