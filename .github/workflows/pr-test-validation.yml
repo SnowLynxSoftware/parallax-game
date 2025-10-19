@@ -1,0 +1,46 @@
+name: PR Test Validation
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+
+jobs:
+  build-and-quality:
+    name: Build & Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+          cache: true
+
+      - name: Verify Go installation
+        run: go version
+
+      - name: Download dependencies
+        run: make deps
+
+      - name: Check code formatting
+        run: |
+          make fmt
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Code is not properly formatted. Please run 'make fmt'"
+            git diff
+            exit 1
+          fi
+
+      - name: Run go vet
+        run: make vet
+
+      - name: Build application
+        run: make build
+
+      - name: Run tests
+        run: make test

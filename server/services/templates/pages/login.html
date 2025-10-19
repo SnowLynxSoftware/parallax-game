@@ -1,0 +1,478 @@
+{{define "content"}}
+<div
+  class="login-section bg-gradient-primary min-vh-100 d-flex align-items-center py-5"
+>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-4 col-md-6">
+        <div
+          class="login-card bg-white rounded-4 shadow-lg overflow-hidden fade-in"
+        >
+          <!-- Header Section -->
+          <div class="login-header text-center p-4 pb-3">
+            <div class="brand-icon mb-3">
+              <i class="fas fa-link text-primary" style="font-size: 2.5rem"></i>
+            </div>
+            <h2 class="fw-bold text-primary mb-2">Welcome Back</h2>
+            <p class="text-muted mb-0">Sign in to your Smarter Lynx account</p>
+          </div>
+
+          <!-- Form Section -->
+          <div class="login-form px-4 pb-4 mt-4">
+            <!-- Success/Error Messages -->
+            <div id="alertContainer" class="mb-3" style="display: none">
+              <div id="alertMessage" class="alert" role="alert"></div>
+            </div>
+
+            <form id="loginForm" class="needs-validation" novalidate>
+              <!-- Email Field -->
+              <div class="mb-4">
+                <label class="form-label fw-medium text-dark" for="inputEmail">
+                  <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                </label>
+                <div class="input-group">
+                  <input
+                    class="form-control form-control-lg border-2 rounded-3"
+                    id="inputEmail"
+                    type="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    required
+                    autocomplete="email"
+                  />
+                  <div class="invalid-feedback">
+                    Please provide a valid email address.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Password Field -->
+              <div class="mb-4">
+                <label
+                  class="form-label fw-medium text-dark"
+                  for="inputPassword"
+                >
+                  <i class="fas fa-lock me-2 text-primary"></i>Password
+                </label>
+                <div class="input-group position-relative">
+                  <input
+                    class="form-control form-control-lg border-2 rounded-3"
+                    id="inputPassword"
+                    type="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                    autocomplete="current-password"
+                  />
+                  <button
+                    class="btn btn-outline-secondary border-0 position-absolute end-0 top-50 translate-middle-y me-2"
+                    type="button"
+                    id="togglePassword"
+                    style="z-index: 5"
+                  >
+                    <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                  </button>
+                  <div class="invalid-feedback">
+                    Please enter your password.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Forgot Password -->
+              <div
+                class="d-flex justify-content-center align-items-center mb-4"
+              >
+                <a
+                  href="#"
+                  id="forgotPasswordBtn"
+                  class="text-primary text-decoration-none small"
+                >
+                  Forgot password?
+                </a>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="d-grid mb-4">
+                <button
+                  class="btn btn-primary btn-lg py-3 rounded-3 fw-medium"
+                  type="submit"
+                  id="submitBtn"
+                >
+                  <span id="submitText">
+                    <i class="fas fa-sign-in-alt me-2"></i>
+                    Sign In
+                  </span>
+                  <span id="loadingText" style="display: none">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    Signing In...
+                  </span>
+                </button>
+              </div>
+
+              <!-- Sign Up Link -->
+              <div class="text-center">
+                <p class="text-muted mb-0">
+                  Don't have an account?
+                  <a
+                    href="/register"
+                    class="text-primary text-decoration-none fw-medium"
+                  >
+                    Create one here
+                  </a>
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="text-center mt-4">
+          <a href="/" class="btn btn-outline-light btn-lg rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i>
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Forgot Password Modal -->
+<div
+  class="modal fade"
+  id="forgotPasswordModal"
+  tabindex="-1"
+  aria-labelledby="forgotPasswordModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow-lg">
+      <div class="modal-header border-0 pb-0">
+        <h5
+          class="modal-title fw-bold text-primary"
+          id="forgotPasswordModalLabel"
+        >
+          <i class="fas fa-key me-2"></i>Reset Password
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body px-4 pb-4">
+        <p class="text-muted mb-4">
+          Enter your email address and we'll send you a link to reset your
+          password.
+        </p>
+
+        <!-- Modal Alert -->
+        <div id="modalAlertContainer" class="mb-3" style="display: none">
+          <div id="modalAlertMessage" class="alert" role="alert"></div>
+        </div>
+
+        <form id="forgotPasswordForm" class="needs-validation" novalidate>
+          <div class="mb-4">
+            <label class="form-label fw-medium" for="forgotPasswordEmail">
+              <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+            </label>
+            <input
+              type="email"
+              class="form-control form-control-lg border-2 rounded-3"
+              id="forgotPasswordEmail"
+              placeholder="you@example.com"
+              required
+            />
+            <div class="invalid-feedback">
+              Please provide a valid email address.
+            </div>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg py-3 rounded-3 fw-medium"
+              id="forgotPasswordSubmitBtn"
+            >
+              <span id="forgotPasswordSubmitText">
+                <i class="fas fa-paper-plane me-2"></i>Send Reset Link
+              </span>
+              <span id="forgotPasswordLoadingText" style="display: none">
+                <i class="fas fa-spinner fa-spin me-2"></i>Sending...
+              </span>
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary rounded-3"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // DOM Elements
+  const form = document.getElementById("loginForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const submitText = document.getElementById("submitText");
+  const loadingText = document.getElementById("loadingText");
+  const alertContainer = document.getElementById("alertContainer");
+  const alertMessage = document.getElementById("alertMessage");
+  const password = document.getElementById("inputPassword");
+  const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
+
+  // Show alert message
+  function showAlert(message, type = "danger") {
+    alertMessage.className = `alert alert-${type}`;
+    alertMessage.innerHTML = `<i class="fas fa-${
+      type === "success" ? "check-circle" : "exclamation-triangle"
+    } me-2"></i>${message}`;
+    alertContainer.style.display = "block";
+    alertContainer.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  // Hide alert message
+  function hideAlert() {
+    alertContainer.style.display = "none";
+  }
+
+  // Toggle loading state
+  function setLoading(loading) {
+    if (loading) {
+      submitBtn.disabled = true;
+      submitText.style.display = "none";
+      loadingText.style.display = "inline";
+    } else {
+      submitBtn.disabled = false;
+      submitText.style.display = "inline";
+      loadingText.style.display = "none";
+    }
+  }
+
+  // Password toggle functionality
+  document
+    .getElementById("togglePassword")
+    .addEventListener("click", function () {
+      const icon = document.getElementById("togglePasswordIcon");
+
+      if (password.type === "password") {
+        password.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      } else {
+        password.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      }
+    });
+
+  // Forgot password modal variables (initialized after DOM loads)
+  let forgotPasswordModal;
+  let forgotPasswordForm;
+  let forgotPasswordSubmitBtn;
+  let forgotPasswordSubmitText;
+  let forgotPasswordLoadingText;
+  let modalAlertContainer;
+  let modalAlertMessage;
+  let forgotPasswordEmail;
+
+  // Show modal alert message
+  function showModalAlert(message, type = "danger") {
+    modalAlertMessage.className = `alert alert-${type}`;
+    modalAlertMessage.innerHTML = `<i class="fas fa-${
+      type === "success" ? "check-circle" : "exclamation-triangle"
+    } me-2"></i>${message}`;
+    modalAlertContainer.style.display = "block";
+  }
+
+  // Hide modal alert message
+  function hideModalAlert() {
+    modalAlertContainer.style.display = "none";
+  }
+
+  // Toggle modal loading state
+  function setModalLoading(loading) {
+    if (loading) {
+      forgotPasswordSubmitBtn.disabled = true;
+      forgotPasswordSubmitText.style.display = "none";
+      forgotPasswordLoadingText.style.display = "inline";
+    } else {
+      forgotPasswordSubmitBtn.disabled = false;
+      forgotPasswordSubmitText.style.display = "inline";
+      forgotPasswordLoadingText.style.display = "none";
+    }
+  }
+
+  // Initialize forgot password functionality after DOM loads
+  function initializeForgotPassword() {
+    forgotPasswordForm = document.getElementById("forgotPasswordForm");
+    forgotPasswordSubmitBtn = document.getElementById(
+      "forgotPasswordSubmitBtn"
+    );
+    forgotPasswordSubmitText = document.getElementById(
+      "forgotPasswordSubmitText"
+    );
+    forgotPasswordLoadingText = document.getElementById(
+      "forgotPasswordLoadingText"
+    );
+    modalAlertContainer = document.getElementById("modalAlertContainer");
+    modalAlertMessage = document.getElementById("modalAlertMessage");
+    forgotPasswordEmail = document.getElementById("forgotPasswordEmail");
+
+    // Initialize Bootstrap modal
+    const modalElement = document.getElementById("forgotPasswordModal");
+    if (modalElement) {
+      forgotPasswordModal = new bootstrap.Modal(modalElement);
+    }
+
+    // Forgot password handler - open modal
+    forgotPasswordBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      hideModalAlert();
+      forgotPasswordForm.reset();
+      forgotPasswordForm.classList.remove("was-validated");
+      forgotPasswordModal.show();
+    });
+
+    // Forgot password form submission
+    forgotPasswordForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      hideModalAlert();
+
+      if (!forgotPasswordForm.checkValidity()) {
+        forgotPasswordForm.classList.add("was-validated");
+        return;
+      }
+
+      setModalLoading(true);
+
+      try {
+        const email = forgotPasswordEmail.value.trim();
+
+        if (!email) {
+          throw new Error("Please provide a valid email address");
+        }
+
+        // Send reset password email request
+        const response = await fetch("/api/auth/send-reset-password-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+          }),
+        });
+
+        if (response.ok) {
+          showModalAlert(
+            "Password reset link sent! Please check your email inbox and spam folder.",
+            "success"
+          );
+
+          // Clear form
+          forgotPasswordForm.reset();
+          forgotPasswordForm.classList.remove("was-validated");
+
+          // Close modal after 3 seconds
+          setTimeout(() => {
+            forgotPasswordModal.hide();
+          }, 3000);
+        } else {
+          const errorText = await response.text();
+          throw new Error(
+            errorText || `Failed to send reset email (${response.status})`
+          );
+        }
+      } catch (error) {
+        console.error("Forgot password error:", error);
+        showModalAlert(
+          error.message || "Failed to send reset email. Please try again."
+        );
+      } finally {
+        setModalLoading(false);
+      }
+    });
+  }
+
+  // Form submission handler
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    hideAlert();
+
+    if (!form.checkValidity()) {
+      form.classList.add("was-validated");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Collect form data
+      const formData = {
+        email: document.getElementById("inputEmail").value.trim(),
+        password: password.value,
+      };
+
+      // Basic validation
+      if (!formData.email || !formData.password) {
+        throw new Error("Please fill in all required fields");
+      }
+
+      // Submit form via FETCH
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization:
+            "Basic " + btoa(`${formData.email}:${formData.password}`),
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.text();
+        showAlert("Login successful! Redirecting...", "success");
+
+        // Clear form
+        form.reset();
+        form.classList.remove("was-validated");
+
+        // Redirect after successful login
+        setTimeout(() => {
+          window.location.href = "/dashboard"; // or wherever you want to redirect
+        }, 1500);
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText || `Login failed (${response.status})`);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      showAlert(
+        error.message ||
+          "Login failed. Please check your credentials and try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  // Initialize when DOM is ready
+  document.addEventListener("DOMContentLoaded", function () {
+    // Auto-focus email field
+    document.getElementById("inputEmail").focus();
+
+    // Initialize forgot password functionality
+    initializeForgotPassword();
+  });
+</script>
+{{end}}

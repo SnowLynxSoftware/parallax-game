@@ -1,0 +1,588 @@
+{{define "content"}}
+<div class="hero-section bg-gradient-primary text-white mb-0 pb-0">
+  <div class="container">
+    <div class="row align-items-center min-vh-100">
+      <div class="col-lg-6">
+        <div class="hero-content">
+          <div class="hero-icon mb-4">
+            <i class="fas fa-link" style="font-size: 4rem"></i>
+          </div>
+          <h1 class="display-3 fw-bold mb-4 text-gradient">Smarter Lynx</h1>
+          <p class="lead mb-4 text-light">
+            The URL shortener built for content creators. Track your links,
+            protect your revenue, and never lose money on broken affiliate links
+            again.
+          </p>
+          <p class="fs-5 mb-4 text-light opacity-75">
+            From YouTube to TikTok, Instagram to X - we've got your links
+            covered with automatic health checks and real-time analytics.
+          </p>
+
+          <!-- URL Shortening Input -->
+          {{if not .Data.PrelaunchMode}}
+          <div class="url-shortener-box bg-white rounded-4 p-4 mb-4 shadow-lg">
+            <div class="input-group input-group-lg">
+              <input
+                type="text"
+                id="url-input"
+                class="form-control border-0 fs-5"
+                placeholder="Paste your URL Here"
+              />
+              <button
+                class="btn btn-primary px-4"
+                type="button"
+                id="shorten-btn"
+              >
+                <span id="btn-content">
+                  <i class="fas fa-magic me-2"></i>Shorten It!
+                </span>
+                <span id="btn-loading" class="d-none">
+                  <i class="fas fa-spinner fa-spin me-2"></i>Shortening...
+                </span>
+              </button>
+            </div>
+
+            <!-- Error Container -->
+            <div
+              id="error-container"
+              class="alert alert-danger mt-3 d-none"
+              role="alert"
+            >
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              <span id="error-message"></span>
+            </div>
+
+            <!-- Success Container -->
+            <div id="success-container" class="mt-3 d-none">
+              <div class="alert alert-success" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                Your link has been shortened successfully!
+              </div>
+
+              <div class="bg-light rounded-3 p-3 mb-3">
+                <label class="form-label small text-muted mb-2"
+                  >Your shortened URL:</label
+                >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="shortened-url"
+                    class="form-control bg-white border-0"
+                    readonly
+                  />
+                  <button
+                    class="btn btn-outline-primary"
+                    type="button"
+                    id="copy-btn"
+                  >
+                    <i class="fas fa-copy me-1"></i>Copy
+                  </button>
+                </div>
+              </div>
+
+              <div class="text-center">
+                <button
+                  class="btn btn-outline-primary"
+                  type="button"
+                  id="shorten-another-btn"
+                >
+                  <i class="fas fa-plus me-2"></i>Shorten Another?
+                </button>
+              </div>
+            </div>
+
+            <small class="text-muted d-block mt-2">
+              <i class="fas fa-gift me-1"></i>
+              Try it free - no signup required!
+            </small>
+          </div>
+          {{end}}
+
+          <div class="cta-buttons">
+            {{if .Data.PrelaunchMode}}
+            <!-- Prelaunch Mode - Show Coming Soon -->
+            <div
+              class="alert alert-info bg-white bg-opacity-25 border-0 text-white"
+            >
+              <i class="fas fa-rocket me-2"></i>
+              <strong>Coming Soon!</strong> We're putting the finishing touches
+              on something amazing. Registration will open soon! Follow us on
+              <a
+                href="https://www.facebook.com/profile.php?id=61581769500246"
+                target="_blank"
+                class="text-white"
+                aria-label="Facebook"
+                >Facebook
+              </a>
+              to stay updated!
+            </div>
+            {{else}}
+            <!-- Normal Mode - Show Register Button -->
+            <a
+              class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill me-3"
+              href="/register"
+            >
+              <i class="fas fa-crown me-2"></i>
+              Register Free Account
+            </a>
+            <a
+              class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill opacity-75"
+              href="/login"
+            >
+              <i class="fas fa-sign-in-alt me-2"></i>
+              Sign In
+            </a>
+            {{end}}
+          </div>
+          <div class="mt-4">
+            <small class="text-light opacity-50">
+              <i class="fas fa-shield-check me-1"></i>
+              Pro members get unlimited links + automated monitoring
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="hero-illustration text-center">
+          <div
+            class="floating-card bg-white rounded-4 shadow-lg p-4 mb-4 text-dark d-inline-block"
+          >
+            <i class="fas fa-chart-bar text-primary fs-1 mb-2"></i>
+            <h6 class="fw-bold mb-1">Click Analytics</h6>
+            <small class="text-muted">Track every click</small>
+          </div>
+          <div
+            class="floating-card bg-white rounded-4 shadow-lg p-4 mb-4 text-dark d-inline-block ms-4"
+          >
+            <i class="fas fa-heartbeat text-success fs-1 mb-2"></i>
+            <h6 class="fw-bold mb-1">Link Health</h6>
+            <small class="text-muted">24/7 monitoring</small>
+          </div>
+          <div
+            class="floating-card bg-white rounded-4 shadow-lg p-4 text-dark d-inline-block"
+          >
+            <i class="fab fa-youtube text-danger fs-1 mb-2"></i>
+            <h6 class="fw-bold mb-1">Creator Tools</h6>
+            <small class="text-muted">Built for content</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* URL Shortener Styles */
+  .url-shortener-box {
+    position: relative;
+  }
+
+  .url-shortener-box #success-container {
+    animation: slideIn 0.4s ease-out;
+  }
+
+  .url-shortener-box #error-container {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Copy button transition */
+  .url-shortener-box #copy-btn {
+    transition: all 0.3s ease;
+    min-width: 80px;
+  }
+
+  .url-shortener-box #copy-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Shortened URL input styling */
+  .url-shortener-box #shortened-url {
+    font-family: "Courier New", monospace;
+    font-size: 0.95rem;
+    color: var(--md-sys-color-primary);
+    font-weight: 500;
+  }
+
+  /* Loading button animation */
+  .url-shortener-box #shorten-btn {
+    min-width: 140px;
+    transition: all 0.3s ease;
+  }
+
+  .url-shortener-box #shorten-btn:disabled {
+    opacity: 0.8;
+  }
+
+  /* Success container styling */
+  .url-shortener-box #success-container .alert-success {
+    border: none;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border-left: 4px solid #28a745;
+  }
+
+  /* Error container styling */
+  .url-shortener-box #error-container {
+    border: none;
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    border-left: 4px solid #dc3545;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .url-shortener-box .input-group {
+      flex-direction: column;
+    }
+
+    .url-shortener-box .input-group .form-control {
+      border-radius: 0.5rem !important;
+      margin-bottom: 0.5rem;
+    }
+
+    .url-shortener-box .input-group .btn {
+      border-radius: 0.5rem !important;
+    }
+
+    .url-shortener-box #success-container .input-group {
+      flex-direction: row;
+    }
+
+    .url-shortener-box #success-container .input-group .form-control {
+      margin-bottom: 0;
+    }
+  }
+</style>
+
+{{if not .Data.PrelaunchMode}}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // URL Shortener functionality - Welcome page only (Vanilla JS)
+    const urlShortener = {
+      init: function () {
+        const urlInput = document.getElementById("url-input");
+        const shortenBtn = document.getElementById("shorten-btn");
+        const errorContainer = document.getElementById("error-container");
+        const successContainer = document.getElementById("success-container");
+        const copyBtn = document.getElementById("copy-btn");
+        const shortenAnotherBtn = document.getElementById(
+          "shorten-another-btn"
+        );
+
+        // Only initialize if elements exist (welcome page)
+        if (!urlInput) return;
+
+        // Shorten button click handler
+        shortenBtn.addEventListener("click", () => {
+          this.shortenUrl();
+        });
+
+        // Enter key handler for input
+        urlInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            this.shortenUrl();
+          }
+        });
+
+        // Copy button handler
+        copyBtn.addEventListener("click", () => {
+          this.copyToClipboard();
+        });
+
+        // Shorten another button handler
+        shortenAnotherBtn.addEventListener("click", () => {
+          this.resetForm();
+        });
+      },
+
+      shortenUrl: async function () {
+        const urlInput = document.getElementById("url-input");
+        const url = urlInput.value.trim();
+
+        // Clear previous errors
+        this.hideError();
+
+        // Basic validation
+        if (!url) {
+          this.showError("Please enter a URL to shorten.");
+          return;
+        }
+
+        if (!this.isValidUrl(url)) {
+          this.showError(
+            "Please enter a valid URL (e.g., https://example.com)."
+          );
+          return;
+        }
+
+        // Show loading state
+        this.setLoadingState(true);
+
+        try {
+          // Make API request with fetch
+          const response = await fetch("/api/links/guest", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              original_url: url,
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            this.handleSuccess(data);
+          } else {
+            this.handleError(response);
+          }
+        } catch (error) {
+          this.handleError({ status: 0 });
+        } finally {
+          this.setLoadingState(false);
+        }
+      },
+
+      isValidUrl: function (string) {
+        // If no protocol, add https:// for validation
+        let testUrl = string;
+        if (!string.match(/^https?:\/\//)) {
+          testUrl = "https://" + string;
+        }
+
+        try {
+          // Use the built-in URL constructor for validation
+          // This is much more reliable and handles complex URLs properly
+          const url = new URL(testUrl);
+
+          // Basic checks to ensure it's a valid web URL
+          return (
+            (url.protocol === "http:" || url.protocol === "https:") &&
+            url.hostname.length > 0 &&
+            url.hostname.includes(".")
+          );
+        } catch {
+          return false;
+        }
+      },
+
+      setLoadingState: function (loading) {
+        const urlInput = document.getElementById("url-input");
+        const shortenBtn = document.getElementById("shorten-btn");
+        const btnContent = document.getElementById("btn-content");
+        const btnLoading = document.getElementById("btn-loading");
+
+        if (loading) {
+          urlInput.disabled = true;
+          shortenBtn.disabled = true;
+          btnContent.classList.add("d-none");
+          btnLoading.classList.remove("d-none");
+        } else {
+          urlInput.disabled = false;
+          shortenBtn.disabled = false;
+          btnContent.classList.remove("d-none");
+          btnLoading.classList.add("d-none");
+        }
+      },
+
+      showError: function (message) {
+        const errorContainer = document.getElementById("error-container");
+        const errorMessage = document.getElementById("error-message");
+
+        errorMessage.textContent = message;
+        errorContainer.classList.remove("d-none");
+        this.fadeIn(errorContainer, 300);
+      },
+
+      hideError: function () {
+        const errorContainer = document.getElementById("error-container");
+        this.fadeOut(errorContainer, 5000, () => {
+          errorContainer.classList.add("d-none");
+        });
+      },
+
+      handleSuccess: function (response) {
+        const successContainer = document.getElementById("success-container");
+        const shortenedUrl = document.getElementById("shortened-url");
+
+        // Hide error if visible
+        this.hideError();
+
+        // Set the shortened URL
+        shortenedUrl.value =
+          window.location.protocol +
+          "//" +
+          window.location.host +
+          response.short_url;
+
+        // Show success container with animation
+        successContainer.classList.remove("d-none");
+        this.fadeIn(successContainer, 400);
+
+        // Scroll to results
+        this.smoothScrollTo(successContainer.offsetTop - 100, 500);
+      },
+
+      handleError: async function (response) {
+        let errorMessage = "Something went wrong. Please try again.";
+
+        if (response.status === 400) {
+          errorMessage =
+            "Invalid URL format. Please check your URL and try again.";
+        } else if (response.status === 409) {
+          errorMessage =
+            "This custom slug already exists. Please try a different one.";
+        } else if (response.status >= 500) {
+          errorMessage = "Server error. Please try again in a moment.";
+        } else if (response.status === 0) {
+          errorMessage =
+            "Network error. Please check your connection and try again.";
+        }
+
+        this.showError(errorMessage);
+      },
+
+      copyToClipboard: async function () {
+        const shortenedUrl = document.getElementById("shortened-url");
+        const copyBtn = document.getElementById("copy-btn");
+        const originalContent = copyBtn.innerHTML;
+
+        try {
+          // Modern clipboard API
+          await navigator.clipboard.writeText(shortenedUrl.value);
+
+          // Show success feedback
+          copyBtn.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+          copyBtn.classList.remove("btn-outline-primary");
+          copyBtn.classList.add("btn-success");
+
+          // Reset button after 2 seconds
+          setTimeout(() => {
+            copyBtn.innerHTML = originalContent;
+            copyBtn.classList.remove("btn-success");
+            copyBtn.classList.add("btn-outline-primary");
+          }, 2000);
+        } catch (err) {
+          // Fallback for older browsers
+          try {
+            shortenedUrl.select();
+            shortenedUrl.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand("copy");
+
+            // Show success feedback
+            copyBtn.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+            copyBtn.classList.remove("btn-outline-primary");
+            copyBtn.classList.add("btn-success");
+
+            setTimeout(() => {
+              copyBtn.innerHTML = originalContent;
+              copyBtn.classList.remove("btn-success");
+              copyBtn.classList.add("btn-outline-primary");
+            }, 2000);
+
+            // Clear selection
+            window.getSelection().removeAllRanges();
+          } catch (fallbackErr) {
+            this.showError(
+              "Unable to copy. Please select and copy the URL manually."
+            );
+          }
+        }
+      },
+
+      resetForm: function () {
+        const urlInput = document.getElementById("url-input");
+        const successContainer = document.getElementById("success-container");
+
+        // Clear input
+        urlInput.value = "";
+        urlInput.focus();
+
+        // Hide success container
+        this.fadeOut(successContainer, 300, () => {
+          successContainer.classList.add("d-none");
+        });
+
+        // Hide any errors
+        this.hideError();
+      },
+
+      // Utility functions for animations (replacing jQuery animations)
+      fadeIn: function (element, duration) {
+        element.style.opacity = 0;
+        element.style.display = "block";
+
+        const start = performance.now();
+        const animate = (timestamp) => {
+          const elapsed = timestamp - start;
+          const progress = Math.min(elapsed / duration, 1);
+
+          element.style.opacity = progress;
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          }
+        };
+
+        requestAnimationFrame(animate);
+      },
+
+      fadeOut: function (element, duration, callback) {
+        const start = performance.now();
+        const startOpacity = parseFloat(getComputedStyle(element).opacity) || 1;
+
+        const animate = (timestamp) => {
+          const elapsed = timestamp - start;
+          const progress = Math.min(elapsed / duration, 1);
+
+          element.style.opacity = startOpacity * (1 - progress);
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            element.style.display = "none";
+            if (callback) callback();
+          }
+        };
+
+        requestAnimationFrame(animate);
+      },
+
+      smoothScrollTo: function (targetY, duration) {
+        const startY = window.pageYOffset;
+        const distance = targetY - startY;
+        const start = performance.now();
+
+        const animate = (timestamp) => {
+          const elapsed = timestamp - start;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Easing function (ease-out)
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+
+          window.scrollTo(0, startY + distance * easeOut);
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          }
+        };
+
+        requestAnimationFrame(animate);
+      },
+    };
+
+    // Initialize the URL shortener
+    urlShortener.init();
+  });
+</script>
+{{end}} {{end}}

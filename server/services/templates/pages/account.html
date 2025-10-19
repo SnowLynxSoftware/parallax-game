@@ -1,0 +1,1029 @@
+{{define "content"}}
+<div class="account-section bg-light min-vh-100">
+  <!-- NAVIGATION BAR -->
+  <nav class="navbar navbar-expand-lg bg-white shadow-sm border-bottom">
+    <div class="container-fluid px-4">
+      <!-- Brand -->
+      <a class="navbar-brand d-flex align-items-center" href="/">
+        <i class="fas fa-link text-primary me-2" style="font-size: 1.5rem"></i>
+        <span class="fw-bold text-primary">Smarter Lynx</span>
+      </a>
+
+      <!-- User Menu Dropdown -->
+      <div class="dropdown">
+        <button
+          class="btn btn-outline-primary rounded-pill d-flex align-items-center"
+          type="button"
+          data-bs-toggle="dropdown"
+        >
+          <i class="fas fa-user-circle me-2"></i>
+          <span class="d-none d-sm-inline">{{.Data.Username}}</span>
+          <i class="fas fa-chevron-down ms-2 small"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <a class="dropdown-item" href="/account">
+              <i class="fas fa-user-cog me-2"></i>Account
+            </a>
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              href="#"
+              onclick="alert('Support coming soon! We\'ll have a Discord server link here.'); return false;"
+            >
+              <i class="fab fa-discord me-2"></i>Support
+            </a>
+          </li>
+          <li><hr class="dropdown-divider" /></li>
+          <li>
+            <form method="POST" action="/api/auth/logout" class="m-0">
+              <button
+                type="submit"
+                class="dropdown-item text-danger border-0 bg-transparent w-100 text-start"
+              >
+                <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BACK TO DASHBOARD BUTTON -->
+  <div class="container mt-3">
+    <a href="/dashboard" class="btn btn-outline-secondary btn-sm">
+      <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+  </div>
+
+  <!-- PAGE HEADING -->
+  <div class="container text-center my-4">
+    <h2 class="fw-bold">Account Settings</h2>
+  </div>
+
+  <!-- TAB NAVIGATION -->
+  <div class="container">
+    <ul
+      class="nav nav-pills justify-content-center mb-4"
+      id="accountTabs"
+      role="tablist"
+    >
+      <li class="nav-item" role="presentation">
+        <a
+          class="nav-link active px-4"
+          id="info-tab"
+          data-tab="info"
+          href="#"
+          role="tab"
+          aria-controls="info-content"
+          aria-selected="true"
+        >
+          <i class="fas fa-info-circle me-2"></i>Info
+        </a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a
+          class="nav-link px-4"
+          id="billing-tab"
+          data-tab="billing"
+          href="#"
+          role="tab"
+          aria-controls="billing-content"
+          aria-selected="false"
+        >
+          <i class="fas fa-credit-card me-2"></i>Billing
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- TAB CONTENT CONTAINERS -->
+  <div class="container pb-5">
+    <!-- Info Tab Content (Default Active) -->
+    <div
+      id="info-content"
+      class="tab-pane active"
+      role="tabpanel"
+      aria-labelledby="info-tab"
+    >
+      <!-- Info Tab Content -->
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+          <!-- PROFILE INFORMATION CARD -->
+          <div class="card shadow-sm border rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+              <h5 class="fw-bold mb-0">
+                <i class="fas fa-user-circle text-primary me-2"></i>Profile
+                Information
+              </h5>
+            </div>
+            <div class="card-body px-4 pb-4">
+              <!-- Email Address (Read-Only) -->
+              <div class="mb-3">
+                <label for="email" class="form-label fw-medium text-muted small"
+                  >Email Address</label
+                >
+                <div class="input-group">
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    value="{{.Data.Email}}"
+                    disabled
+                    readonly
+                    style="background-color: #f8f9fa; cursor: not-allowed"
+                  />
+                  <span
+                    class="input-group-text bg-light border-start-0"
+                    style="cursor: default"
+                  >
+                    <i class="fas fa-envelope text-muted"></i>
+                  </span>
+                </div>
+                <small class="text-muted"
+                  >Your email address cannot be changed.</small
+                >
+              </div>
+
+              <!-- Display Name (Read-Only) -->
+              <div class="mb-3">
+                <label
+                  for="display-name"
+                  class="form-label fw-medium text-muted small"
+                  >Display Name</label
+                >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="display-name"
+                    value="{{.Data.Username}}"
+                    disabled
+                    readonly
+                    style="background-color: #f8f9fa; cursor: not-allowed"
+                  />
+                  <span
+                    class="input-group-text bg-light border-start-0"
+                    style="cursor: default"
+                  >
+                    <i class="fas fa-user text-muted"></i>
+                  </span>
+                </div>
+                <small class="text-muted"
+                  >Your display name cannot be changed.</small
+                >
+              </div>
+
+              <!-- Account Created Date (Read-Only Display) -->
+              <div class="mb-0">
+                <label class="form-label fw-medium text-muted small"
+                  >Account Created</label
+                >
+                <div
+                  class="d-flex align-items-center p-3 bg-light rounded-3 border"
+                >
+                  <i class="fas fa-calendar-alt text-primary me-3 fs-5"></i>
+                  <div>
+                    <span class="fw-medium" id="account-created-date"
+                      >Loading...</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECURITY SETTINGS CARD -->
+          <div class="card shadow-sm border rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+              <h5 class="fw-bold mb-0">
+                <i class="fas fa-shield-alt text-primary me-2"></i>Security
+              </h5>
+            </div>
+            <div class="card-body px-4 pb-4">
+              <!-- Success/Error Alert for Password Reset -->
+              <div
+                id="passwordResetAlertContainer"
+                class="mb-3"
+                style="display: none"
+              >
+                <div
+                  id="passwordResetAlertMessage"
+                  class="alert"
+                  role="alert"
+                ></div>
+              </div>
+
+              <!-- Password Reset Button -->
+              <div class="d-grid gap-2">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  id="request-password-reset"
+                >
+                  <span id="passwordResetText">
+                    <i class="fas fa-key me-2"></i>Request Password Reset
+                  </span>
+                  <span id="passwordResetLoading" style="display: none">
+                    <i class="fas fa-spinner fa-spin me-2"></i>Sending...
+                  </span>
+                </button>
+              </div>
+
+              <!-- Informational Text -->
+              <div
+                class="alert alert-info mt-3 mb-0 d-flex align-items-start"
+                role="alert"
+              >
+                <i class="fas fa-info-circle me-2 mt-1"></i>
+                <small>
+                  Click the button above to receive a secure password reset link
+                  at your registered email address.
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Billing Tab Content (Hidden by Default) -->
+    <div
+      id="billing-content"
+      class="tab-pane"
+      role="tabpanel"
+      aria-labelledby="billing-tab"
+      style="display: none"
+    >
+      <!-- Billing Tab Content -->
+      <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+          <!-- CURRENT PLAN CARD -->
+          <div
+            class="card shadow-sm border rounded-4 mb-4"
+            id="current-plan-card"
+          >
+            <div class="card-header bg-white border-0 pt-4 px-4">
+              <h5 class="fw-bold mb-0">
+                <i class="fas fa-credit-card text-primary me-2"></i>Current
+                Subscription
+              </h5>
+            </div>
+            <div class="card-body px-4 pb-4">
+              <div class="row align-items-center">
+                <!-- Plan Badge and Status -->
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <div class="d-flex align-items-center mb-3">
+                    <span class="badge fs-5 me-3 px-3 py-2" id="plan-badge">
+                      <i class="fas fa-gem me-2"></i
+                      ><span id="plan-name">PRO</span>
+                    </span>
+                    <span class="badge bg-success" id="subscription-status">
+                      <i
+                        class="fas fa-circle me-1"
+                        style="font-size: 0.5rem"
+                      ></i
+                      >Active
+                    </span>
+                  </div>
+
+                  <!-- Billing Details -->
+                  <div class="mb-2">
+                    <small class="text-muted d-block">Next billing date</small>
+                    <strong id="next-billing-date">November 13, 2025</strong>
+                  </div>
+                  <div>
+                    <small class="text-muted d-block">Next charge amount</small>
+                    <strong class="fs-5 text-primary" id="next-billing-amount"
+                      >$9.99 USD</strong
+                    >
+                  </div>
+                </div>
+
+                <!-- Manage Subscription Button -->
+                <div class="col-md-6 text-md-end">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-lg px-4"
+                    id="manage-subscription-btn"
+                    onclick="alert('Stripe billing management coming soon!');"
+                  >
+                    <i class="fas fa-cog me-2"></i>Manage Subscription
+                  </button>
+                  <div class="mt-2">
+                    <small class="text-muted">
+                      <i class="fas fa-shield-alt me-1"></i>Secured by Stripe
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PLAN COMPARISON SECTION -->
+          <div class="card shadow-sm border rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+              <h5 class="fw-bold mb-0">
+                <i class="fas fa-layer-group text-primary me-2"></i>Upgrade Your
+                Plan
+              </h5>
+              <p class="text-muted small mb-0 mt-1">
+                Choose the plan that fits your needs
+              </p>
+            </div>
+            <div class="card-body px-4 pb-4">
+              <div class="row g-4">
+                <!-- FREE PLAN CARD -->
+                <div class="col-md-6">
+                  <div
+                    class="plan-card border rounded-3 p-4 h-100 position-relative"
+                    style="border-color: #6c757d !important"
+                  >
+                    <!-- Plan Header -->
+                    <div class="text-center mb-4">
+                      <h4 class="fw-bold mb-2" style="color: #6c757d">
+                        <i class="fas fa-star me-2"></i>FREE
+                      </h4>
+                      <div class="display-6 fw-bold mb-1">$0</div>
+                      <small class="text-muted">per month</small>
+                    </div>
+
+                    <!-- Features List -->
+                    <ul class="list-unstyled mb-4">
+                      <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Up to 25 shortened links</span>
+                      </li>
+                      <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Basic click analytics</span>
+                      </li>
+                      <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Standard support</span>
+                      </li>
+                      <li class="mb-2 text-muted">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <span>Custom short URLs</span>
+                      </li>
+                      <li class="mb-2 text-muted">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <span>Advanced analytics</span>
+                      </li>
+                      <li class="mb-2 text-muted">
+                        <i class="fas fa-times-circle me-2"></i>
+                        <span>API access</span>
+                      </li>
+                    </ul>
+
+                    <!-- Action Button -->
+                    <div class="d-grid">
+                      <button class="btn btn-outline-secondary" disabled>
+                        <i class="fas fa-check me-2"></i>Current Plan
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- PRO PLAN CARD -->
+                <div class="col-md-6">
+                  <div
+                    class="plan-card border rounded-3 p-4 h-100 position-relative"
+                    style="
+                      border-color: #ffc107 !important;
+                      border-width: 2px !important;
+                      background: linear-gradient(
+                        135deg,
+                        #fff9e6 0%,
+                        #ffffff 100%
+                      );
+                    "
+                  >
+                    <!-- Recommended Badge -->
+                    <div
+                      class="position-absolute top-0 start-50 translate-middle"
+                    >
+                      <span class="badge bg-warning text-dark px-3 py-1">
+                        <i class="fas fa-crown me-1"></i>RECOMMENDED
+                      </span>
+                    </div>
+
+                    <!-- Plan Header -->
+                    <div class="text-center mb-4 mt-3">
+                      <h4 class="fw-bold mb-2" style="color: #ffc107">
+                        <i class="fas fa-gem me-2"></i>PRO
+                      </h4>
+                      <div
+                        class="display-6 fw-bold mb-1"
+                        style="color: #ffc107"
+                      >
+                        $9.99
+                      </div>
+                      <small class="text-muted">per month</small>
+                    </div>
+
+                    <!-- Features List -->
+                    <ul class="list-unstyled mb-4">
+                      <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span class="fw-medium">Unlimited shortened links</span>
+                      </li>
+                      <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span class="fw-medium">Advanced click analytics</span>
+                      </li>
+                      <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span class="fw-medium">Priority support</span>
+                      </li>
+                      <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span class="fw-medium">Custom short URLs</span>
+                      </li>
+                      <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span class="fw-medium"
+                          >Detailed analytics dashboard</span
+                        >
+                      </li>
+                      <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span class="fw-medium">API access</span>
+                      </li>
+                    </ul>
+
+                    <!-- Action Button -->
+                    <div class="d-grid">
+                      <button
+                        class="btn btn-warning text-dark fw-bold"
+                        onclick="alert('Upgrade to PRO coming soon via Stripe!');"
+                      >
+                        <i class="fas fa-arrow-up me-2"></i>Upgrade to PRO
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PAYMENT HISTORY TABLE -->
+          <div class="card shadow-sm border rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+              <h5 class="fw-bold mb-0">
+                <i class="fas fa-history text-primary me-2"></i>Payment History
+              </h5>
+            </div>
+            <div class="card-body px-4 pb-4">
+              <!-- Table Responsive Wrapper -->
+              <div class="table-responsive">
+                <table
+                  class="table table-hover align-middle"
+                  id="payment-history-table"
+                >
+                  <thead class="table-light">
+                    <tr>
+                      <th>Date</th>
+                      <th>Payment Method</th>
+                      <th>Status</th>
+                      <th class="text-end">Amount</th>
+                      <th class="text-center">Invoice</th>
+                    </tr>
+                  </thead>
+                  <tbody id="payment-history-tbody">
+                    <!-- Payment rows will be inserted via JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Empty State (hidden by default) -->
+              <div id="payment-history-empty" class="text-center py-5 d-none">
+                <i
+                  class="fas fa-receipt text-muted mb-3"
+                  style="font-size: 3rem; opacity: 0.3"
+                ></i>
+                <p class="text-muted mb-0">No payment history available</p>
+                <small class="text-muted"
+                  >Payment records will appear here once you subscribe</small
+                >
+              </div>
+
+              <!-- Pagination Controls -->
+              <nav
+                aria-label="Payment history pagination"
+                id="payment-pagination"
+              >
+                <ul class="pagination justify-content-center mb-0 mt-3">
+                  <li class="page-item disabled" id="prev-page">
+                    <a class="page-link" href="#" tabindex="-1">
+                      <i class="fas fa-chevron-left"></i>
+                    </a>
+                  </li>
+                  <li class="page-item active" id="page-1">
+                    <a class="page-link" href="#">1</a>
+                  </li>
+                  <li class="page-item disabled" id="next-page">
+                    <a class="page-link" href="#">
+                      <i class="fas fa-chevron-right"></i>
+                    </a>
+                  </li>
+                </ul>
+                <div class="text-center mt-2">
+                  <small class="text-muted" id="pagination-info"
+                    >Showing 1-10 of 10</small
+                  >
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STYLES -->
+<style>
+  /* Tab Navigation Styling */
+  #accountTabs .nav-link {
+    color: #6c757d;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    transition: all 0.1s ease;
+    font-weight: 500;
+  }
+
+  #accountTabs .nav-link:hover {
+    color: #0d6efd;
+    background-color: transparent;
+  }
+
+  #accountTabs .nav-link.active {
+    color: #0d6efd;
+    background-color: transparent;
+    border-bottom: 3px solid #0d6efd;
+  }
+
+  /* Tab Content Transition */
+  .tab-pane {
+    opacity: 0;
+    transition: opacity 0.1s ease-in-out;
+  }
+
+  .tab-pane.active {
+    opacity: 1;
+  }
+
+  /* Responsive Navbar Brand */
+  @media (max-width: 576px) {
+    .navbar-brand span {
+      font-size: 0.9rem;
+    }
+  }
+
+  /* Info Tab Styling */
+  .card {
+    transition: box-shadow 0.2s ease;
+  }
+
+  .card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .card-header h5 {
+    font-size: 1.1rem;
+  }
+
+  /* Disabled Input Styling */
+  input:disabled,
+  input[readonly] {
+    opacity: 0.8;
+  }
+
+  .input-group-text {
+    border-left: 0;
+  }
+
+  /* Account Created Date Box */
+  .bg-light.rounded-3 {
+    background-color: #f8f9fa !important;
+  }
+
+  /* Alert Info Box */
+  .alert-info {
+    background-color: #e7f3ff;
+    border-color: #b3d9ff;
+    color: #004085;
+  }
+
+  /* Billing Tab - Plan Badge Styling */
+  #plan-badge {
+    font-size: 1.1rem;
+  }
+
+  #plan-badge.plan-free {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  #plan-badge.plan-pro {
+    background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%);
+    color: #000;
+    font-weight: bold;
+  }
+
+  /* Plan Comparison Cards */
+  .plan-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: white;
+  }
+
+  .plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* Payment History Table */
+  #payment-history-table thead th {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  #payment-history-table tbody tr {
+    transition: background-color 0.15s ease;
+  }
+
+  #payment-history-table tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  .invoice-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.85rem;
+    transition: all 0.15s ease;
+  }
+
+  .invoice-btn:hover {
+    transform: scale(1.05);
+  }
+
+  /* Pagination */
+  .pagination .page-link {
+    color: #0d6efd;
+    border-radius: 0.375rem;
+    margin: 0 0.25rem;
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .plan-card {
+      margin-bottom: 1rem;
+    }
+
+    #payment-history-table {
+      font-size: 0.875rem;
+    }
+  }
+</style>
+
+<!-- SCRIPTS -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Tab Switching Logic
+    const tabButtons = document.querySelectorAll("#accountTabs .nav-link");
+    const tabPanes = document.querySelectorAll(".tab-pane");
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        const targetTab = this.getAttribute("data-tab");
+
+        // Remove active class from all tabs and buttons
+        tabButtons.forEach((btn) => {
+          btn.classList.remove("active");
+          btn.setAttribute("aria-selected", "false");
+        });
+        tabPanes.forEach((pane) => {
+          pane.classList.remove("active");
+          pane.style.display = "none";
+        });
+
+        // Add active class to clicked button and corresponding pane
+        this.classList.add("active");
+        this.setAttribute("aria-selected", "true");
+
+        const targetPane = document.getElementById(targetTab + "-content");
+        if (targetPane) {
+          targetPane.style.display = "block";
+          // Small delay to trigger CSS transition
+          setTimeout(() => {
+            targetPane.classList.add("active");
+          }, 10);
+        }
+      });
+    });
+
+    // Format and Display Account Creation Date
+    function formatAccountCreationDate() {
+      const createdAtStr = "{{.Data.CreatedAt}}"; // ISO timestamp from backend
+
+      if (createdAtStr) {
+        try {
+          const createdDate = new Date(createdAtStr);
+          const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          };
+          const formattedDate = createdDate.toLocaleDateString(
+            "en-US",
+            options
+          );
+
+          document.getElementById("account-created-date").textContent =
+            formattedDate;
+        } catch (error) {
+          console.error("Error parsing date:", error);
+          document.getElementById("account-created-date").textContent =
+            "Date unavailable";
+        }
+      } else {
+        document.getElementById("account-created-date").textContent =
+          "Date unavailable";
+      }
+    }
+
+    // Initialize on page load
+    formatAccountCreationDate();
+
+    // Mock Billing Data
+    const mockBillingData = {
+      currentPlan: "PRO", // Can be changed to 'FREE' to display free plan UI
+      subscriptionStatus: "Active",
+      nextBillingDate: "November 13, 2025",
+      nextBillingAmount: "$9.99",
+      paymentHistory: [
+        {
+          date: "2025-10-13",
+          method: "Visa ••••4242",
+          status: "Paid",
+          amount: 9.99,
+        },
+        {
+          date: "2025-09-13",
+          method: "Visa ••••4242",
+          status: "Paid",
+          amount: 9.99,
+        },
+        {
+          date: "2025-08-13",
+          method: "Visa ••••4242",
+          status: "Paid",
+          amount: 9.99,
+        },
+        {
+          date: "2025-07-13",
+          method: "Visa ••••4242",
+          status: "Paid",
+          amount: 9.99,
+        },
+        {
+          date: "2025-06-13",
+          method: "Visa ••••4242",
+          status: "Paid",
+          amount: 9.99,
+        },
+        {
+          date: "2025-05-13",
+          method: "Visa ••••4242",
+          status: "Paid",
+          amount: 9.99,
+        },
+        {
+          date: "2025-04-13",
+          method: "Visa ••••4242",
+          status: "Paid",
+          amount: 9.99,
+        },
+        {
+          date: "2025-03-13",
+          method: "Visa ••••4242",
+          status: "Paid",
+          amount: 9.99,
+        },
+        {
+          date: "2025-02-13",
+          method: "Visa ••••4242",
+          status: "Paid",
+          amount: 9.99,
+        },
+        {
+          date: "2025-01-13",
+          method: "Visa ••••4242",
+          status: "Paid",
+          amount: 9.99,
+        },
+      ],
+    };
+
+    // Initialize Billing UI
+    function initializeBillingUI() {
+      const {
+        currentPlan,
+        subscriptionStatus,
+        nextBillingDate,
+        nextBillingAmount,
+        paymentHistory,
+      } = mockBillingData;
+
+      // Update Current Plan Badge
+      const planBadge = document.getElementById("plan-badge");
+      const planName = document.getElementById("plan-name");
+
+      if (currentPlan === "PRO") {
+        planBadge.classList.add("plan-pro");
+        planName.textContent = "PRO";
+      } else {
+        planBadge.classList.add("plan-free");
+        planName.textContent = "FREE";
+      }
+
+      // Update Subscription Status
+      document.getElementById("subscription-status").textContent =
+        subscriptionStatus;
+
+      // Update Billing Details
+      document.getElementById("next-billing-date").textContent =
+        nextBillingDate;
+      document.getElementById("next-billing-amount").textContent =
+        nextBillingAmount + " USD";
+
+      // Populate Payment History Table
+      populatePaymentHistory(paymentHistory);
+    }
+
+    // Populate Payment History Table
+    function populatePaymentHistory(payments) {
+      const tbody = document.getElementById("payment-history-tbody");
+      const emptyState = document.getElementById("payment-history-empty");
+      const paginationInfo = document.getElementById("pagination-info");
+
+      if (payments.length === 0) {
+        tbody.innerHTML = "";
+        emptyState.classList.remove("d-none");
+        document.getElementById("payment-pagination").classList.add("d-none");
+        return;
+      }
+
+      // Clear existing rows
+      tbody.innerHTML = "";
+
+      // Format and insert payment rows
+      payments.forEach((payment, index) => {
+        const row = document.createElement("tr");
+
+        // Format date
+        const paymentDate = new Date(payment.date);
+        const formattedDate = paymentDate.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "2-digit",
+        });
+
+        row.innerHTML = `
+          <td>
+            <span class="fw-medium">${formattedDate}</span>
+          </td>
+          <td>
+            <i class="fab fa-cc-visa text-primary me-1"></i>
+            ${payment.method}
+          </td>
+          <td>
+            <span class="badge bg-success">
+              <i class="fas fa-check-circle me-1"></i>${payment.status}
+            </span>
+          </td>
+          <td class="text-end fw-medium">
+            $${payment.amount.toFixed(2)}
+          </td>
+          <td class="text-center">
+            <button 
+              class="btn btn-sm btn-outline-primary invoice-btn" 
+              onclick="alert('Invoice download coming soon!');"
+              title="Download Invoice"
+            >
+              <i class="fas fa-file-invoice"></i>
+            </button>
+          </td>
+        `;
+
+        tbody.appendChild(row);
+      });
+
+      // Update pagination info
+      paginationInfo.textContent = `Showing 1-${payments.length} of ${payments.length}`;
+    }
+
+    // Initialize on page load
+    initializeBillingUI();
+
+    // Password Reset Functionality
+    const passwordResetBtn = document.getElementById("request-password-reset");
+    const passwordResetText = document.getElementById("passwordResetText");
+    const passwordResetLoading = document.getElementById(
+      "passwordResetLoading"
+    );
+    const passwordResetAlertContainer = document.getElementById(
+      "passwordResetAlertContainer"
+    );
+    const passwordResetAlertMessage = document.getElementById(
+      "passwordResetAlertMessage"
+    );
+
+    // Get user email from template
+    const userEmail = "{{.Data.Email}}";
+
+    // Show password reset alert message
+    function showPasswordResetAlert(message, type = "danger") {
+      passwordResetAlertMessage.className = `alert alert-${type}`;
+      passwordResetAlertMessage.innerHTML = `<i class="fas fa-${
+        type === "success" ? "check-circle" : "exclamation-triangle"
+      } me-2"></i>${message}`;
+      passwordResetAlertContainer.style.display = "block";
+      passwordResetAlertContainer.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+
+    // Hide password reset alert message
+    function hidePasswordResetAlert() {
+      passwordResetAlertContainer.style.display = "none";
+    }
+
+    // Toggle password reset button loading state
+    function setPasswordResetLoading(loading) {
+      if (loading) {
+        passwordResetBtn.disabled = true;
+        passwordResetText.style.display = "none";
+        passwordResetLoading.style.display = "inline";
+      } else {
+        passwordResetBtn.disabled = false;
+        passwordResetText.style.display = "inline";
+        passwordResetLoading.style.display = "none";
+      }
+    }
+
+    // Password reset button click handler
+    passwordResetBtn.addEventListener("click", async function () {
+      hidePasswordResetAlert();
+      setPasswordResetLoading(true);
+
+      try {
+        // Send password reset email request
+        const response = await fetch("/api/auth/send-reset-password-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            email: userEmail,
+          }),
+        });
+
+        if (response.ok) {
+          showPasswordResetAlert(
+            "Password reset link sent! Please check your email inbox and spam folder for instructions.",
+            "success"
+          );
+        } else {
+          const errorText = await response.text();
+          throw new Error(
+            errorText || `Failed to send reset email (${response.status})`
+          );
+        }
+      } catch (error) {
+        console.error("Password reset error:", error);
+        showPasswordResetAlert(
+          error.message || "Failed to send reset email. Please try again."
+        );
+      } finally {
+        setPasswordResetLoading(false);
+      }
+    });
+  });
+</script>
+{{end}}
