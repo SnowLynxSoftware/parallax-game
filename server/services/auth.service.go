@@ -64,7 +64,7 @@ func (s *AuthService) RegisterNewUser(dto *models.UserCreateDTO) (*repositories.
 	}
 
 	var emailOptions = &EmailSendOptions{}
-	emailOptions.FromEmail = "do-not-reply@smarterlynx.com"
+	emailOptions.FromEmail = "do-not-reply@snowlynxsoftware.net"
 	emailOptions.ToEmail = newUser.Email
 	emailOptions.Subject = "Parallax - Verify Your Account"
 	emailOptions.HTMLContent = s.emailService.GetTemplates().GetNewUserEmailTemplate(s.configService.GetBaseURL(), *verificationToken)
@@ -89,7 +89,7 @@ func (s *AuthService) SendLoginEmail(email string) (*repositories.UserEntity, er
 	}
 
 	var emailOptions = &EmailSendOptions{}
-	emailOptions.FromEmail = "do-not-reply@smarterlynx.com"
+	emailOptions.FromEmail = "do-not-reply@snowlynxsoftware.net"
 	emailOptions.ToEmail = user.Email
 	emailOptions.Subject = "Parallax - Login Email"
 	emailOptions.HTMLContent = s.emailService.GetTemplates().GetLoginEmailTemplate(s.configService.GetBaseURL(), *verificationToken)
@@ -114,7 +114,7 @@ func (s *AuthService) SendResetPasswordEmail(email string) (*repositories.UserEn
 	}
 
 	var emailOptions = &EmailSendOptions{}
-	emailOptions.FromEmail = "do-not-reply@smarterlynx.com"
+	emailOptions.FromEmail = "do-not-reply@snowlynxsoftware.net"
 	emailOptions.ToEmail = user.Email
 	emailOptions.Subject = "Parallax - Password Reset Request"
 	emailOptions.HTMLContent = s.emailService.GetTemplates().GetPasswordResetEmailTemplate(s.configService.GetBaseURL(), *verificationToken)
