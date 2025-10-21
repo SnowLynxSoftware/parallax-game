@@ -1,0 +1,52 @@
+{{define "navbar"}}
+<!-- Navigation Header -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm border-bottom">
+  <div class="container-fluid px-4">
+    <!-- Brand -->
+    <a class="navbar-brand d-flex align-items-center" href="/">
+      <i class="fas fa-link text-primary me-2" style="font-size: 1.5rem"></i>
+      <span class="fw-bold text-primary">Parallax</span>
+    </a>
+
+    <!-- User Menu -->
+    <div class="dropdown">
+      <button
+        class="btn btn-outline-primary rounded-pill d-flex align-items-center"
+        type="button"
+        data-bs-toggle="dropdown"
+      >
+        <i class="fas fa-user-circle me-2"></i>
+        <span class="d-none d-sm-inline">{{.Data.Username}}</span>
+        <i class="fas fa-chevron-down ms-2 small"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <a class="dropdown-item" href="/account">
+            <i class="fas fa-user-cog me-2"></i>Account
+          </a>
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            href="#"
+            onclick="alert('Support coming soon!'); return false;"
+          >
+            <i class="fab fa-discord me-2"></i>Support
+          </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <form method="POST" action="/api/auth/logout" class="m-0">
+            <button
+              type="submit"
+              class="dropdown-item text-danger border-0 bg-transparent w-100 text-start"
+            >
+              <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+            </button>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+{{end}}

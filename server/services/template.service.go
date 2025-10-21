@@ -75,6 +75,7 @@ func (ts *TemplateService) loadTemplates() {
 	componentFiles := []string{
 		"templates/layouts/components/head.html",
 		"templates/layouts/components/footer.html",
+		"templates/layouts/components/navbar.html",
 	}
 
 	for _, file := range componentFiles {
