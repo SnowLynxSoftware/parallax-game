@@ -21,9 +21,9 @@ func TestEmailTemplates_GetNewUserEmailTemplate_Success(t *testing.T) {
 	assert.Contains(t, result, baseURL)
 	assert.Contains(t, result, verificationToken)
 	assert.Contains(t, result, "/api/auth/verify?token=")
-	assert.Contains(t, result, "Welcome to Smarter Lynx")
+	assert.Contains(t, result, "Welcome to Parallax")
 	assert.Contains(t, result, "Verify Account")
-	assert.Contains(t, result, "Smarter Lynx")
+	assert.Contains(t, result, "Parallax")
 }
 
 // Test GetNewUserEmailTemplate - With Empty BaseURL
@@ -222,7 +222,7 @@ func TestEmailTemplates_VerifyHTMLStructure(t *testing.T) {
 		assert.Contains(t, template, "<!DOCTYPE html>")
 		assert.Contains(t, template, "<body")
 		assert.Contains(t, template, "<table")
-		assert.Contains(t, template, "Smarter Lynx")
+		assert.Contains(t, template, "Parallax")
 		assert.Contains(t, template, "Facebook")
 		assert.Contains(t, template, "Website")
 	}
@@ -246,7 +246,7 @@ func TestEmailTemplates_TemplateDifferences(t *testing.T) {
 	assert.NotEqual(t, loginTemplate, resetTemplate)
 
 	// Verify unique content in each template
-	assert.Contains(t, newUserTemplate, "Welcome to Smarter Lynx")
+	assert.Contains(t, newUserTemplate, "Welcome to Parallax")
 	assert.Contains(t, newUserTemplate, "Verify Account")
 	assert.Contains(t, newUserTemplate, "/api/auth/verify")
 

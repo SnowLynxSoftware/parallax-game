@@ -45,7 +45,7 @@ func (s *EmailService) SendEmail(options *EmailSendOptions) bool {
 				},
 			},
 			Subject:  options.Subject,
-			TextPart: "Smarter Lynx does not support plain text emails. Please enable HTML.",
+			TextPart: "Parallax does not support plain text emails. Please enable HTML.",
 			HTMLPart: options.HTMLContent,
 		},
 	}

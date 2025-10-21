@@ -226,7 +226,7 @@ func (c *AuthController) verify(w http.ResponseWriter, r *http.Request) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Account Verified - Smarter Lynx</title>
+	<title>Account Verified - Parallax</title>
 	<style>
 		* {
 			margin: 0;
@@ -325,7 +325,7 @@ func (c *AuthController) verify(w http.ResponseWriter, r *http.Request) {
 			</svg>
 		</div>
 		<h1>Account Verified Successfully!</h1>
-		<p>Your account has been verified and is now active. You can now log in and start using Smarter Lynx.</p>
+		<p>Your account has been verified and is now active. You can now log in and start using Parallax.</p>
 		<p class="redirect-info">Redirecting to login page in <span id="countdown">5</span> seconds...</p>
 		<a href="/login" class="button">Go to Login Now</a>
 	</div>

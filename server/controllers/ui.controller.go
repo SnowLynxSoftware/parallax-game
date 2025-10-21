@@ -202,7 +202,7 @@ func (c *UIController) resetPassword(w http.ResponseWriter, r *http.Request) {
 
 	pageData := services.PageData{
 		Title:       "Reset Password",
-		Description: "Smarter Lynx - Reset your account password",
+		Description: "Parallax - Reset your account password",
 		Data:        map[string]interface{}{},
 	}
 

@@ -233,7 +233,7 @@ func TestAuthService_RegisterNewUser_Success(t *testing.T) {
 	mockEmailService.On("GetTemplates").Return(mockEmailTemplates)
 	mockEmailTemplates.On("GetNewUserEmailTemplate", "http://localhost:3000", verificationToken).Return(emailTemplate)
 	mockEmailService.On("SendEmail", mock.MatchedBy(func(options *EmailSendOptions) bool {
-		return options.ToEmail == userDTO.Email && options.Subject == "Smarter Lynx - Verify Your Account"
+		return options.ToEmail == userDTO.Email && options.Subject == "Parallax - Verify Your Account"
 	})).Return(true)
 
 	// Act
@@ -394,7 +394,7 @@ func TestAuthService_SendLoginEmail_Success(t *testing.T) {
 	mockEmailService.On("GetTemplates").Return(mockEmailTemplates)
 	mockEmailTemplates.On("GetLoginEmailTemplate", "http://localhost:3000", loginToken).Return(emailTemplate)
 	mockEmailService.On("SendEmail", mock.MatchedBy(func(options *EmailSendOptions) bool {
-		return options.ToEmail == email && options.Subject == "Smarter Lynx - Login Email"
+		return options.ToEmail == email && options.Subject == "Parallax - Login Email"
 	})).Return(true)
 
 	// Act
@@ -1110,7 +1110,7 @@ func TestAuthService_SendLoginEmail_EmailSendFailure(t *testing.T) {
 	mockEmailService.On("GetTemplates").Return(mockEmailTemplates)
 	mockEmailTemplates.On("GetLoginEmailTemplate", "http://localhost:3000", loginToken).Return(emailTemplate)
 	mockEmailService.On("SendEmail", mock.MatchedBy(func(options *EmailSendOptions) bool {
-		return options.ToEmail == email && options.Subject == "Smarter Lynx - Login Email"
+		return options.ToEmail == email && options.Subject == "Parallax - Login Email"
 	})).Return(false)
 
 	// Act
