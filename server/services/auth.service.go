@@ -23,6 +23,7 @@ type IAuthService interface {
 
 type AuthService struct {
 	userRepository repositories.IUserRepository
+	teamRepository repositories.ITeamRepository
 	tokenService   ITokenService
 	cryptoService  ICryptoService
 	emailService   IEmailService
@@ -31,12 +32,13 @@ type AuthService struct {
 
 func NewAuthService(
 	userRepository repositories.IUserRepository,
+	teamRepository repositories.ITeamRepository,
 	tokenService ITokenService,
 	cryptoService ICryptoService,
 	emailService IEmailService,
 	configService config.IAppConfig,
 ) IAuthService {
-	return &AuthService{userRepository: userRepository, tokenService: tokenService, cryptoService: cryptoService, emailService: emailService, configService: configService}
+	return &AuthService{userRepository: userRepository, teamRepository: teamRepository, tokenService: tokenService, cryptoService: cryptoService, emailService: emailService, configService: configService}
 }
 
 func (s *AuthService) RegisterNewUser(dto *models.UserCreateDTO) (*repositories.UserEntity, error) {
@@ -56,6 +58,13 @@ func (s *AuthService) RegisterNewUser(dto *models.UserCreateDTO) (*repositories.
 	newUser, err := s.userRepository.CreateNewUser(dto)
 	if err != nil {
 		return nil, err
+	}
+
+	// Create 5 teams for the new user (Team 1 unlocked by default)
+	err = s.teamRepository.CreateTeamsForUser(newUser.ID)
+	if err != nil {
+		util.LogErrorWithStackTrace(err)
+		return nil, errors.New("the user was created but team initialization failed")
 	}
 
 	verificationToken, err := s.tokenService.GenerateVerificationToken(int(newUser.ID))

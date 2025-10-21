@@ -98,6 +98,63 @@ func (m *MockCryptoService) ValidatePassword(password string, hashedPassword str
 	return args.Bool(0), args.Error(1)
 }
 
+// MockTeamRepository is a mock implementation of ITeamRepository
+type MockTeamRepository struct {
+	mock.Mock
+}
+
+func (m *MockTeamRepository) CreateTeamsForUser(userId int64) error {
+	args := m.Called(userId)
+	return args.Error(0)
+}
+
+func (m *MockTeamRepository) GetTeamsByUserId(userId int64) ([]*repositories.TeamEntity, error) {
+	args := m.Called(userId)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]*repositories.TeamEntity), args.Error(1)
+}
+
+func (m *MockTeamRepository) GetTeamById(teamId int64) (*repositories.TeamEntity, error) {
+	args := m.Called(teamId)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*repositories.TeamEntity), args.Error(1)
+}
+
+func (m *MockTeamRepository) UpdateTeamStats(teamId int64, speedBonus, luckBonus float64, powerBonus int) error {
+	args := m.Called(teamId, speedBonus, luckBonus, powerBonus)
+	return args.Error(0)
+}
+
+func (m *MockTeamRepository) EquipItem(teamId int64, slot string, inventoryId *int64) error {
+	args := m.Called(teamId, slot, inventoryId)
+	return args.Error(0)
+}
+
+func (m *MockTeamRepository) UnequipItem(teamId int64, slot string) error {
+	args := m.Called(teamId, slot)
+	return args.Error(0)
+}
+
+func (m *MockTeamRepository) UnlockTeam(teamId int64) error {
+	args := m.Called(teamId)
+	return args.Error(0)
+}
+
+func (m *MockTeamRepository) GetTeamsByUserIdWithSlot(userId int64, inventoryId int64) (*repositories.TeamEntity, *string, error) {
+	args := m.Called(userId, inventoryId)
+	if args.Get(0) == nil {
+		return nil, nil, args.Error(2)
+	}
+	if args.Get(1) == nil {
+		return args.Get(0).(*repositories.TeamEntity), nil, args.Error(2)
+	}
+	return args.Get(0).(*repositories.TeamEntity), args.Get(1).(*string), args.Error(2)
+}
+
 // MockEmailService is a mock implementation of IEmailService
 type MockEmailService struct {
 	mock.Mock
@@ -203,7 +260,9 @@ func TestAuthService_RegisterNewUser_Success(t *testing.T) {
 	mockEmailTemplates := new(MockEmailTemplates)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userDTO := &models.UserCreateDTO{
 		Email:       "test@example.com",
@@ -260,7 +319,9 @@ func TestAuthService_RegisterNewUser_UserAlreadyExists(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userDTO := &models.UserCreateDTO{
 		Email:       "existing@example.com",
@@ -294,7 +355,9 @@ func TestAuthService_RegisterNewUser_PasswordHashingError(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userDTO := &models.UserCreateDTO{
 		Email:       "test@example.com",
@@ -326,7 +389,9 @@ func TestAuthService_RegisterNewUser_EmailSendFailure(t *testing.T) {
 	mockEmailTemplates := new(MockEmailTemplates)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userDTO := &models.UserCreateDTO{
 		Email:       "test@example.com",
@@ -377,7 +442,9 @@ func TestAuthService_SendLoginEmail_Success(t *testing.T) {
 	mockEmailTemplates := new(MockEmailTemplates)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	email := "test@example.com"
 	loginToken := "login_token_123"
@@ -420,7 +487,9 @@ func TestAuthService_SendLoginEmail_UserNotFound(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	email := "nonexistent@example.com"
 
@@ -445,7 +514,9 @@ func TestAuthService_LoginWithEmailLink_Success(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userId := 123
 	accessToken := "access_token_123"
@@ -474,7 +545,9 @@ func TestAuthService_LoginWithEmailLink_TokenGenerationError(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userId := 123
 
@@ -499,7 +572,9 @@ func TestAuthService_LoginWithEmailLink_LastLoginUpdateError(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userId := 123
 	accessToken := "access_token_123"
@@ -527,7 +602,9 @@ func TestAuthService_VerifyNewUser_Success(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	verificationToken := "verification_token_123"
 	userId := 123
@@ -555,7 +632,9 @@ func TestAuthService_VerifyNewUser_InvalidToken(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	verificationToken := "invalid_token"
 
@@ -580,7 +659,9 @@ func TestAuthService_VerifyNewUser_DatabaseError(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	verificationToken := "verification_token_123"
 	userId := 123
@@ -608,7 +689,9 @@ func TestAuthService_UpdateUserPassword_Success(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userId := 123
 	password := "newPassword123"
@@ -637,7 +720,9 @@ func TestAuthService_UpdateUserPassword_HashingError(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userId := 123
 	password := "newPassword123"
@@ -663,7 +748,9 @@ func TestAuthService_UpdateUserPassword_DatabaseError(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userId := 123
 	password := "newPassword123"
@@ -692,7 +779,9 @@ func TestAuthService_Login_Success(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	email := "test@example.com"
 	password := "password123"
@@ -738,7 +827,9 @@ func TestAuthService_Login_MalformedHeaderNoBasic(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	authHeader := "Bearer some-token"
 
@@ -760,7 +851,9 @@ func TestAuthService_Login_InvalidBase64(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	authHeader := "Basic invalid-base64!"
 
@@ -782,7 +875,9 @@ func TestAuthService_Login_MissingColonSeparator(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	// "usernamepassword" without colon, base64 encoded
 	authHeader := "Basic dXNlcm5hbWVwYXNzd29yZA=="
@@ -805,7 +900,9 @@ func TestAuthService_Login_UserNotFound(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	// "user@example.com:password123" base64 encoded
 	authHeader := "Basic dXNlckBleGFtcGxlLmNvbTpwYXNzd29yZDEyMw=="
@@ -831,7 +928,9 @@ func TestAuthService_Login_InvalidPassword(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	// "user@example.com:wrongpassword" base64 encoded
 	authHeader := "Basic dXNlckBleGFtcGxlLmNvbTp3cm9uZ3Bhc3N3b3Jk"
@@ -866,7 +965,9 @@ func TestAuthService_Login_PasswordValidationFalse(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	// "user@example.com:wrongpassword" base64 encoded
 	authHeader := "Basic dXNlckBleGFtcGxlLmNvbTp3cm9uZ3Bhc3N3b3Jk"
@@ -901,7 +1002,9 @@ func TestAuthService_Login_TokenGenerationError(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	// "user@example.com:password123" base64 encoded
 	authHeader := "Basic dXNlckBleGFtcGxlLmNvbTpwYXNzd29yZDEyMw=="
@@ -938,7 +1041,9 @@ func TestAuthService_Login_LastLoginUpdateError(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	// "user@example.com:password123" base64 encoded
 	authHeader := "Basic dXNlckBleGFtcGxlLmNvbTpwYXNzd29yZDEyMw=="
@@ -979,7 +1084,9 @@ func TestAuthService_RegisterNewUser_UserCreationError(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userDTO := &models.UserCreateDTO{
 		Email:       "test@example.com",
@@ -1015,7 +1122,9 @@ func TestAuthService_RegisterNewUser_VerificationTokenError(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	userDTO := &models.UserCreateDTO{
 		Email:       "test@example.com",
@@ -1060,7 +1169,9 @@ func TestAuthService_SendLoginEmail_TokenGenerationError(t *testing.T) {
 	mockEmailService := new(MockEmailService)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	email := "test@example.com"
 
@@ -1093,7 +1204,9 @@ func TestAuthService_SendLoginEmail_EmailSendFailure(t *testing.T) {
 	mockEmailTemplates := new(MockEmailTemplates)
 
 	mockConfigService := new(MockConfigService)
-	authService := NewAuthService(mockUserRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
+	mockTeamRepo := new(MockTeamRepository)
+	mockTeamRepo.On("CreateTeamsForUser", mock.Anything).Return(nil)
+	authService := NewAuthService(mockUserRepo, mockTeamRepo, mockTokenService, mockCryptoService, mockEmailService, mockConfigService)
 
 	email := "test@example.com"
 	loginToken := "login_token_123"

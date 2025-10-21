@@ -58,15 +58,40 @@ func (s *AppServer) Start() {
 	userRepository := repositories.NewUserRepository(s.dB)
 	featureFlagRepository := repositories.NewFeatureFlagRepository(s.dB)
 
+	// Game Repositories
+	riftRepository := repositories.NewRiftRepository(s.dB)
+	lootItemRepository := repositories.NewLootItemRepository(s.dB)
+	lootDropTableRepository := repositories.NewLootDropTableRepository(s.dB)
+	teamRepository := repositories.NewTeamRepository(s.dB)
+	userInventoryRepository := repositories.NewUserInventoryRepository(s.dB)
+	expeditionRepository := repositories.NewExpeditionRepository(s.dB)
+	expeditionLootRepository := repositories.NewExpeditionLootRepository(s.dB)
+
 	// Configure Services
 	featureFlagService := services.NewFeatureFlagService(featureFlagRepository)
 	emailService := services.NewEmailService(s.appConfig.GetMJAPIKeyPublic(), s.appConfig.GetMJAPIKeyPrivate(), services.NewEmailTemplates())
 	cryptoService := services.NewCryptoService(s.appConfig.GetAuthHashPepper())
 	tokenService := services.NewTokenService(s.appConfig.GetJWTSecretKey())
-	authService := services.NewAuthService(userRepository, tokenService, cryptoService, emailService, s.appConfig)
+	authService := services.NewAuthService(userRepository, teamRepository, tokenService, cryptoService, emailService, s.appConfig)
 	userService := services.NewUserService(userRepository)
 	templateService := services.NewTemplateService()
 	staticService := services.NewStaticService()
+
+	// Game Services
+	gameCoreService := services.NewGameCoreService(lootItemRepository)
+	riftService := services.NewRiftService(riftRepository, expeditionRepository)
+	teamService := services.NewTeamService(teamRepository, userInventoryRepository, lootItemRepository, gameCoreService)
+	inventoryService := services.NewInventoryService(userInventoryRepository, lootItemRepository, teamRepository)
+	expeditionService := services.NewExpeditionService(
+		expeditionRepository,
+		expeditionLootRepository,
+		teamRepository,
+		riftRepository,
+		userInventoryRepository,
+		lootItemRepository,
+		lootDropTableRepository,
+		gameCoreService,
+	)
 
 	// Configure Middleware
 	authMiddleware := middleware.NewAuthMiddleware(userRepository, tokenService, s.appConfig.GetSystemAPIKey())
@@ -75,6 +100,12 @@ func (s *AppServer) Start() {
 	s.router.Mount("/api/health", controllers.NewHealthController().MapController())
 	s.router.Mount("/api/auth", controllers.NewAuthController(authMiddleware, authService, isProductionMode, s.appConfig.GetCookieDomain()).MapController())
 	s.router.Mount("/api/users", controllers.NewUserController(userService, authMiddleware).MapController())
+
+	// Game API Controllers
+	s.router.Mount("/api/rifts", controllers.NewRiftController(riftService, authMiddleware).MapController())
+	s.router.Mount("/api/teams", controllers.NewTeamController(teamService, authMiddleware).MapController())
+	s.router.Mount("/api/inventory", controllers.NewInventoryController(inventoryService, authMiddleware).MapController())
+	s.router.Mount("/api/expeditions", controllers.NewExpeditionController(expeditionService, authMiddleware).MapController())
 
 	// Configure UI Controller (at root level)
 	s.router.Mount("/", controllers.NewUIController(templateService, staticService, authMiddleware, featureFlagService).MapController())

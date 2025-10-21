@@ -21,7 +21,7 @@
 - [x] 11. Seed user teams (Team 1 unlocked by default for existing users)
 - [x] 12. Run migration: `make migrate`
 - [x] 13. Verify schema with test queries (check all tables, enums, seed data)
-- [ ] 14. Begin repository/service implementation
+- [x] 14. Begin repository/service implementation
 
 ---
 
