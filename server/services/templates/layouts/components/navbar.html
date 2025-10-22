@@ -1,17 +1,231 @@
 {{define "navbar"}}
-<!-- Navigation Header -->
-<nav class="navbar navbar-expand-lg bg-white shadow-sm border-bottom">
+<!-- High Fantasy Navigation Header -->
+<style>
+  /* Mystical Navbar Styles */
+  .fantasy-navbar {
+    background: rgba(15, 10, 30, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid rgba(103, 80, 164, 0.5);
+    box-shadow: 0 4px 24px rgba(103, 80, 164, 0.3),
+      0 0 40px rgba(103, 80, 164, 0.1);
+    position: relative;
+    z-index: 1000;
+  }
+
+  .fantasy-navbar::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(103, 80, 164, 0.8) 20%,
+      rgba(138, 110, 220, 0.8) 50%,
+      rgba(103, 80, 164, 0.8) 80%,
+      transparent
+    );
+    box-shadow: 0 0 10px rgba(103, 80, 164, 0.5);
+  }
+
+  /* Brand */
+  .fantasy-brand {
+    font-family: "Cinzel", serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(103, 80, 164, 0.8),
+      0 0 10px rgba(138, 110, 220, 0.6);
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+  }
+
+  .fantasy-brand:hover {
+    color: #8a6edc;
+    text-shadow: 0 0 30px rgba(138, 110, 220, 1),
+      0 0 15px rgba(103, 80, 164, 0.8);
+  }
+
+  .fantasy-brand i {
+    filter: drop-shadow(0 0 10px rgba(103, 80, 164, 0.8));
+  }
+
+  /* Main Nav Items */
+  .fantasy-nav-items {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .fantasy-nav-link {
+    font-family: "Cinzel", serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(103, 80, 164, 0.3);
+    background: rgba(103, 80, 164, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .fantasy-nav-link::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(138, 110, 220, 0.4), transparent);
+    transition: all 0.5s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  .fantasy-nav-link:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  .fantasy-nav-link:hover {
+    color: #fff;
+    border-color: rgba(138, 110, 220, 0.8);
+    background: rgba(103, 80, 164, 0.3);
+    box-shadow: 0 0 20px rgba(103, 80, 164, 0.5),
+      inset 0 0 20px rgba(138, 110, 220, 0.2);
+    transform: translateY(-2px);
+  }
+
+  .fantasy-nav-link i {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  .fantasy-nav-link:hover i {
+    transform: scale(1.2) rotate(5deg);
+    filter: drop-shadow(0 0 8px rgba(138, 110, 220, 0.8));
+  }
+
+  .fantasy-nav-link span {
+    position: relative;
+    z-index: 1;
+  }
+
+  .fantasy-nav-link.active {
+    background: rgba(103, 80, 164, 0.4);
+    border-color: rgba(138, 110, 220, 0.9);
+    box-shadow: 0 0 15px rgba(103, 80, 164, 0.6),
+      inset 0 0 15px rgba(138, 110, 220, 0.3);
+  }
+
+  /* User Dropdown */
+  .fantasy-user-btn {
+    font-family: "Cinzel", serif;
+    background: rgba(103, 80, 164, 0.2);
+    border: 1px solid rgba(103, 80, 164, 0.5);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0.6rem 1.2rem;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(103, 80, 164, 0.3);
+  }
+
+  .fantasy-user-btn:hover {
+    background: rgba(103, 80, 164, 0.4);
+    border-color: rgba(138, 110, 220, 0.8);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(103, 80, 164, 0.6);
+    transform: translateY(-2px);
+  }
+
+  .fantasy-dropdown-menu {
+    background: rgba(20, 15, 35, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(103, 80, 164, 0.5);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(103, 80, 164, 0.3);
+    padding: 0.5rem 0;
+  }
+
+  .fantasy-dropdown-item {
+    font-family: "Cinzel", serif;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 0.6rem 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .fantasy-dropdown-item:hover {
+    background: rgba(103, 80, 164, 0.3);
+    color: #fff;
+    box-shadow: inset 0 0 10px rgba(138, 110, 220, 0.2);
+  }
+
+  .fantasy-dropdown-item i {
+    width: 20px;
+    text-align: center;
+  }
+
+  .fantasy-dropdown-divider {
+    border-color: rgba(103, 80, 164, 0.3);
+    margin: 0.5rem 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 991px) {
+    .fantasy-nav-items {
+      display: none;
+    }
+
+    .fantasy-navbar .container-fluid {
+      justify-content: space-between;
+    }
+  }
+
+  @media (min-width: 992px) {
+    .mobile-menu-toggle {
+      display: none;
+    }
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg fantasy-navbar">
   <div class="container-fluid px-4">
     <!-- Brand -->
-    <a class="navbar-brand d-flex align-items-center" href="/">
-      <i class="fas fa-link text-primary me-2" style="font-size: 1.5rem"></i>
-      <span class="fw-bold text-primary">Parallax</span>
+    <a class="navbar-brand fantasy-brand d-flex align-items-center" href="/">
+      <i class="fas fa-link me-2"></i>
+      <span>PARALLAX</span>
     </a>
 
-    <!-- User Menu -->
+    <!-- Main Navigation Items (Left Side) -->
+    <div class="fantasy-nav-items d-none d-lg-flex ms-4">
+      <a href="/dashboard" class="fantasy-nav-link">
+        <i class="fas fa-home"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="/teams" class="fantasy-nav-link">
+        <i class="fas fa-users"></i>
+        <span>Teams</span>
+      </a>
+    </div>
+
+    <!-- Spacer -->
+    <div class="flex-grow-1"></div>
+
+    <!-- User Menu (Right Side) -->
     <div class="dropdown">
       <button
-        class="btn btn-outline-primary rounded-pill d-flex align-items-center"
+        class="btn fantasy-user-btn d-flex align-items-center"
         type="button"
         data-bs-toggle="dropdown"
       >
@@ -19,37 +233,43 @@
         <span class="d-none d-sm-inline">{{.Data.Username}}</span>
         <i class="fas fa-chevron-down ms-2 small"></i>
       </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li>
-          <a class="dropdown-item" href="/dashboard">
+      <ul class="dropdown-menu dropdown-menu-end fantasy-dropdown-menu">
+        <!-- Mobile-only nav items -->
+        <li class="d-lg-none">
+          <a class="dropdown-item fantasy-dropdown-item" href="/dashboard">
             <i class="fas fa-home me-2"></i>Dashboard
           </a>
         </li>
-        <li>
-          <a class="dropdown-item" href="/teams">
+        <li class="d-lg-none">
+          <a class="dropdown-item fantasy-dropdown-item" href="/teams">
             <i class="fas fa-users me-2"></i>Teams
           </a>
         </li>
+        <li class="d-lg-none">
+          <hr class="dropdown-divider fantasy-dropdown-divider" />
+        </li>
+
+        <!-- Regular dropdown items -->
         <li>
-          <a class="dropdown-item" href="/account">
+          <a class="dropdown-item fantasy-dropdown-item" href="/account">
             <i class="fas fa-user-cog me-2"></i>Account
           </a>
         </li>
         <li>
           <a
-            class="dropdown-item"
+            class="dropdown-item fantasy-dropdown-item"
             href="#"
             onclick="alert('Support coming soon!'); return false;"
           >
             <i class="fab fa-discord me-2"></i>Support
           </a>
         </li>
-        <li><hr class="dropdown-divider" /></li>
+        <li><hr class="dropdown-divider fantasy-dropdown-divider" /></li>
         <li>
           <form method="POST" action="/api/auth/logout" class="m-0">
             <button
               type="submit"
-              class="dropdown-item text-danger border-0 bg-transparent w-100 text-start"
+              class="dropdown-item fantasy-dropdown-item text-danger border-0 bg-transparent w-100 text-start"
             >
               <i class="fas fa-sign-out-alt me-2"></i>Sign Out
             </button>
