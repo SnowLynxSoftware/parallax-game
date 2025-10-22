@@ -30,6 +30,12 @@ Based on the GDD and current implementation state, here's the roadmap for buildi
 - Color-code team status (green=available, blue=on expedition, gray=locked)
 - Show unlock requirements for locked teams
 - Font Awesome icons for team types (user, user-shield, user-astronaut)
+- Use the `welcome_bg.png` as the background (similar to the welcome page)
+- Show the navbar on this page
+- Any re-usable CSS should be placed in the global css class--but if its specific to this page it should exist inline the HTML page within <style> tags.
+- Any JS should be placed inline within <script> tags.
+- Add a Teams button on the Navbar so we can navigate to this page from the navbar.
+- Be sure to add the new page to the templates service and also add the new UI controller methods.
 
 ---
 

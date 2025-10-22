@@ -80,7 +80,7 @@ func (s *AppServer) Start() {
 	// Game Services
 	gameCoreService := services.NewGameCoreService(lootItemRepository)
 	riftService := services.NewRiftService(riftRepository, expeditionRepository)
-	teamService := services.NewTeamService(teamRepository, userInventoryRepository, lootItemRepository, gameCoreService)
+	teamService := services.NewTeamService(teamRepository, userInventoryRepository, lootItemRepository, expeditionRepository, riftRepository, gameCoreService)
 	inventoryService := services.NewInventoryService(userInventoryRepository, lootItemRepository, teamRepository)
 	expeditionService := services.NewExpeditionService(
 		expeditionRepository,
@@ -108,7 +108,7 @@ func (s *AppServer) Start() {
 	s.router.Mount("/api/expeditions", controllers.NewExpeditionController(expeditionService, authMiddleware).MapController())
 
 	// Configure UI Controller (at root level)
-	s.router.Mount("/", controllers.NewUIController(templateService, staticService, authMiddleware, featureFlagService).MapController())
+	s.router.Mount("/", controllers.NewUIController(templateService, staticService, authMiddleware, featureFlagService, teamService).MapController())
 
 	util.LogInfo("Starting server on localhost:3000")
 	log.Fatal(http.ListenAndServe("0.0.0.0:3000", s.router))

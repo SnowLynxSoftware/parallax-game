@@ -15,14 +15,16 @@ type UIController struct {
 	staticService      services.IStaticService
 	authMiddleware     middleware.IAuthMiddleware
 	featureFlagService services.IFeatureFlagService
+	teamService        services.ITeamService
 }
 
-func NewUIController(templateService services.ITemplateService, staticService services.IStaticService, authMiddleware middleware.IAuthMiddleware, featureFlagService services.IFeatureFlagService) IController {
+func NewUIController(templateService services.ITemplateService, staticService services.IStaticService, authMiddleware middleware.IAuthMiddleware, featureFlagService services.IFeatureFlagService, teamService services.ITeamService) IController {
 	return &UIController{
 		templateService:    templateService,
 		staticService:      staticService,
 		authMiddleware:     authMiddleware,
 		featureFlagService: featureFlagService,
+		teamService:        teamService,
 	}
 }
 
@@ -36,6 +38,7 @@ func (c *UIController) MapController() *chi.Mux {
 	router.Get("/register", c.register)
 	router.Get("/login", c.login)
 	router.Get("/dashboard", c.dashboard)
+	router.Get("/teams", c.teams)
 	router.Get("/account", c.account)
 	router.Get("/reset-password", c.resetPassword)
 	router.Get("/terms", c.terms)
@@ -134,7 +137,7 @@ func (c *UIController) dashboard(w http.ResponseWriter, r *http.Request) {
 
 	// Build dashboard data
 	dashboardData := map[string]interface{}{
-		"Username":   authUser.Username,
+		"Username": authUser.Username,
 	}
 
 	pageData := services.PageData{
@@ -240,6 +243,42 @@ func (c *UIController) serveStatic(w http.ResponseWriter, r *http.Request) {
 	err := c.staticService.ServeStaticFile(w, r, filePath)
 	if err != nil {
 		// Error is already handled and logged in the static service
+		return
+	}
+}
+
+func (c *UIController) teams(w http.ResponseWriter, r *http.Request) {
+	util.LogDebug("Serving teams page")
+
+	// Get authenticated user
+	user, err := c.authMiddleware.Authorize(r)
+	if err != nil || user == nil {
+		util.LogDebug("User not authenticated, redirecting to login")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	// Get teams with expedition status
+	teams, err := c.teamService.GetUserTeams(int64(user.Id))
+	if err != nil {
+		util.LogError(err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	pageData := services.PageData{
+		Title:       "Teams",
+		Description: "Manage your expedition teams",
+		Data: map[string]interface{}{
+			"Username": user.Username,
+			"Teams":    teams,
+		},
+	}
+
+	err = c.templateService.RenderTemplate(w, "teams", pageData)
+	if err != nil {
+		util.LogError(err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 }

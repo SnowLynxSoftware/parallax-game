@@ -48,16 +48,19 @@ type EquippedItemDTO struct {
 }
 
 type TeamResponseDTO struct {
-	ID                int64            `json:"id"`
-	TeamNumber        int              `json:"team_number"`
-	IsUnlocked        bool             `json:"is_unlocked"`
-	BaseStats         TeamStatsDTO     `json:"base_stats"`
-	TotalStats        TeamStatsDTO     `json:"total_stats"`
-	EquippedWeapon    *EquippedItemDTO `json:"equipped_weapon"`
-	EquippedArmor     *EquippedItemDTO `json:"equipped_armor"`
-	EquippedAccessory *EquippedItemDTO `json:"equipped_accessory"`
-	EquippedArtifact  *EquippedItemDTO `json:"equipped_artifact"`
-	EquippedRelic     *EquippedItemDTO `json:"equipped_relic"`
+	ID                int64                  `json:"id"`
+	TeamNumber        int                    `json:"team_number"`
+	IsUnlocked        bool                   `json:"is_unlocked"`
+	BaseStats         TeamStatsDTO           `json:"base_stats"`
+	TotalStats        TeamStatsDTO           `json:"total_stats"`
+	EquippedWeapon    *EquippedItemDTO       `json:"equipped_weapon"`
+	EquippedArmor     *EquippedItemDTO       `json:"equipped_armor"`
+	EquippedAccessory *EquippedItemDTO       `json:"equipped_accessory"`
+	EquippedArtifact  *EquippedItemDTO       `json:"equipped_artifact"`
+	EquippedRelic     *EquippedItemDTO       `json:"equipped_relic"`
+	OnExpedition      bool                   `json:"on_expedition"`
+	ExpeditionData    *ExpeditionResponseDTO `json:"expedition_data,omitempty"`
+	UnlockRequirement *string                `json:"unlock_requirement,omitempty"`
 }
 
 type LootItemResponseDTO struct {

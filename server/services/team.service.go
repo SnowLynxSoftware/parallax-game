@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/snowlynxsoftware/parallax-game/server/database/repositories"
 	"github.com/snowlynxsoftware/parallax-game/server/models"
@@ -17,23 +18,29 @@ type ITeamService interface {
 }
 
 type TeamService struct {
-	teamRepository      repositories.ITeamRepository
-	inventoryRepository repositories.IUserInventoryRepository
-	lootItemRepository  repositories.ILootItemRepository
-	gameCoreService     IGameCoreService
+	teamRepository       repositories.ITeamRepository
+	inventoryRepository  repositories.IUserInventoryRepository
+	lootItemRepository   repositories.ILootItemRepository
+	expeditionRepository repositories.IExpeditionRepository
+	riftRepository       repositories.IRiftRepository
+	gameCoreService      IGameCoreService
 }
 
 func NewTeamService(
 	teamRepository repositories.ITeamRepository,
 	inventoryRepository repositories.IUserInventoryRepository,
 	lootItemRepository repositories.ILootItemRepository,
+	expeditionRepository repositories.IExpeditionRepository,
+	riftRepository repositories.IRiftRepository,
 	gameCoreService IGameCoreService,
 ) ITeamService {
 	return &TeamService{
-		teamRepository:      teamRepository,
-		inventoryRepository: inventoryRepository,
-		lootItemRepository:  lootItemRepository,
-		gameCoreService:     gameCoreService,
+		teamRepository:       teamRepository,
+		inventoryRepository:  inventoryRepository,
+		lootItemRepository:   lootItemRepository,
+		expeditionRepository: expeditionRepository,
+		riftRepository:       riftRepository,
+		gameCoreService:      gameCoreService,
 	}
 }
 
@@ -43,12 +50,49 @@ func (s *TeamService) GetUserTeams(userId int64) ([]*models.TeamResponseDTO, err
 		return nil, err
 	}
 
+	// Get active expeditions for this user
+	activeExpeditions, err := s.expeditionRepository.GetActiveExpeditionsByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create map of team_id -> expedition for quick lookup
+	expeditionByTeam := make(map[int64]*repositories.ExpeditionEntity)
+	for _, expedition := range activeExpeditions {
+		expeditionByTeam[expedition.TeamID] = expedition
+	}
+
+	// Get total completed expeditions for unlock requirements
+	completedCount, err := s.expeditionRepository.GetCompletedExpeditionsCount(userId)
+	if err != nil {
+		completedCount = 0 // Default to 0 if error
+	}
+
 	response := make([]*models.TeamResponseDTO, len(teams))
 	for i, team := range teams {
 		teamDTO, err := s.mapTeamToDTO(team)
 		if err != nil {
 			return nil, err
 		}
+
+		// Check if team is on expedition
+		if expedition, exists := expeditionByTeam[team.ID]; exists {
+			teamDTO.OnExpedition = true
+
+			// Get rift details
+			rift, err := s.riftRepository.GetRiftById(expedition.RiftID)
+			if err == nil {
+				// Map expedition to DTO
+				teamDTO.ExpeditionData = s.mapExpeditionToDTO(expedition, rift.Name, team.TeamNumber)
+			}
+		}
+
+		// Set unlock requirement for locked teams
+		if !team.IsUnlocked {
+			requirement := s.getUnlockRequirement(team.TeamNumber, completedCount)
+			teamDTO.UnlockRequirement = &requirement
+		}
+
 		response[i] = teamDTO
 	}
 
@@ -295,5 +339,47 @@ func (s *TeamService) mapEquippedItemDTO(inventoryId *int64, lootItem *repositor
 		LuckBonus:         lootItem.LuckBonus,
 		PowerBonus:        lootItem.PowerBonus,
 		ElementalAffinity: &lootItem.ElementalAffinity,
+	}
+}
+
+func (s *TeamService) mapExpeditionToDTO(expedition *repositories.ExpeditionEntity, riftName string, teamNumber int) *models.ExpeditionResponseDTO {
+	completionTime := expedition.StartTime.Add(time.Duration(expedition.DurationMinutes) * time.Minute)
+
+	var timeRemaining *int
+	if !expedition.Completed {
+		remaining := int(time.Until(completionTime).Seconds())
+		if remaining < 0 {
+			remaining = 0
+		}
+		timeRemaining = &remaining
+	}
+
+	return &models.ExpeditionResponseDTO{
+		ID:              expedition.ID,
+		TeamID:          expedition.TeamID,
+		TeamNumber:      teamNumber,
+		RiftID:          expedition.RiftID,
+		RiftName:        riftName,
+		StartTime:       expedition.StartTime.Format("2006-01-02T15:04:05Z"),
+		DurationMinutes: expedition.DurationMinutes,
+		CompletionTime:  completionTime.Format("2006-01-02T15:04:05Z"),
+		TimeRemaining:   timeRemaining,
+		IsCompleted:     expedition.Completed,
+		IsClaimed:       expedition.Claimed,
+	}
+}
+
+func (s *TeamService) getUnlockRequirement(teamNumber int, completedExpeditions int) string {
+	switch teamNumber {
+	case 2:
+		return "Complete 1 expedition to unlock"
+	case 3:
+		return "Complete 3 expeditions to unlock"
+	case 4:
+		return "Complete 25 expeditions to unlock"
+	case 5:
+		return "Complete 50 expeditions to unlock"
+	default:
+		return "Locked"
 	}
 }

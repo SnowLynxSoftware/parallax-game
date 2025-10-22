@@ -41,7 +41,9 @@ func TestTeamService_GetUserTeams_Success(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	teams := []*repositories.TeamEntity{
 		{ID: 1, UserID: 1, TeamNumber: 1, IsUnlocked: true, SpeedBonus: 10.0, LuckBonus: 5.0, PowerBonus: 20},
@@ -49,6 +51,8 @@ func TestTeamService_GetUserTeams_Success(t *testing.T) {
 	}
 
 	mockTeamRepo.On("GetTeamsByUserId", int64(1)).Return(teams, nil)
+	mockExpeditionRepo.On("GetActiveExpeditionsByUserId", int64(1)).Return([]*repositories.ExpeditionEntity{}, nil)
+	mockExpeditionRepo.On("GetCompletedExpeditionsCount", int64(1)).Return(0, nil)
 	mockGameCoreService.On("CalculateTeamStats", mock.Anything, mock.Anything).Return(&models.TeamStatsDTO{Speed: 10.0, Luck: 5.0, Power: 20})
 
 	// Act
@@ -70,7 +74,9 @@ func TestTeamService_GetUserTeams_RepositoryError(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	mockTeamRepo.On("GetTeamsByUserId", int64(1)).Return(nil, errors.New("database error"))
 
@@ -90,7 +96,9 @@ func TestTeamService_GetTeamById_SuccessWithEquippedItems(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	weaponInvId := int64(10)
 	team := &repositories.TeamEntity{
@@ -138,7 +146,9 @@ func TestTeamService_GetTeamById_SuccessNoEquippedItems(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{
 		ID:         1,
@@ -171,7 +181,9 @@ func TestTeamService_GetTeamById_TeamNotFound(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	mockTeamRepo.On("GetTeamById", int64(999)).Return(nil, errors.New("team not found"))
 
@@ -191,7 +203,9 @@ func TestTeamService_GetTeamById_RepositoryError(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	mockTeamRepo.On("GetTeamById", int64(1)).Return(nil, errors.New("database connection failed"))
 
@@ -211,7 +225,9 @@ func TestTeamService_EquipItemToTeam_Success(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 	invItem := &repositories.UserInventoryEntity{ID: 10, UserID: 1, LootItemID: 100}
@@ -243,7 +259,9 @@ func TestTeamService_EquipItemToTeam_ItemNotFound(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 
@@ -267,7 +285,9 @@ func TestTeamService_EquipItemToTeam_InventoryDoesntBelongToUser(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 	invItem := &repositories.UserInventoryEntity{ID: 10, UserID: 2, LootItemID: 100} // Different user!
@@ -293,7 +313,9 @@ func TestTeamService_EquipItemToTeam_ItemIsConsumable(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 	invItem := &repositories.UserInventoryEntity{ID: 10, UserID: 1, LootItemID: 100}
@@ -322,7 +344,9 @@ func TestTeamService_EquipItemToTeam_SlotTypeMismatch(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 	invItem := &repositories.UserInventoryEntity{ID: 10, UserID: 1, LootItemID: 100}
@@ -352,7 +376,9 @@ func TestTeamService_EquipItemToTeam_ItemEquippedOnDifferentTeam(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team1 := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 	team2 := &repositories.TeamEntity{ID: 2, UserID: 1, TeamNumber: 2}
@@ -386,7 +412,9 @@ func TestTeamService_EquipItemToTeam_TeamNotFound(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	mockTeamRepo.On("GetTeamById", int64(999)).Return(nil, errors.New("team not found"))
 
@@ -406,7 +434,9 @@ func TestTeamService_EquipItemToTeam_TeamDoesntBelongToUser(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 2, TeamNumber: 1} // Different user!
 
@@ -429,7 +459,9 @@ func TestTeamService_EquipItemToTeam_EquipRepositoryError(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 	invItem := &repositories.UserInventoryEntity{ID: 10, UserID: 1, LootItemID: 100}
@@ -460,7 +492,9 @@ func TestTeamService_UnequipItemFromTeam_Success(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 
@@ -484,7 +518,9 @@ func TestTeamService_UnequipItemFromTeam_TeamNotFound(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	mockTeamRepo.On("GetTeamById", int64(999)).Return(nil, errors.New("team not found"))
 
@@ -504,7 +540,9 @@ func TestTeamService_UnequipItemFromTeam_TeamDoesntBelongToUser(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 2, TeamNumber: 1} // Different user!
 
@@ -527,7 +565,9 @@ func TestTeamService_UnequipItemFromTeam_RepositoryError(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 
@@ -550,7 +590,9 @@ func TestTeamService_ConsumeItemOnTeam_Success(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 	invItem := &repositories.UserInventoryEntity{ID: 10, UserID: 1, LootItemID: 100}
@@ -581,7 +623,9 @@ func TestTeamService_ConsumeItemOnTeam_NotAConsumable(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 	invItem := &repositories.UserInventoryEntity{ID: 10, UserID: 1, LootItemID: 100}
@@ -611,7 +655,9 @@ func TestTeamService_ConsumeItemOnTeam_InventoryDoesntBelongToUser(t *testing.T)
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 	invItem := &repositories.UserInventoryEntity{ID: 10, UserID: 2, LootItemID: 100} // Different user!
@@ -637,7 +683,9 @@ func TestTeamService_ConsumeItemOnTeam_InventoryNotFound(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 
@@ -661,7 +709,9 @@ func TestTeamService_ConsumeItemOnTeam_TeamNotFound(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	mockTeamRepo.On("GetTeamById", int64(999)).Return(nil, errors.New("team not found"))
 
@@ -681,7 +731,9 @@ func TestTeamService_ConsumeItemOnTeam_ConsumeRepositoryError(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 1}
 	invItem := &repositories.UserInventoryEntity{ID: 10, UserID: 1, LootItemID: 100}
@@ -711,7 +763,9 @@ func TestTeamService_UnlockTeam_Success(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 2, IsUnlocked: false}
 
@@ -733,7 +787,9 @@ func TestTeamService_UnlockTeam_TeamNotFound(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	mockTeamRepo.On("GetTeamById", int64(999)).Return(nil, errors.New("team not found"))
 
@@ -752,7 +808,9 @@ func TestTeamService_UnlockTeam_TeamDoesntBelongToUser(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 2, TeamNumber: 2} // Different user!
 
@@ -774,7 +832,9 @@ func TestTeamService_UnlockTeam_RepositoryError(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	team := &repositories.TeamEntity{ID: 1, UserID: 1, TeamNumber: 2}
 
@@ -796,7 +856,9 @@ func TestTeamService_UnlockTeam_NilTeamEntity(t *testing.T) {
 	mockInventoryRepo := new(MockUserInventoryRepository)
 	mockLootItemRepo := new(MockLootItemRepository)
 	mockGameCoreService := new(MockGameCoreService)
-	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockGameCoreService)
+	mockExpeditionRepo := new(MockExpeditionRepository)
+	mockRiftRepo := new(MockRiftRepository)
+	service := NewTeamService(mockTeamRepo, mockInventoryRepo, mockLootItemRepo, mockExpeditionRepo, mockRiftRepo, mockGameCoreService)
 
 	mockTeamRepo.On("GetTeamById", int64(1)).Return(nil, nil) // Nil team
 
