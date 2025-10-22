@@ -73,9 +73,37 @@ migrate: ## Run database migrations
 	$(GOCMD) run . migrate
 
 .PHONY: test
-test: ## Run all tests
-	@echo "$(CYAN)Running tests...$(RESET)"
-	$(GOTEST) ./... -v
+test: ## Run all tests with summary
+	@echo -e "$(CYAN)Running tests...$(RESET)"
+	@bash -c 'set -o pipefail; \
+	OUTPUT=$$(mktemp); \
+	$(GOTEST) ./... -v 2>&1 | tee $$OUTPUT; \
+	EXIT=$$?; \
+	PASSED=$$(grep "^--- PASS:" $$OUTPUT | wc -l); \
+	FAILED=$$(grep "^--- FAIL:" $$OUTPUT | wc -l); \
+	TOTAL=$$((PASSED + FAILED)); \
+	echo ""; \
+	echo -e "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"; \
+	echo -e "$(CYAN)Test Summary:$(RESET)"; \
+	echo -e "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"; \
+	echo -e "  $(GREEN)✓ Passed:$(RESET)  $$PASSED"; \
+	if [ $$FAILED -gt 0 ]; then \
+		echo -e "  $(RED)✗ Failed:$(RESET)  $$FAILED"; \
+	else \
+		echo -e "  $(GREEN)✗ Failed:$(RESET)  $$FAILED"; \
+	fi; \
+	echo -e "  $(CYAN)Total:$(RESET)    $$TOTAL"; \
+	echo -e "$(CYAN)━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━$(RESET)"; \
+	rm -f $$OUTPUT; \
+	if [ $$FAILED -gt 0 ]; then \
+		echo ""; \
+		echo -e "$(RED)Tests failed!$(RESET)"; \
+		exit 1; \
+	else \
+		echo ""; \
+		echo -e "$(GREEN)All tests passed!$(RESET)"; \
+	fi; \
+	exit $$EXIT'
 
 .PHONY: test-coverage
 test-coverage: ## Run tests with coverage report
