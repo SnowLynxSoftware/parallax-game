@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/snowlynxsoftware/parallax-game/server/middleware"
+	"github.com/snowlynxsoftware/parallax-game/server/models"
 	"github.com/snowlynxsoftware/parallax-game/server/services"
 	"github.com/snowlynxsoftware/parallax-game/server/util"
 )
@@ -16,15 +17,17 @@ type UIController struct {
 	authMiddleware     middleware.IAuthMiddleware
 	featureFlagService services.IFeatureFlagService
 	teamService        services.ITeamService
+	riftService        services.IRiftService
 }
 
-func NewUIController(templateService services.ITemplateService, staticService services.IStaticService, authMiddleware middleware.IAuthMiddleware, featureFlagService services.IFeatureFlagService, teamService services.ITeamService) IController {
+func NewUIController(templateService services.ITemplateService, staticService services.IStaticService, authMiddleware middleware.IAuthMiddleware, featureFlagService services.IFeatureFlagService, teamService services.ITeamService, riftService services.IRiftService) IController {
 	return &UIController{
 		templateService:    templateService,
 		staticService:      staticService,
 		authMiddleware:     authMiddleware,
 		featureFlagService: featureFlagService,
 		teamService:        teamService,
+		riftService:        riftService,
 	}
 }
 
@@ -39,6 +42,7 @@ func (c *UIController) MapController() *chi.Mux {
 	router.Get("/login", c.login)
 	router.Get("/dashboard", c.dashboard)
 	router.Get("/teams", c.teams)
+	router.Get("/expeditions", c.expeditions)
 	router.Get("/account", c.account)
 	router.Get("/reset-password", c.resetPassword)
 	router.Get("/terms", c.terms)
@@ -276,6 +280,59 @@ func (c *UIController) teams(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = c.templateService.RenderTemplate(w, "teams", pageData)
+	if err != nil {
+		util.LogError(err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (c *UIController) expeditions(w http.ResponseWriter, r *http.Request) {
+	util.LogDebug("Serving expeditions page")
+
+	// Get authenticated user
+	user, err := c.authMiddleware.Authorize(r)
+	if err != nil || user == nil {
+		util.LogDebug("User not authenticated, redirecting to login")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	// Get all teams for this user
+	allTeams, err := c.teamService.GetUserTeams(int64(user.Id))
+	if err != nil {
+		util.LogError(err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	// Filter to only available teams (not on expedition)
+	availableTeams := make([]*models.TeamResponseDTO, 0)
+	for _, team := range allTeams {
+		if team.IsUnlocked && !team.OnExpedition {
+			availableTeams = append(availableTeams, team)
+		}
+	}
+
+	// Get all rifts with unlock status
+	rifts, err := c.riftService.GetAllRifts(int64(user.Id))
+	if err != nil {
+		util.LogError(err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	pageData := services.PageData{
+		Title:       "Expeditions",
+		Description: "Launch expeditions to parallel worlds",
+		Data: map[string]interface{}{
+			"Username": user.Username,
+			"Teams":    availableTeams,
+			"Rifts":    rifts,
+		},
+	}
+
+	err = c.templateService.RenderTemplate(w, "expeditions", pageData)
 	if err != nil {
 		util.LogError(err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
