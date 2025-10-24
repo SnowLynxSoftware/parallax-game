@@ -59,15 +59,16 @@ func (s *InventoryService) GetEquipment(userId int64) ([]models.InventoryItemRes
 			return nil, err
 		}
 
-		// Check if equipped
-		isEquipped := s.isItemEquipped(userId, invItem.ID)
+		// Check if equipped and get team number
+		isEquipped, teamNumber := s.getEquippedTeamInfo(userId, invItem.ID)
 
 		response[i] = models.InventoryItemResponseDTO{
-			InventoryID: invItem.ID,
-			Quantity:    invItem.Quantity,
-			AcquiredAt:  invItem.AcquiredAt.Format("2006-01-02T15:04:05Z"),
-			IsEquipped:  isEquipped,
-			LootItem:    s.mapLootItemDTO(lootItem),
+			InventoryID:          invItem.ID,
+			Quantity:             invItem.Quantity,
+			AcquiredAt:           invItem.AcquiredAt.Format("2006-01-02T15:04:05Z"),
+			IsEquipped:           isEquipped,
+			EquippedByTeamNumber: teamNumber,
+			LootItem:             s.mapLootItemDTO(lootItem),
 		}
 	}
 
@@ -105,6 +106,14 @@ func (s *InventoryService) isItemEquipped(userId int64, inventoryId int64) bool 
 		return false
 	}
 	return true
+}
+
+func (s *InventoryService) getEquippedTeamInfo(userId int64, inventoryId int64) (bool, *int) {
+	team, slot, err := s.teamRepository.GetTeamsByUserIdWithSlot(userId, inventoryId)
+	if err != nil || team == nil || slot == nil {
+		return false, nil
+	}
+	return true, &team.TeamNumber
 }
 
 func (s *InventoryService) mapLootItemDTO(lootItem *repositories.LootItemEntity) models.LootItemResponseDTO {

@@ -18,9 +18,10 @@ type UIController struct {
 	featureFlagService services.IFeatureFlagService
 	teamService        services.ITeamService
 	riftService        services.IRiftService
+	inventoryService   services.IInventoryService
 }
 
-func NewUIController(templateService services.ITemplateService, staticService services.IStaticService, authMiddleware middleware.IAuthMiddleware, featureFlagService services.IFeatureFlagService, teamService services.ITeamService, riftService services.IRiftService) IController {
+func NewUIController(templateService services.ITemplateService, staticService services.IStaticService, authMiddleware middleware.IAuthMiddleware, featureFlagService services.IFeatureFlagService, teamService services.ITeamService, riftService services.IRiftService, inventoryService services.IInventoryService) IController {
 	return &UIController{
 		templateService:    templateService,
 		staticService:      staticService,
@@ -28,6 +29,7 @@ func NewUIController(templateService services.ITemplateService, staticService se
 		featureFlagService: featureFlagService,
 		teamService:        teamService,
 		riftService:        riftService,
+		inventoryService:   inventoryService,
 	}
 }
 
@@ -43,6 +45,7 @@ func (c *UIController) MapController() *chi.Mux {
 	router.Get("/dashboard", c.dashboard)
 	router.Get("/teams", c.teams)
 	router.Get("/expeditions", c.expeditions)
+	router.Get("/inventory", c.inventory)
 	router.Get("/account", c.account)
 	router.Get("/reset-password", c.resetPassword)
 	router.Get("/terms", c.terms)
@@ -333,6 +336,33 @@ func (c *UIController) expeditions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = c.templateService.RenderTemplate(w, "expeditions", pageData)
+	if err != nil {
+		util.LogError(err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (c *UIController) inventory(w http.ResponseWriter, r *http.Request) {
+	util.LogDebug("Serving inventory page")
+
+	// Get authenticated user
+	user, err := c.authMiddleware.Authorize(r)
+	if err != nil || user == nil {
+		util.LogDebug("User not authenticated, redirecting to login")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	pageData := services.PageData{
+		Title:       "Inventory",
+		Description: "View and manage your collected loot",
+		Data: map[string]interface{}{
+			"Username": user.Username,
+		},
+	}
+
+	err = c.templateService.RenderTemplate(w, "inventory", pageData)
 	if err != nil {
 		util.LogError(err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)

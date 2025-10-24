@@ -108,7 +108,7 @@ func (s *AppServer) Start() {
 	s.router.Mount("/api/expeditions", controllers.NewExpeditionController(expeditionService, authMiddleware).MapController())
 
 	// Configure UI Controller (at root level)
-	s.router.Mount("/", controllers.NewUIController(templateService, staticService, authMiddleware, featureFlagService, teamService, riftService).MapController())
+	s.router.Mount("/", controllers.NewUIController(templateService, staticService, authMiddleware, featureFlagService, teamService, riftService, inventoryService).MapController())
 
 	util.LogInfo("Starting server on localhost:3000")
 	log.Fatal(http.ListenAndServe("0.0.0.0:3000", s.router))

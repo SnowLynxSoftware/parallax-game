@@ -1,0 +1,1339 @@
+{{define "content"}}
+
+<style>
+  /* Full-page background */
+  .inventory-container {
+    min-height: 100vh;
+    background-image: url("/static/images/welcome_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  /* Dark overlay */
+  .inventory-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 0;
+  }
+
+  /* Content layer */
+  .content-layer {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Page header */
+  .page-header {
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+    margin-bottom: 2rem;
+  }
+
+  /* Filter bar */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+  }
+
+  .filter-btn {
+    background: rgba(26, 26, 46, 0.85);
+    border: 2px solid rgba(103, 80, 164, 0.3);
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+  }
+
+  .filter-btn:hover {
+    border-color: rgba(103, 80, 164, 0.6);
+    background: rgba(26, 26, 46, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(103, 80, 164, 0.5);
+  }
+
+  .filter-btn.active {
+    background: linear-gradient(135deg, #6750a4, #8b75c1);
+    border-color: #8b75c1;
+    box-shadow: 0 6px 20px rgba(103, 80, 164, 0.6);
+  }
+
+  /* Inventory grid */
+  .inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .inventory-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .inventory-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .inventory-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* Item cards */
+  .inventory-item-card {
+    background: rgba(26, 26, 46, 0.85);
+    border: 2px solid rgba(103, 80, 164, 0.3);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    cursor: pointer;
+    padding: 1.5rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .inventory-item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 48px rgba(103, 80, 164, 0.6);
+  }
+
+  /* Rarity border colors */
+  .inventory-item-card.rarity-common {
+    border-color: rgba(158, 158, 158, 0.5);
+  }
+  .inventory-item-card.rarity-uncommon {
+    border-color: rgba(76, 175, 80, 0.5);
+  }
+  .inventory-item-card.rarity-rare {
+    border-color: rgba(33, 150, 243, 0.5);
+  }
+  .inventory-item-card.rarity-epic {
+    border-color: rgba(156, 39, 176, 0.5);
+  }
+  .inventory-item-card.rarity-legendary {
+    border-color: rgba(255, 152, 0, 0.8);
+    box-shadow: 0 8px 32px rgba(255, 152, 0, 0.4);
+  }
+
+  .inventory-item-card.rarity-common:hover {
+    border-color: rgba(158, 158, 158, 0.8);
+  }
+  .inventory-item-card.rarity-uncommon:hover {
+    border-color: rgba(76, 175, 80, 0.8);
+  }
+  .inventory-item-card.rarity-rare:hover {
+    border-color: rgba(33, 150, 243, 0.8);
+  }
+  .inventory-item-card.rarity-epic:hover {
+    border-color: rgba(156, 39, 176, 0.8);
+  }
+  .inventory-item-card.rarity-legendary:hover {
+    border-color: rgba(255, 152, 0, 1);
+    box-shadow: 0 12px 48px rgba(255, 152, 0, 0.6);
+  }
+
+  /* Item icon */
+  .item-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .item-icon.rarity-common {
+    color: #9e9e9e;
+  }
+  .item-icon.rarity-uncommon {
+    color: #4caf50;
+  }
+  .item-icon.rarity-rare {
+    color: #2196f3;
+  }
+  .item-icon.rarity-epic {
+    color: #9c27b0;
+  }
+  .item-icon.rarity-legendary {
+    color: #ff9800;
+    filter: drop-shadow(0 0 10px rgba(255, 152, 0, 0.6));
+  }
+
+  /* Item name */
+  .item-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    word-wrap: break-word;
+    width: 100%;
+  }
+
+  /* Rarity badge */
+  .rarity-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .rarity-badge.common {
+    background: rgba(158, 158, 158, 0.3);
+    color: #9e9e9e;
+  }
+  .rarity-badge.uncommon {
+    background: rgba(76, 175, 80, 0.3);
+    color: #4caf50;
+  }
+  .rarity-badge.rare {
+    background: rgba(33, 150, 243, 0.3);
+    color: #2196f3;
+  }
+  .rarity-badge.epic {
+    background: rgba(156, 39, 176, 0.3);
+    color: #9c27b0;
+  }
+  .rarity-badge.legendary {
+    background: rgba(255, 152, 0, 0.3);
+    color: #ff9800;
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.3);
+  }
+
+  /* Quantity badge - moved to bottom left */
+  .quantity-badge {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: bold;
+  }
+
+  /* Team equipped badge - top right with pulse animation */
+  .team-equipped-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 0.875rem;
+    font-weight: bold;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
+    animation: teamBadgePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes teamBadgePulse {
+    0%,
+    100% {
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
+    }
+    50% {
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.8),
+        0 0 20px rgba(59, 130, 246, 0.4);
+    }
+  }
+
+  /* Remove old equipped indicator */
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: rgba(26, 26, 46, 0.85);
+    border: 2px solid rgba(103, 80, 164, 0.3);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+  }
+
+  .empty-state i {
+    font-size: 4rem;
+    color: rgba(255, 255, 255, 0.3);
+    margin-bottom: 1rem;
+  }
+
+  .empty-state h3 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-state p {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Modal styling */
+  .modal-content {
+    background: rgba(26, 26, 46, 0.98);
+    border: 2px solid rgba(103, 80, 164, 0.5);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    color: #fff;
+  }
+
+  .modal-header {
+    border-bottom: 1px solid rgba(103, 80, 164, 0.3);
+  }
+
+  .modal-footer {
+    border-top: 1px solid rgba(103, 80, 164, 0.3);
+  }
+
+  .btn-close {
+    filter: invert(1);
+  }
+
+  /* Modal item display */
+  .modal-item-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+  }
+
+  .modal-stats {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .stat-row:last-child {
+    border-bottom: none;
+  }
+
+  .stat-label {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .stat-value {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* Equipment buttons */
+  .equipment-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .equip-btn,
+  .unequip-btn,
+  .use-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.75rem;
+    border-radius: 12px;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .equip-btn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: #fff;
+  }
+
+  .equip-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+  }
+
+  .equip-btn:disabled {
+    background: rgba(107, 114, 128, 0.5);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .unequip-btn {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+  }
+
+  .unequip-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+  }
+
+  .use-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+  }
+
+  .use-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+  }
+
+  .use-btn:disabled {
+    background: rgba(107, 114, 128, 0.5);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* Bootstrap popover custom styling */
+  .popover {
+    background: rgba(26, 26, 46, 0.98);
+    border: 2px solid rgba(103, 80, 164, 0.5);
+    backdrop-filter: blur(10px);
+    max-width: 350px;
+  }
+
+  .popover-body {
+    color: #fff;
+  }
+
+  .popover-header {
+    background: rgba(103, 80, 164, 0.3);
+    border-bottom: 1px solid rgba(103, 80, 164, 0.5);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .bs-popover-top > .popover-arrow::after,
+  .bs-popover-auto[data-popper-placement^="top"] > .popover-arrow::after {
+    border-top-color: rgba(26, 26, 46, 0.98);
+  }
+
+  .bs-popover-bottom > .popover-arrow::after,
+  .bs-popover-auto[data-popper-placement^="bottom"] > .popover-arrow::after {
+    border-bottom-color: rgba(26, 26, 46, 0.98);
+  }
+
+  .bs-popover-start > .popover-arrow::after,
+  .bs-popover-auto[data-popper-placement^="left"] > .popover-arrow::after {
+    border-left-color: rgba(26, 26, 46, 0.98);
+  }
+
+  .bs-popover-end > .popover-arrow::after,
+  .bs-popover-auto[data-popper-placement^="right"] > .popover-arrow::after {
+    border-right-color: rgba(26, 26, 46, 0.98);
+  }
+
+  /* Comparison popover specific */
+  .comparison-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0;
+  }
+
+  .comparison-arrow {
+    margin: 0 0.5rem;
+  }
+
+  .comparison-upgrade {
+    color: #10b981;
+  }
+  .comparison-downgrade {
+    color: #ef4444;
+  }
+  .comparison-neutral {
+    color: #9ca3af;
+  }
+
+  .comparison-verdict {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* Equipped info section in modal */
+  .equipped-info {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .equipped-info i {
+    font-size: 1.25rem;
+  }
+
+  /* Loading state */
+  .loading-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<div class="inventory-container">
+  {{template "navbar" .}}
+
+  <div class="content-layer">
+    <div class="container py-5">
+      <!-- Page Header -->
+      <h1 class="text-white text-center page-header">
+        <i class="fas fa-treasure-chest me-2"></i>
+        Inventory
+      </h1>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <button
+          class="filter-btn active"
+          data-filter="all"
+          onclick="applyFilter('all')"
+        >
+          <i class="fas fa-th me-2"></i>All
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="weapon"
+          onclick="applyFilter('weapon')"
+        >
+          <i class="fas fa-sword me-2"></i>Weapons
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="armor"
+          onclick="applyFilter('armor')"
+        >
+          <i class="fas fa-shield-alt me-2"></i>Armor
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="accessory"
+          onclick="applyFilter('accessory')"
+        >
+          <i class="fas fa-ring me-2"></i>Accessories
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="artifact"
+          onclick="applyFilter('artifact')"
+        >
+          <i class="fas fa-gem me-2"></i>Artifacts
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="relic"
+          onclick="applyFilter('relic')"
+        >
+          <i class="fas fa-scroll me-2"></i>Relics
+        </button>
+        <button
+          class="filter-btn"
+          data-filter="consumable"
+          onclick="applyFilter('consumable')"
+        >
+          <i class="fas fa-flask me-2"></i>Consumables
+        </button>
+      </div>
+
+      <!-- Inventory Grid -->
+      <div id="inventoryGrid" class="inventory-grid">
+        <!-- Items will be dynamically inserted here -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="empty-state" style="display: none">
+        <i class="fas fa-box-open"></i>
+        <h3>No Items Found</h3>
+        <p>Your inventory is empty. Complete expeditions to collect loot!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Item Detail Modal -->
+<div
+  class="modal fade"
+  id="itemModal"
+  tabindex="-1"
+  aria-labelledby="itemModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="itemModalLabel">
+          <span id="modalItemName">Item Name</span>
+          <span id="modalRarityBadge" class="rarity-badge ms-2">Common</span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 text-center">
+            <div id="modalItemIcon" class="modal-item-icon rarity-common">
+              <i class="fas fa-question"></i>
+            </div>
+            <div id="modalItemType" class="text-white-50 mb-2">Equipment</div>
+            <div id="modalItemSlot" class="text-white-50"></div>
+          </div>
+          <div class="col-md-8">
+            <div class="modal-stats">
+              <h6 class="text-white mb-3">Stats</h6>
+              <div id="modalStats">
+                <!-- Stats will be dynamically inserted here -->
+              </div>
+            </div>
+            <div>
+              <h6 class="text-white mb-2">Description</h6>
+              <p id="modalDescription" class="text-white-50"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Equipment / Unequip / Use Buttons -->
+        <div id="modalActions">
+          <!-- Buttons will be dynamically inserted here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Global state
+  let allInventoryItems = [];
+  let allTeams = [];
+  let currentFilter = "all";
+  let currentItem = null;
+
+  // Rarity order for sorting
+  const rarityOrder = {
+    legendary: 5,
+    epic: 4,
+    rare: 3,
+    uncommon: 2,
+    common: 1,
+  };
+
+  // Initialize page
+  document.addEventListener("DOMContentLoaded", async function () {
+    await fetchInventory();
+    await fetchTeams();
+  });
+
+  // Fetch inventory from API
+  async function fetchInventory() {
+    try {
+      const response = await fetch("/api/inventory");
+      if (!response.ok) throw new Error("Failed to fetch inventory");
+
+      const data = await response.json();
+
+      // Combine equipment and consumables
+      allInventoryItems = [...data.equipment, ...data.consumables];
+
+      // Sort by rarity (highest first)
+      allInventoryItems.sort((a, b) => {
+        const rarityDiff =
+          rarityOrder[b.loot_item.rarity] - rarityOrder[a.loot_item.rarity];
+        if (rarityDiff !== 0) return rarityDiff;
+        return a.loot_item.name.localeCompare(b.loot_item.name);
+      });
+
+      renderInventoryGrid(allInventoryItems);
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+      showError("Failed to load inventory. Please refresh the page.");
+    }
+  }
+
+  // Fetch teams from API
+  async function fetchTeams() {
+    try {
+      const response = await fetch("/api/teams");
+      if (!response.ok) throw new Error("Failed to fetch teams");
+
+      allTeams = await response.json();
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+    }
+  }
+
+  // Apply filter
+  function applyFilter(filterType) {
+    currentFilter = filterType;
+
+    // Update button states
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.classList.remove("active");
+    });
+    document
+      .querySelector(`[data-filter="${filterType}"]`)
+      .classList.add("active");
+
+    // Filter items
+    let filteredItems = allInventoryItems;
+    if (filterType !== "all") {
+      filteredItems = allInventoryItems.filter((item) => {
+        if (filterType === "consumable") {
+          return item.loot_item.item_type === "consumable";
+        } else {
+          return item.loot_item.equipment_slot === filterType;
+        }
+      });
+    }
+
+    renderInventoryGrid(filteredItems);
+  }
+
+  // Render inventory grid
+  function renderInventoryGrid(items) {
+    const grid = document.getElementById("inventoryGrid");
+    const emptyState = document.getElementById("emptyState");
+
+    if (items.length === 0) {
+      grid.style.display = "none";
+      emptyState.style.display = "block";
+      return;
+    }
+
+    grid.style.display = "grid";
+    emptyState.style.display = "none";
+
+    grid.innerHTML = items
+      .map((item) => {
+        const lootItem = item.loot_item;
+        const showQuantity =
+          lootItem.item_type === "consumable" && item.quantity > 1;
+        const quantityBadge = showQuantity
+          ? `<div class="quantity-badge">x${item.quantity}</div>`
+          : "";
+
+        // Show team badge if equipped
+        // Debug: log the equipped status
+        if (item.is_equipped || item.equipped_by_team_number) {
+          console.log(
+            "Item equipped:",
+            lootItem.name,
+            "is_equipped:",
+            item.is_equipped,
+            "team:",
+            item.equipped_by_team_number
+          );
+        }
+
+        const teamBadge = item.equipped_by_team_number
+          ? `<div class="team-equipped-badge">${item.equipped_by_team_number}</div>`
+          : "";
+
+        return `
+        <div class="inventory-item-card rarity-${lootItem.rarity}" 
+             onclick="showItemModal(${item.inventory_id})"
+             data-bs-toggle="popover"
+             data-bs-trigger="hover"
+             data-bs-placement="top"
+             data-bs-html="true"
+             data-bs-content='${buildItemPopover(item)}'>
+          ${teamBadge}
+          ${quantityBadge}
+          <div class="item-icon rarity-${lootItem.rarity}">
+            <i class="${lootItem.icon}"></i>
+          </div>
+          <div class="item-name">${lootItem.name}</div>
+          <div class="rarity-badge ${lootItem.rarity}">${lootItem.rarity}</div>
+        </div>
+      `;
+      })
+      .join("");
+
+    // Initialize popovers
+    const popoverTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="popover"]')
+    );
+    popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl, {
+        trigger: "hover",
+        container: "body",
+      });
+    });
+  }
+
+  // Build item popover content
+  function buildItemPopover(item) {
+    const lootItem = item.loot_item;
+    let html = `<div class="p-2"><strong>${lootItem.name}</strong><br>`;
+    html += `<small class="text-white-50">${lootItem.rarity}</small><hr class="my-1">`;
+
+    // Description (truncated)
+    const desc =
+      lootItem.description.length > 100
+        ? lootItem.description.substring(0, 100) + "..."
+        : lootItem.description;
+    html += `<div class="mb-2">${desc}</div><hr class="my-1">`;
+
+    // Stats
+    if (lootItem.speed_bonus > 0) {
+      html += `<div class="mb-1"><i class="fas fa-bolt text-warning"></i> Speed: +${lootItem.speed_bonus}</div>`;
+    }
+    if (lootItem.luck_bonus > 0) {
+      html += `<div class="mb-1"><i class="fas fa-clover text-success"></i> Luck: +${lootItem.luck_bonus}</div>`;
+    }
+    if (lootItem.power_bonus > 0) {
+      html += `<div class="mb-1"><i class="fas fa-fist-raised text-danger"></i> Power: +${lootItem.power_bonus}</div>`;
+    }
+    if (lootItem.elemental_affinity && lootItem.elemental_affinity !== "none") {
+      html += `<div class="mb-1"><i class="fas fa-magic text-primary"></i> Element: ${lootItem.elemental_affinity}</div>`;
+    }
+
+    // Equipment slot
+    if (lootItem.item_type === "equipment" && lootItem.equipment_slot) {
+      html += `<hr class="my-1"><small class="text-white-50">${capitalizeFirst(
+        lootItem.equipment_slot
+      )} Slot</small>`;
+    }
+
+    // Show equipped team info
+    if (item.equipped_by_team_number) {
+      html += `<hr class="my-1"><small class="text-info"><i class="fas fa-shield-alt"></i> Equipped by Team ${item.equipped_by_team_number}</small>`;
+    }
+
+    // Quantity for consumables
+    if (lootItem.item_type === "consumable" && item.quantity > 1) {
+      html += `<hr class="my-1"><small class="text-white-50">Quantity: ${item.quantity}</small>`;
+    }
+
+    html += `</div>`;
+    return html.replace(/'/g, "&apos;");
+  }
+
+  // Show item detail modal
+  function showItemModal(inventoryId) {
+    // Destroy any existing popovers
+    const existingPopovers = document.querySelectorAll(".popover");
+    existingPopovers.forEach((popover) => popover.remove());
+
+    const item = allInventoryItems.find((i) => i.inventory_id === inventoryId);
+    if (!item) return;
+
+    currentItem = item;
+    const lootItem = item.loot_item;
+
+    // Update modal content
+    document.getElementById("modalItemName").textContent = lootItem.name;
+    document.getElementById("modalRarityBadge").textContent = lootItem.rarity;
+    document.getElementById(
+      "modalRarityBadge"
+    ).className = `rarity-badge ${lootItem.rarity} ms-2`;
+
+    document.getElementById(
+      "modalItemIcon"
+    ).innerHTML = `<i class="${lootItem.icon}"></i>`;
+    document.getElementById(
+      "modalItemIcon"
+    ).className = `modal-item-icon rarity-${lootItem.rarity}`;
+
+    document.getElementById("modalItemType").textContent = capitalizeFirst(
+      lootItem.item_type
+    );
+
+    if (lootItem.item_type === "equipment" && lootItem.equipment_slot) {
+      document.getElementById("modalItemSlot").textContent = `${capitalizeFirst(
+        lootItem.equipment_slot
+      )} Slot`;
+    } else {
+      document.getElementById("modalItemSlot").textContent = "";
+    }
+
+    document.getElementById("modalDescription").textContent =
+      lootItem.description;
+
+    // Build stats
+    let statsHtml = "";
+    if (lootItem.speed_bonus > 0) {
+      statsHtml += `
+        <div class="stat-row">
+          <span class="stat-label"><i class="fas fa-bolt text-warning"></i> Speed</span>
+          <span class="stat-value">+${lootItem.speed_bonus}</span>
+        </div>`;
+    }
+    if (lootItem.luck_bonus > 0) {
+      statsHtml += `
+        <div class="stat-row">
+          <span class="stat-label"><i class="fas fa-clover text-success"></i> Luck</span>
+          <span class="stat-value">+${lootItem.luck_bonus}</span>
+        </div>`;
+    }
+    if (lootItem.power_bonus > 0) {
+      statsHtml += `
+        <div class="stat-row">
+          <span class="stat-label"><i class="fas fa-fist-raised text-danger"></i> Power</span>
+          <span class="stat-value">+${lootItem.power_bonus}</span>
+        </div>`;
+    }
+    if (lootItem.elemental_affinity && lootItem.elemental_affinity !== "none") {
+      statsHtml += `
+        <div class="stat-row">
+          <span class="stat-label"><i class="fas fa-magic text-primary"></i> Element</span>
+          <span class="stat-value">${capitalizeFirst(
+            lootItem.elemental_affinity
+          )}</span>
+        </div>`;
+    }
+    if (lootItem.power_value > 0) {
+      statsHtml += `
+        <div class="stat-row">
+          <span class="stat-label"><i class="fas fa-star text-info"></i> Power Value</span>
+          <span class="stat-value">${lootItem.power_value}</span>
+        </div>`;
+    }
+
+    if (statsHtml === "") {
+      statsHtml = '<div class="text-white-50">No special stats</div>';
+    }
+
+    document.getElementById("modalStats").innerHTML = statsHtml;
+
+    // Build action buttons
+    buildModalActions(item);
+
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById("itemModal"));
+    modal.show();
+  }
+
+  // Build modal action buttons
+  function buildModalActions(item) {
+    const actionsDiv = document.getElementById("modalActions");
+    const lootItem = item.loot_item;
+
+    if (lootItem.item_type === "consumable") {
+      // Show "Use on Team" buttons
+      let html = '<hr><h6 class="text-white mb-3 mt-3">Use Item</h6>';
+      html += '<div class="equipment-buttons">';
+
+      allTeams.forEach((team) => {
+        if (team.is_unlocked) {
+          const isOnExpedition = team.on_expedition;
+          const disabled = isOnExpedition ? "disabled" : "";
+          const label = isOnExpedition
+            ? `Team ${team.team_number} (On Expedition)`
+            : `Use on Team ${team.team_number}`;
+
+          html += `
+            <button class="use-btn" onclick="consumeItem(${team.id}, ${item.inventory_id})" ${disabled}>
+              <i class="fas fa-magic me-1"></i>${label}
+            </button>`;
+        }
+      });
+
+      html += "</div>";
+      actionsDiv.innerHTML = html;
+    } else if (lootItem.item_type === "equipment") {
+      // Show Equip/Unequip buttons
+      let html = '<hr><h6 class="text-white mb-3 mt-3">Equipment Actions</h6>';
+
+      if (item.is_equipped && item.equipped_by_team_number) {
+        // Show equipped info
+        html += `
+          <div class="equipped-info">
+            <i class="fas fa-info-circle text-info"></i>
+            <span class="text-white">Currently equipped by <strong>Team ${item.equipped_by_team_number}</strong></span>
+          </div>`;
+
+        html += '<div class="equipment-buttons">';
+
+        // Show buttons for all unlocked teams
+        allTeams.forEach((team) => {
+          if (team.is_unlocked) {
+            const isOnExpedition = team.on_expedition;
+            const isEquippedTeam =
+              team.team_number === item.equipped_by_team_number;
+
+            if (isEquippedTeam) {
+              // This is the team that has it equipped - show unequip button
+              const disabled = isOnExpedition ? "disabled" : "";
+              const label = isOnExpedition
+                ? `Team ${team.team_number} (On Expedition)`
+                : `Unequip from Team ${team.team_number}`;
+
+              html += `
+                <button class="unequip-btn" 
+                        onclick="unequipItem(${item.inventory_id})" 
+                        ${disabled}>
+                  <i class="fas fa-times me-1"></i>${label}
+                </button>`;
+            } else {
+              // Other teams - show equip button
+              const disabled = isOnExpedition ? "disabled" : "";
+              const label = isOnExpedition
+                ? `Team ${team.team_number} (On Expedition)`
+                : `Equip to Team ${team.team_number}`;
+
+              html += `
+                <button class="equip-btn" 
+                        onclick="equipItem(${team.id}, '${lootItem.equipment_slot}', ${item.inventory_id})" 
+                        ${disabled}
+                        data-bs-toggle="popover"
+                        data-bs-trigger="hover"
+                        data-bs-placement="top"
+                        data-bs-html="true"
+                        data-team-id="${team.id}"
+                        data-slot="${lootItem.equipment_slot}"
+                        data-inventory-id="${item.inventory_id}">
+                  <i class="fas fa-hand-sparkles me-1"></i>${label}
+                </button>`;
+            }
+          }
+        });
+
+        html += "</div>";
+      } else {
+        // Not equipped - show equip buttons for all teams
+        html += '<div class="equipment-buttons">';
+
+        allTeams.forEach((team) => {
+          if (team.is_unlocked) {
+            const isOnExpedition = team.on_expedition;
+            const disabled = isOnExpedition ? "disabled" : "";
+            const label = isOnExpedition
+              ? `Team ${team.team_number} (On Expedition)`
+              : `Equip to Team ${team.team_number}`;
+
+            html += `
+              <button class="equip-btn" 
+                      onclick="equipItem(${team.id}, '${lootItem.equipment_slot}', ${item.inventory_id})" 
+                      ${disabled}
+                      data-bs-toggle="popover"
+                      data-bs-trigger="hover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-team-id="${team.id}"
+                      data-slot="${lootItem.equipment_slot}"
+                      data-inventory-id="${item.inventory_id}">
+                <i class="fas fa-hand-sparkles me-1"></i>${label}
+              </button>`;
+          }
+        });
+
+        html += "</div>";
+      }
+
+      actionsDiv.innerHTML = html;
+
+      // Initialize comparison popovers for equip buttons
+      if (!item.is_equipped) {
+        setTimeout(() => {
+          initializeComparisonPopovers();
+        }, 100);
+      }
+    } else {
+      actionsDiv.innerHTML = "";
+    }
+  }
+
+  // Initialize comparison popovers
+  function initializeComparisonPopovers() {
+    const equipButtons = document.querySelectorAll(".equip-btn[data-team-id]");
+
+    equipButtons.forEach((button) => {
+      const teamId = parseInt(button.getAttribute("data-team-id"));
+      const slot = button.getAttribute("data-slot");
+      const inventoryId = parseInt(button.getAttribute("data-inventory-id"));
+
+      const team = allTeams.find((t) => t.id === teamId);
+      if (!team) return;
+
+      const comparisonContent = buildComparisonPopover(team, slot, currentItem);
+
+      new bootstrap.Popover(button, {
+        trigger: "hover",
+        placement: "auto",
+        html: true,
+        content: comparisonContent,
+        container: "body",
+      });
+    });
+  }
+
+  // Build comparison popover content
+  function buildComparisonPopover(team, slot, newItem) {
+    const newStats = newItem.loot_item;
+
+    // Find currently equipped item in this slot
+    let currentEquipped = null;
+    switch (slot) {
+      case "weapon":
+        currentEquipped = team.equipped_weapon;
+        break;
+      case "armor":
+        currentEquipped = team.equipped_armor;
+        break;
+      case "accessory":
+        currentEquipped = team.equipped_accessory;
+        break;
+      case "artifact":
+        currentEquipped = team.equipped_artifact;
+        break;
+      case "relic":
+        currentEquipped = team.equipped_relic;
+        break;
+    }
+
+    if (!currentEquipped || !currentEquipped.loot_item_id) {
+      return '<div class="p-2"><strong>No item currently equipped</strong><br><small class="text-success">This will be an upgrade!</small></div>';
+    }
+
+    let html = '<div class="p-2">';
+    html += `<strong>Current: ${
+      currentEquipped.name || "Empty"
+    }</strong><hr class="my-1">`;
+
+    // Compare speed
+    if (newStats.speed_bonus > 0 || currentEquipped.speed_bonus > 0) {
+      const comparison = compareStats(
+        currentEquipped.speed_bonus,
+        newStats.speed_bonus
+      );
+      html += `
+        <div class="comparison-row">
+          <span>Speed: ${currentEquipped.speed_bonus}</span>
+          <span class="comparison-arrow ${comparison.class}">${comparison.arrow}</span>
+          <span class="${comparison.class}">${newStats.speed_bonus}</span>
+        </div>`;
+    }
+
+    // Compare luck
+    if (newStats.luck_bonus > 0 || currentEquipped.luck_bonus > 0) {
+      const comparison = compareStats(
+        currentEquipped.luck_bonus,
+        newStats.luck_bonus
+      );
+      html += `
+        <div class="comparison-row">
+          <span>Luck: ${currentEquipped.luck_bonus}</span>
+          <span class="comparison-arrow ${comparison.class}">${comparison.arrow}</span>
+          <span class="${comparison.class}">${newStats.luck_bonus}</span>
+        </div>`;
+    }
+
+    // Compare power
+    if (newStats.power_bonus > 0 || currentEquipped.power_bonus > 0) {
+      const comparison = compareStats(
+        currentEquipped.power_bonus,
+        newStats.power_bonus
+      );
+      html += `
+        <div class="comparison-row">
+          <span>Power: ${currentEquipped.power_bonus}</span>
+          <span class="comparison-arrow ${comparison.class}">${comparison.arrow}</span>
+          <span class="${comparison.class}">${newStats.power_bonus}</span>
+        </div>`;
+    }
+
+    // Overall verdict
+    const totalCurrent =
+      currentEquipped.speed_bonus +
+      currentEquipped.luck_bonus +
+      currentEquipped.power_bonus;
+    const totalNew =
+      newStats.speed_bonus + newStats.luck_bonus + newStats.power_bonus;
+
+    let verdict = "";
+    let verdictClass = "";
+    if (totalNew > totalCurrent) {
+      verdict = '<i class="fas fa-arrow-up"></i> Upgrade';
+      verdictClass = "comparison-upgrade";
+    } else if (totalNew < totalCurrent) {
+      verdict = '<i class="fas fa-arrow-down"></i> Downgrade';
+      verdictClass = "comparison-downgrade";
+    } else {
+      verdict = '<i class="fas fa-equals"></i> Sidegrade';
+      verdictClass = "comparison-neutral";
+    }
+
+    html += `<div class="comparison-verdict ${verdictClass}">${verdict}</div>`;
+    html += "</div>";
+
+    return html;
+  }
+
+  // Compare two stat values
+  function compareStats(current, newValue) {
+    if (newValue > current) {
+      return { arrow: "↑", class: "comparison-upgrade" };
+    } else if (newValue < current) {
+      return { arrow: "↓", class: "comparison-downgrade" };
+    } else {
+      return { arrow: "=", class: "comparison-neutral" };
+    }
+  }
+
+  // Equip item to team
+  async function equipItem(teamId, slot, inventoryId) {
+    try {
+      const response = await fetch("/api/teams/equip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          team_id: teamId,
+          slot: slot,
+          inventory_id: inventoryId,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || "Failed to equip item");
+      }
+
+      // Reload page to refresh inventory
+      window.location.reload();
+    } catch (error) {
+      console.error("Error equipping item:", error);
+      alert("Failed to equip item: " + error.message);
+    }
+  }
+
+  // Unequip item
+  async function unequipItem(inventoryId) {
+    const item = allInventoryItems.find((i) => i.inventory_id === inventoryId);
+    if (!item) return;
+
+    // Find which team has this item equipped
+    const equippedTeam = allTeams.find((team) => {
+      return (
+        (team.equipped_weapon &&
+          team.equipped_weapon.inventory_id === inventoryId) ||
+        (team.equipped_armor &&
+          team.equipped_armor.inventory_id === inventoryId) ||
+        (team.equipped_accessory &&
+          team.equipped_accessory.inventory_id === inventoryId) ||
+        (team.equipped_artifact &&
+          team.equipped_artifact.inventory_id === inventoryId) ||
+        (team.equipped_relic &&
+          team.equipped_relic.inventory_id === inventoryId)
+      );
+    });
+
+    if (!equippedTeam) {
+      alert("Could not find equipped team");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/teams/unequip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          team_id: equippedTeam.id,
+          slot: item.loot_item.equipment_slot,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || "Failed to unequip item");
+      }
+
+      // Reload page to refresh inventory
+      window.location.reload();
+    } catch (error) {
+      console.error("Error unequipping item:", error);
+      alert("Failed to unequip item: " + error.message);
+    }
+  }
+
+  // Consume item on team
+  async function consumeItem(teamId, inventoryId) {
+    if (
+      !confirm(
+        "Are you sure you want to use this consumable? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/teams/consume", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          team_id: teamId,
+          inventory_id: inventoryId,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || "Failed to consume item");
+      }
+
+      // Reload page to refresh inventory
+      window.location.reload();
+    } catch (error) {
+      console.error("Error consuming item:", error);
+      alert("Failed to consume item: " + error.message);
+    }
+  }
+
+  // Utility: capitalize first letter
+  function capitalizeFirst(str) {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  // Show error message
+  function showError(message) {
+    const grid = document.getElementById("inventoryGrid");
+    grid.innerHTML = `
+      <div class="col-12">
+        <div class="alert alert-danger" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>${message}
+        </div>
+      </div>`;
+  }
+</script>
+
+{{end}}

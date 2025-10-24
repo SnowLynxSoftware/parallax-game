@@ -80,11 +80,12 @@ type LootItemResponseDTO struct {
 }
 
 type InventoryItemResponseDTO struct {
-	InventoryID int64               `json:"inventory_id"`
-	Quantity    int                 `json:"quantity"`
-	AcquiredAt  string              `json:"acquired_at"`
-	IsEquipped  bool                `json:"is_equipped"`
-	LootItem    LootItemResponseDTO `json:"loot_item"`
+	InventoryID          int64               `json:"inventory_id"`
+	Quantity             int                 `json:"quantity"`
+	AcquiredAt           string              `json:"acquired_at"`
+	IsEquipped           bool                `json:"is_equipped"`
+	EquippedByTeamNumber *int                `json:"equipped_by_team_number,omitempty"`
+	LootItem             LootItemResponseDTO `json:"loot_item"`
 }
 
 type InventoryResponseDTO struct {

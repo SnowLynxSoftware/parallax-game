@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/snowlynxsoftware/parallax-game/server/database"
@@ -113,9 +114,12 @@ func (r *TeamRepository) UnlockTeam(teamId int64) error {
 // Returns the team, slot name, and error (if any)
 func (r *TeamRepository) GetTeamsByUserIdWithSlot(userId int64, inventoryId int64) (*TeamEntity, *string, error) {
 	team := &TeamEntity{}
-	var slot string
+	var slot sql.NullString
 
-	sql := `SELECT t.*, 
+	sqlQuery := `SELECT t.id, t.created_at, t.modified_at, t.is_archived, t.user_id, t.team_number,
+			t.speed_bonus, t.luck_bonus, t.power_bonus, t.is_unlocked,
+			t.equipped_weapon_slot, t.equipped_armor_slot, t.equipped_accessory_slot,
+			t.equipped_artifact_slot, t.equipped_relic_slot,
 			CASE
 				WHEN t.equipped_weapon_slot = $2 THEN 'weapon'
 				WHEN t.equipped_armor_slot = $2 THEN 'armor'
@@ -133,22 +137,25 @@ func (r *TeamRepository) GetTeamsByUserIdWithSlot(userId int64, inventoryId int6
 			) AND t.is_archived = false
 			LIMIT 1`
 
-	rows, err := r.db.DB.Queryx(sql, userId, inventoryId)
+	err := r.db.DB.QueryRowx(sqlQuery, userId, inventoryId).Scan(
+		&team.ID, &team.CreatedAt, &team.ModifiedAt, &team.IsArchived, &team.UserID, &team.TeamNumber,
+		&team.SpeedBonus, &team.LuckBonus, &team.PowerBonus, &team.IsUnlocked,
+		&team.EquippedWeaponSlot, &team.EquippedArmorSlot, &team.EquippedAccessorySlot,
+		&team.EquippedArtifactSlot, &team.EquippedRelicSlot,
+		&slot,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil, nil // Not equipped anywhere
+	}
+
 	if err != nil {
 		return nil, nil, err
 	}
-	defer rows.Close()
 
-	if rows.Next() {
-		err = rows.StructScan(team)
-		if err != nil {
-			return nil, nil, err
-		}
-		err = rows.Scan(&slot)
-		if err != nil {
-			return nil, nil, err
-		}
-		return team, &slot, nil
+	if slot.Valid {
+		slotStr := slot.String
+		return team, &slotStr, nil
 	}
 
 	return nil, nil, nil // Not equipped anywhere
