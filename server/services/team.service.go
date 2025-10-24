@@ -87,10 +87,26 @@ func (s *TeamService) GetUserTeams(userId int64) ([]*models.TeamResponseDTO, err
 			}
 		}
 
-		// Set unlock requirement for locked teams
+		// Check and unlock teams if requirements are met
 		if !team.IsUnlocked {
-			requirement := s.getUnlockRequirement(team.TeamNumber, completedCount)
-			teamDTO.UnlockRequirement = &requirement
+			shouldUnlock := s.shouldUnlockTeam(team.TeamNumber, completedCount)
+			if shouldUnlock {
+				// Unlock the team
+				err := s.teamRepository.UnlockTeam(team.ID)
+				if err == nil {
+					// Update the DTO to reflect the unlock
+					teamDTO.IsUnlocked = true
+					teamDTO.UnlockRequirement = nil
+				} else {
+					// If unlock fails, still show requirement
+					requirement := s.getUnlockRequirement(team.TeamNumber, completedCount)
+					teamDTO.UnlockRequirement = &requirement
+				}
+			} else {
+				// Still locked, show requirement
+				requirement := s.getUnlockRequirement(team.TeamNumber, completedCount)
+				teamDTO.UnlockRequirement = &requirement
+			}
 		}
 
 		response[i] = teamDTO
@@ -381,5 +397,20 @@ func (s *TeamService) getUnlockRequirement(teamNumber int, completedExpeditions 
 		return "Complete 50 expeditions to unlock"
 	default:
 		return "Locked"
+	}
+}
+
+func (s *TeamService) shouldUnlockTeam(teamNumber int, completedExpeditions int) bool {
+	switch teamNumber {
+	case 2:
+		return completedExpeditions >= 1
+	case 3:
+		return completedExpeditions >= 3
+	case 4:
+		return completedExpeditions >= 25
+	case 5:
+		return completedExpeditions >= 50
+	default:
+		return false
 	}
 }

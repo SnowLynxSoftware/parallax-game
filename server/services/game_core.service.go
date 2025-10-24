@@ -48,8 +48,8 @@ func (s *GameCoreService) CalculateExpeditionDuration(totalStats *models.TeamSta
 	speedModifier := totalStats.Speed / 100.0
 	actualDuration := float64(baseDuration) * (1.0 - speedModifier)
 
-	// Floor at 5 minutes
-	finalDuration := int(math.Max(5.0, actualDuration))
+	// Floor at 1 minutes
+	finalDuration := int(math.Max(1.0, actualDuration))
 
 	return finalDuration
 }

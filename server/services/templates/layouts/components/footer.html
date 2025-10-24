@@ -1,103 +1,155 @@
 {{define "footer"}}
-<footer
-  style="
+<style>
+  /* Footer Styles - Matching Navbar Theme */
+  .fantasy-footer {
+    background: rgba(15, 10, 30, 0.92);
+    backdrop-filter: blur(12px);
+    border-top: 2px solid rgba(103, 80, 164, 0.5);
+    box-shadow: 0 -4px 24px rgba(103, 80, 164, 0.3),
+      0 0 40px rgba(103, 80, 164, 0.1);
+    font-family: "Roboto", sans-serif;
+  }
+
+  .fantasy-footer::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(103, 80, 164, 0.8) 20%,
+      rgba(138, 110, 220, 0.8) 50%,
+      rgba(103, 80, 164, 0.8) 80%,
+      transparent
+    );
+    box-shadow: 0 0 10px rgba(103, 80, 164, 0.5);
+  }
+
+  .fantasy-footer-title {
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
     background: linear-gradient(
       135deg,
-      rgba(15, 15, 35, 0.95) 0%,
-      rgba(30, 15, 50, 0.95) 100%
+      rgba(200, 180, 255, 1),
+      rgba(220, 200, 255, 1)
     );
-    border-top: 2px solid rgba(168, 85, 247, 0.3);
-    box-shadow: 0 -4px 20px rgba(147, 51, 234, 0.2);
-  "
-  class="text-white py-5"
->
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+  }
+
+  .fantasy-footer-title i {
+    color: rgba(200, 180, 255, 1);
+  }
+
+  .fantasy-footer-heading {
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    color: rgba(180, 160, 240, 1);
+    letter-spacing: 0.5px;
+  }
+
+  .fantasy-footer-text {
+    font-family: "Roboto", sans-serif;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .fantasy-footer-text-muted {
+    font-family: "Roboto", sans-serif;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .fantasy-footer-link {
+    font-family: "Roboto", sans-serif;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .fantasy-footer-link:hover {
+    color: rgba(138, 110, 220, 1);
+  }
+
+  .fantasy-footer-link i {
+    color: rgba(103, 80, 164, 0.8);
+    transition: color 0.3s ease;
+  }
+
+  .fantasy-footer-link:hover i {
+    color: rgba(138, 110, 220, 1);
+  }
+
+  .fantasy-footer-social {
+    color: rgba(255, 255, 255, 0.85);
+    transition: all 0.3s ease;
+    text-shadow: 0 0 10px rgba(103, 80, 164, 0.5);
+  }
+
+  .fantasy-footer-social:hover {
+    color: rgba(138, 110, 220, 1);
+    transform: scale(1.1);
+    text-shadow: 0 0 15px rgba(138, 110, 220, 0.8);
+  }
+</style>
+
+<footer class="fantasy-footer text-white py-5 position-relative">
   <div class="container">
     <div class="row">
       <div class="col-lg-6">
-        <h5
-          class="fw-bold mb-3"
-          style="
-            background: linear-gradient(135deg, #a855f7, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 1.5rem;
-          "
-        >
-          <i class="fas fa-dice-d20" style="color: #a855f7"></i> Parallax
+        <h5 class="fantasy-footer-title mb-3">
+          <i class="fas fa-dice-d20"></i> Parallax
         </h5>
-        <p class="mb-3" style="color: rgba(255, 255, 255, 0.8)">
+        <p class="fantasy-footer-text mb-3">
           Embark on epic expeditions across parallel dimensions. Discover
           legendary artifacts, upgrade your teams, and conquer the multiverse.
         </p>
-        <p class="small mb-0" style="color: rgba(255, 255, 255, 0.6)">
+        <p class="fantasy-footer-text-muted small mb-0">
           &copy; 2025 Snow Lynx Software, LLC. All rights reserved.
         </p>
       </div>
       <div class="col-lg-3">
-        <h6 class="fw-bold mb-3" style="color: var(--fantasy-gold-light)">
+        <h6 class="fantasy-footer-heading fw-bold mb-3">
           <i class="fas fa-link"></i> Links
         </h6>
         <ul class="list-unstyled mb-4">
           <li class="mb-2">
-            <a
-              href="/terms"
-              class="text-decoration-none"
-              style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease"
-              onmouseover="this.style.color='#ec4899'; this.style.paddingLeft='5px';"
-              onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'; this.style.paddingLeft='0';"
-            >
-              <i
-                class="fas fa-scroll"
-                style="color: var(--fantasy-purple-light)"
-              ></i>
-              Terms of Service
+            <a href="/terms" class="fantasy-footer-link">
+              <i class="fas fa-scroll me-2"></i>Terms of Service
             </a>
           </li>
           <li class="mb-2">
-            <a
-              href="/privacy"
-              class="text-decoration-none"
-              style="color: rgba(255, 255, 255, 0.8); transition: all 0.3s ease"
-              onmouseover="this.style.color='#ec4899'; this.style.paddingLeft='5px';"
-              onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'; this.style.paddingLeft='0';"
-            >
-              <i
-                class="fas fa-shield-alt"
-                style="color: var(--fantasy-purple-light)"
-              ></i>
-              Privacy Policy
+            <a href="/privacy" class="fantasy-footer-link">
+              <i class="fas fa-shield-alt me-2"></i>Privacy Policy
             </a>
           </li>
         </ul>
       </div>
       <div class="col-lg-3">
-        <h6 class="fw-bold mb-3" style="color: var(--fantasy-gold-light)">
+        <h6 class="fantasy-footer-heading fw-bold mb-3">
           <i class="fas fa-users"></i> Connect
         </h6>
-        <div class="d-flex gap-3">
+        <div class="d-flex gap-3 mb-3">
           <a
             href="https://www.facebook.com/profile.php?id=61581769500246"
             target="_blank"
-            class="fs-4"
+            class="fs-4 fantasy-footer-social"
             aria-label="Facebook"
-            style="
-              color: rgba(255, 255, 255, 0.7);
-              transition: all 0.3s ease;
-              text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
-            "
-            onmouseover="this.style.color='#ec4899'; this.style.transform='scale(1.2)'; this.style.textShadow='0 0 20px rgba(236, 72, 153, 0.8)';"
-            onmouseout="this.style.color='rgba(255, 255, 255, 0.7)'; this.style.transform='scale(1)'; this.style.textShadow='0 0 10px rgba(168, 85, 247, 0.5)';"
           >
             <i class="fab fa-facebook"></i>
           </a>
         </div>
-        <div class="mt-3">
-          <p class="small" style="color: rgba(255, 255, 255, 0.6)">
-            <i class="fas fa-sparkles" style="color: var(--fantasy-gold)"></i>
-            Join us on the adventure of a lifetime!
-          </p>
-        </div>
+        <p class="fantasy-footer-text-muted small mb-0">
+          <i
+            class="fas fa-sparkles"
+            style="color: rgba(138, 110, 220, 0.8)"
+          ></i>
+          Join us on the adventure of a lifetime!
+        </p>
       </div>
     </div>
   </div>
