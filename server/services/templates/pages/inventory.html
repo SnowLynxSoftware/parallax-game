@@ -570,6 +570,13 @@
         >
           <i class="fas fa-flask me-2"></i>Consumables
         </button>
+        <button
+          class="filter-btn"
+          data-filter="unequipped"
+          onclick="applyFilter('unequipped')"
+        >
+          <i class="fas fa-box me-2"></i>Unequipped
+        </button>
       </div>
 
       <!-- Inventory Grid -->
@@ -719,6 +726,8 @@
       filteredItems = allInventoryItems.filter((item) => {
         if (filterType === "consumable") {
           return item.loot_item.item_type === "consumable";
+        } else if (filterType === "unequipped") {
+          return !item.is_equipped;
         } else {
           return item.loot_item.equipment_slot === filterType;
         }
