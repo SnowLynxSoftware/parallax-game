@@ -44,6 +44,7 @@ func (c *UIController) MapController() *chi.Mux {
 	router.Get("/login", c.login)
 	router.Get("/teams", c.teams)
 	router.Get("/expeditions", c.expeditions)
+	router.Get("/fishing", c.fishing)
 	router.Get("/inventory", c.inventory)
 	router.Get("/account", c.account)
 	router.Get("/reset-password", c.resetPassword)
@@ -333,6 +334,34 @@ func (c *UIController) inventory(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = c.templateService.RenderTemplate(w, "inventory", pageData)
+	if err != nil {
+		util.LogError(err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+}
+
+
+func (c *UIController) fishing(w http.ResponseWriter, r *http.Request) {
+	util.LogDebug("Serving fishing page")
+
+	// Get authenticated user
+	user, err := c.authMiddleware.Authorize(r)
+	if err != nil || user == nil {
+		util.LogDebug("User not authenticated, redirecting to login")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	pageData := services.PageData{
+		Title:       "Fishing",
+		Description: "View and manage your fishing activities",
+		Data: map[string]interface{}{
+			"Username": user.Username,
+		},
+	}
+
+	err = c.templateService.RenderTemplate(w, "fishing", pageData)
 	if err != nil {
 		util.LogError(err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
