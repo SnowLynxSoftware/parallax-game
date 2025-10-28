@@ -105,6 +105,7 @@ func (ts *TemplateService) loadTemplates() {
 		"templates/pages/reset-password.html",
 		"templates/pages/terms.html",
 		"templates/pages/privacy.html",
+		"templates/pages/dungeons.html",
 	}
 
 	for _, file := range pageFiles {
