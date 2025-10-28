@@ -97,7 +97,6 @@ func (ts *TemplateService) loadTemplates() {
 		"templates/pages/welcome.html",
 		"templates/pages/register.html",
 		"templates/pages/login.html",
-		"templates/pages/dashboard.html",
 		"templates/pages/teams.html",
 		"templates/pages/expeditions.html",
 		"templates/pages/inventory.html",

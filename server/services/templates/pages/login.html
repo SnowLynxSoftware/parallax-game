@@ -449,7 +449,7 @@
 
         // Redirect after successful login
         setTimeout(() => {
-          window.location.href = "/dashboard"; // or wherever you want to redirect
+          window.location.href = "/teams"; // Redirect to teams page after login
         }, 1500);
       } else {
         const errorText = await response.text();

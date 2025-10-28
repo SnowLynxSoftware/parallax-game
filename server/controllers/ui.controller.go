@@ -42,7 +42,6 @@ func (c *UIController) MapController() *chi.Mux {
 	router.Get("/welcome", c.welcome)
 	router.Get("/register", c.register)
 	router.Get("/login", c.login)
-	router.Get("/dashboard", c.dashboard)
 	router.Get("/teams", c.teams)
 	router.Get("/expeditions", c.expeditions)
 	router.Get("/inventory", c.inventory)
@@ -125,35 +124,6 @@ func (c *UIController) login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := c.templateService.RenderTemplate(w, "login", pageData)
-	if err != nil {
-		util.LogError(err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-}
-
-func (c *UIController) dashboard(w http.ResponseWriter, r *http.Request) {
-	util.LogDebug("Serving dashboard page")
-
-	authUser, err := c.authMiddleware.Authorize(r)
-	if err != nil {
-		util.LogErrorWithStackTrace(err)
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
-		return
-	}
-
-	// Build dashboard data
-	dashboardData := map[string]interface{}{
-		"Username": authUser.Username,
-	}
-
-	pageData := services.PageData{
-		Title:       "Dashboard",
-		Description: "Parallax Dashboard",
-		Data:        dashboardData,
-	}
-
-	err = c.templateService.RenderTemplate(w, "dashboard", pageData)
 	if err != nil {
 		util.LogError(err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
