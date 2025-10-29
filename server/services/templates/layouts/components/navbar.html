@@ -129,6 +129,74 @@
       inset 0 0 15px rgba(138, 110, 220, 0.3);
   }
 
+  /* Locked nav item styles */
+  .fantasy-nav-link.locked {
+    color: rgba(255, 255, 255, 0.4);
+    border-color: rgba(103, 80, 164, 0.2);
+    background: rgba(103, 80, 164, 0.08);
+    cursor: not-allowed;
+    pointer-events: all;
+  }
+
+  .fantasy-nav-link.locked:hover::before {
+    width: 0;
+    height: 0;
+  }
+
+  .fantasy-nav-link.locked:hover {
+    color: rgba(255, 255, 255, 0.4);
+    border-color: rgba(103, 80, 164, 0.2);
+    background: rgba(103, 80, 164, 0.08);
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Golden glow pulse animation for Fishing */
+  @keyframes golden-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4),
+        inset 0 0 15px rgba(255, 215, 0, 0.1),
+        0 4px 24px rgba(103, 80, 164, 0.3);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+    50% {
+      box-shadow: 0 0 35px rgba(255, 215, 0, 0.8),
+        inset 0 0 25px rgba(255, 215, 0, 0.2),
+        0 4px 24px rgba(103, 80, 164, 0.3);
+      text-shadow: 0 0 20px rgba(255, 215, 0, 1);
+    }
+  }
+
+  /* Purple glow pulse animation for Dungeons */
+  @keyframes purple-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 15px rgba(186, 85, 211, 0.4),
+        inset 0 0 15px rgba(186, 85, 211, 0.1),
+        0 4px 24px rgba(103, 80, 164, 0.3);
+      text-shadow: 0 0 10px rgba(186, 85, 211, 0.6);
+    }
+    50% {
+      box-shadow: 0 0 35px rgba(186, 85, 211, 0.8),
+        inset 0 0 25px rgba(186, 85, 211, 0.2),
+        0 4px 24px rgba(103, 80, 164, 0.3);
+      text-shadow: 0 0 20px rgba(186, 85, 211, 1);
+    }
+  }
+
+  .fantasy-nav-link.unlocked-fishing {
+    animation: golden-pulse 2.5s ease-in-out infinite;
+    color: #ffd700;
+    border-color: rgba(255, 215, 0, 0.6);
+  }
+
+  .fantasy-nav-link.unlocked-dungeons {
+    animation: purple-pulse 2.5s ease-in-out infinite;
+    color: #ba55d3;
+    border-color: rgba(186, 85, 211, 0.6);
+  }
+
   /* User Dropdown */
   .fantasy-user-btn {
     font-family: "Cinzel", serif;
@@ -217,14 +285,43 @@
         <i class="fas fa-dungeon"></i>
         <span>Expeditions</span>
       </a>
-      <a href="/fishing" class="fantasy-nav-link">
+      {{if .Data.NavbarState.HasFishingRod}}
+      <a href="/fishing" class="fantasy-nav-link unlocked-fishing">
         <i class="fas fa-fish"></i>
         <span>Fishing</span>
       </a>
-      <a href="/dungeons" class="fantasy-nav-link">
+      {{else}}
+      <button
+        type="button"
+        class="fantasy-nav-link locked"
+        data-bs-toggle="popover"
+        data-bs-placement="bottom"
+        data-bs-title="Fishing Locked"
+        data-bs-content="You need the Golden Fishing Rod to unlock Fishing. Obtain it from the Tutorial Rift."
+        data-bs-trigger="hover"
+      >
+        <i class="fas fa-question-circle"></i>
+        <span>Hidden</span>
+      </button>
+      {{end}} {{if .Data.NavbarState.HasCompass}}
+      <a href="/dungeons" class="fantasy-nav-link unlocked-dungeons">
         <i class="fas fa-chess-rook"></i>
         <span>Dungeons</span>
       </a>
+      {{else}}
+      <button
+        type="button"
+        class="fantasy-nav-link locked"
+        data-bs-toggle="popover"
+        data-bs-placement="bottom"
+        data-bs-title="Dungeons Locked"
+        data-bs-content="You need the Explorers Compass to unlock Dungeons. Obtain it from the Tutorial Rift."
+        data-bs-trigger="hover"
+      >
+        <i class="fas fa-question-circle"></i>
+        <span>Hidden</span>
+      </button>
+      {{end}}
       <a href="/inventory" class="fantasy-nav-link">
         <i class="fas fa-briefcase"></i>
         <span>Inventory</span>
@@ -257,16 +354,39 @@
             <i class="fas fa-dungeon me-2"></i>Expeditions
           </a>
         </li>
+        {{if .Data.NavbarState.HasFishingRod}}
         <li class="d-lg-none">
           <a class="dropdown-item fantasy-dropdown-item" href="/fishing">
             <i class="fas fa-fish me-2"></i>Fishing
           </a>
         </li>
+        {{else}}
+        <li class="d-lg-none">
+          <a
+            class="dropdown-item fantasy-dropdown-item"
+            href="#"
+            onclick="alert('You need the Golden Fishing Rod to unlock Fishing'); return false;"
+          >
+            <i class="fas fa-question-circle me-2"></i>Hidden
+          </a>
+        </li>
+        {{end}} {{if .Data.NavbarState.HasCompass}}
         <li class="d-lg-none">
           <a class="dropdown-item fantasy-dropdown-item" href="/dungeons">
             <i class="fas fa-castle me-2"></i>Dungeons
           </a>
         </li>
+        {{else}}
+        <li class="d-lg-none">
+          <a
+            class="dropdown-item fantasy-dropdown-item"
+            href="#"
+            onclick="alert('You need the Explorers Compass to unlock Dungeons'); return false;"
+          >
+            <i class="fas fa-question-circle me-2"></i>Hidden
+          </a>
+        </li>
+        {{end}}
         <li class="d-lg-none">
           <a class="dropdown-item fantasy-dropdown-item" href="/inventory">
             <i class="fas fa-treasure-chest me-2"></i>Inventory
@@ -306,4 +426,20 @@
     </div>
   </div>
 </nav>
+
+<!-- Initialize Bootstrap Popovers for locked nav items -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize all popovers with custom styling
+    const popoverTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="popover"]')
+    );
+    popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl, {
+        trigger: "hover focus",
+      });
+    });
+  });
+</script>
+
 {{end}}

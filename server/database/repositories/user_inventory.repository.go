@@ -12,6 +12,7 @@ type IUserInventoryRepository interface {
 	AddLoot(userId int64, lootItemId int64, itemType string) (*UserInventoryEntity, error)
 	ConsumeLoot(inventoryId int64) error
 	GetInventoryByUserAndItem(userId int64, lootItemId int64) (*UserInventoryEntity, error)
+	HasItemByName(userId int64, itemName string) (bool, error)
 }
 
 type UserInventoryRepository struct {
@@ -141,4 +142,17 @@ func (r *UserInventoryRepository) ConsumeLoot(inventoryId int64) error {
 	sql = `DELETE FROM user_inventory WHERE id = $1 AND quantity <= 0`
 	_, err = r.db.DB.Exec(sql, inventoryId)
 	return err
+}
+
+// HasItemByName checks if a user has a specific item by its name
+func (r *UserInventoryRepository) HasItemByName(userId int64, itemName string) (bool, error) {
+	var count int
+	sql := `SELECT COUNT(*) FROM user_inventory ui
+			JOIN loot_items li ON li.id = ui.loot_item_id
+			WHERE ui.user_id = $1 AND li.name = $2 AND ui.is_archived = false AND li.is_archived = false`
+	err := r.db.DB.Get(&count, sql, userId, itemName)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }

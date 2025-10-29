@@ -147,11 +147,21 @@ func (c *UIController) account(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get navbar unlock state
+	navbarState, err := c.getNavbarUnlockState(int64(authUser.Id))
+	if err != nil {
+		util.LogError(err)
+		navbarState = make(map[string]bool) // Fallback to all unlocked false
+	}
+
 	// Prepare page data with authenticated user context
 	pageData := services.PageData{
 		Title:       "Account Settings",
 		Description: "Manage your Parallax account settings",
-		Data:        authUser,
+		Data: map[string]interface{}{
+			"Username":    authUser.Username,
+			"NavbarState": navbarState,
+		},
 	}
 
 	// Render the account template
@@ -240,6 +250,13 @@ func (c *UIController) teams(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get navbar unlock state
+	navbarState, err := c.getNavbarUnlockState(int64(user.Id))
+	if err != nil {
+		util.LogError(err)
+		navbarState = make(map[string]bool)
+	}
+
 	// Get teams with expedition status
 	teams, err := c.teamService.GetUserTeams(int64(user.Id))
 	if err != nil {
@@ -252,8 +269,9 @@ func (c *UIController) teams(w http.ResponseWriter, r *http.Request) {
 		Title:       "Teams",
 		Description: "Manage your expedition teams",
 		Data: map[string]interface{}{
-			"Username": user.Username,
-			"Teams":    teams,
+			"Username":    user.Username,
+			"Teams":       teams,
+			"NavbarState": navbarState,
 		},
 	}
 
@@ -274,6 +292,13 @@ func (c *UIController) expeditions(w http.ResponseWriter, r *http.Request) {
 		util.LogDebug("User not authenticated, redirecting to login")
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
+	}
+
+	// Get navbar unlock state
+	navbarState, err := c.getNavbarUnlockState(int64(user.Id))
+	if err != nil {
+		util.LogError(err)
+		navbarState = make(map[string]bool)
 	}
 
 	// Get all teams for this user
@@ -304,9 +329,10 @@ func (c *UIController) expeditions(w http.ResponseWriter, r *http.Request) {
 		Title:       "Expeditions",
 		Description: "Launch expeditions to parallel worlds",
 		Data: map[string]interface{}{
-			"Username": user.Username,
-			"Teams":    availableTeams,
-			"Rifts":    rifts,
+			"Username":    user.Username,
+			"Teams":       availableTeams,
+			"Rifts":       rifts,
+			"NavbarState": navbarState,
 		},
 	}
 
@@ -329,11 +355,19 @@ func (c *UIController) inventory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get navbar unlock state
+	navbarState, err := c.getNavbarUnlockState(int64(user.Id))
+	if err != nil {
+		util.LogError(err)
+		navbarState = make(map[string]bool)
+	}
+
 	pageData := services.PageData{
 		Title:       "Inventory",
 		Description: "View and manage your collected loot",
 		Data: map[string]interface{}{
-			"Username": user.Username,
+			"Username":    user.Username,
+			"NavbarState": navbarState,
 		},
 	}
 
@@ -357,11 +391,19 @@ func (c *UIController) fishing(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get navbar unlock state
+	navbarState, err := c.getNavbarUnlockState(int64(user.Id))
+	if err != nil {
+		util.LogError(err)
+		navbarState = make(map[string]bool)
+	}
+
 	pageData := services.PageData{
 		Title:       "Fishing",
 		Description: "View and manage your fishing activities",
 		Data: map[string]interface{}{
-			"Username": user.Username,
+			"Username":    user.Username,
+			"NavbarState": navbarState,
 		},
 	}
 
@@ -384,6 +426,13 @@ func (c *UIController) dungeons(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get navbar unlock state
+	navbarState, err := c.getNavbarUnlockState(int64(user.Id))
+	if err != nil {
+		util.LogError(err)
+		navbarState = make(map[string]bool)
+	}
+
 	// Fetch external content from weshould.run
 	externalContent, scripts, styles, fetchErr := c.fetchExternalContent("https://weshould.run/")
 	if fetchErr != nil {
@@ -399,10 +448,11 @@ func (c *UIController) dungeons(w http.ResponseWriter, r *http.Request) {
 		Title:       "Dungeons",
 		Description: "Explore the dungeons",
 		Data: map[string]interface{}{
-			"Username":     user.Username,
-			"Scripts":      scripts,
-			"InlineScripts": []string{}, // Currently extracting only external scripts
-			"Styles":       styles,
+			"Username":       user.Username,
+			"Scripts":        scripts,
+			"InlineScripts":  []string{}, // Currently extracting only external scripts
+			"Styles":         styles,
+			"NavbarState":    navbarState,
 		},
 	}
 
@@ -494,4 +544,26 @@ func extractStylesAndLinks(htmlContent string) []string {
 	}
 	
 	return styles
+}
+
+// getNavbarUnlockState fetches the unlock status for navbar features
+func (c *UIController) getNavbarUnlockState(userId int64) (map[string]bool, error) {
+	unlockState := make(map[string]bool)
+
+	hasFishingRod, err := c.inventoryService.HasItemByName(userId, "Golden Fishing Rod")
+	if err != nil {
+		util.LogError(err)
+		return nil, err
+	}
+
+	hasCompass, err := c.inventoryService.HasItemByName(userId, "Explorers Compass")
+	if err != nil {
+		util.LogError(err)
+		return nil, err
+	}
+
+	unlockState["HasFishingRod"] = hasFishingRod
+	unlockState["HasCompass"] = hasCompass
+
+	return unlockState, nil
 }

@@ -50,4 +50,3 @@ Purpose: Help AI contributors be productive immediately in this Go monolith by c
 - App fails fast if required env vars are missing; `.env` is auto-loaded via `github.com/joho/godotenv/autoload` during development.
 - `BASE_URL` affects short link URLs constructed in `LinkService.mapToResponseDTO`.
 - Cookie domain must match the host you use in the browser or auth will fail silently.
-- Redis is defined in compose but not used yet; avoid assuming a cache layer exists.

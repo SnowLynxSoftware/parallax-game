@@ -9,6 +9,7 @@ type IInventoryService interface {
 	GetUserInventory(userId int64) (*models.InventoryResponseDTO, error)
 	GetEquipment(userId int64) ([]models.InventoryItemResponseDTO, error)
 	GetConsumables(userId int64) ([]models.InventoryItemResponseDTO, error)
+	HasItemByName(userId int64, itemName string) (bool, error)
 }
 
 type InventoryService struct {
@@ -132,4 +133,9 @@ func (s *InventoryService) mapLootItemDTO(lootItem *repositories.LootItemEntity)
 		PowerValue:        lootItem.PowerValue,
 		Icon:              lootItem.Icon,
 	}
+}
+
+// HasItemByName checks if a user has a specific item by its name
+func (s *InventoryService) HasItemByName(userId int64, itemName string) (bool, error) {
+	return s.inventoryRepository.HasItemByName(userId, itemName)
 }

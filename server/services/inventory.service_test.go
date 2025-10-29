@@ -68,6 +68,11 @@ func (m *MockUserInventoryRepository) ConsumeLoot(inventoryId int64) error {
 	return args.Error(0)
 }
 
+func (m *MockUserInventoryRepository) HasItemByName(userId int64, itemName string) (bool, error) {
+	args := m.Called(userId, itemName)
+	return args.Bool(0), args.Error(1)
+}
+
 // Test GetUserInventory - Success With Both Types
 func TestInventoryService_GetUserInventory_Success(t *testing.T) {
 	// Arrange
