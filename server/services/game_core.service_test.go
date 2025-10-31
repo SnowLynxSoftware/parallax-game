@@ -264,7 +264,7 @@ func TestGameCoreService_CalculateExpeditionDuration_HundredPercentSpeedBonus(t 
 	result := service.CalculateExpeditionDuration(stats, baseDuration)
 
 	// Assert
-	assert.Equal(t, 5, result) // Should be capped at minimum 5 minutes
+	assert.Equal(t, 1, result) // Should be capped at minimum 1 minute
 }
 
 // Test CalculateExpeditionDuration - Speed Bonus That Would Go Below 5 Minutes
@@ -285,7 +285,7 @@ func TestGameCoreService_CalculateExpeditionDuration_BelowMinimum(t *testing.T) 
 	result := service.CalculateExpeditionDuration(stats, baseDuration)
 
 	// Assert
-	assert.Equal(t, 5, result) // 10 * (1 - 0.95) = 0.5, but capped at 5
+	assert.Equal(t, 1, result) // 10 * (1 - 0.95) = 0.5, but capped at 1
 }
 
 // Test CalculateExpeditionDuration - Nil Stats
