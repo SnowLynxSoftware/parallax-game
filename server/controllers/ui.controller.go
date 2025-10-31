@@ -160,6 +160,8 @@ func (c *UIController) account(w http.ResponseWriter, r *http.Request) {
 		Description: "Manage your Parallax account settings",
 		Data: map[string]interface{}{
 			"Username":    authUser.Username,
+			"Email":       authUser.Email,     // Added Email field
+			"CreatedAt":   authUser.CreatedAt, // Added CreatedAt field
 			"NavbarState": navbarState,
 		},
 	}
@@ -379,7 +381,6 @@ func (c *UIController) inventory(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 func (c *UIController) fishing(w http.ResponseWriter, r *http.Request) {
 	util.LogDebug("Serving fishing page")
 
@@ -448,11 +449,11 @@ func (c *UIController) dungeons(w http.ResponseWriter, r *http.Request) {
 		Title:       "Dungeons",
 		Description: "Explore the dungeons",
 		Data: map[string]interface{}{
-			"Username":       user.Username,
-			"Scripts":        scripts,
-			"InlineScripts":  []string{}, // Currently extracting only external scripts
-			"Styles":         styles,
-			"NavbarState":    navbarState,
+			"Username":      user.Username,
+			"Scripts":       scripts,
+			"InlineScripts": []string{}, // Currently extracting only external scripts
+			"Styles":        styles,
+			"NavbarState":   navbarState,
 		},
 	}
 
@@ -495,54 +496,54 @@ func (c *UIController) fetchExternalContent(url string) (string, []string, []str
 // extractScriptSrcs extracts script src URLs from HTML using regex
 func extractScriptSrcs(htmlContent string) []string {
 	var scripts []string
-	
+
 	// Match <script src="..."> tags
 	scriptSrcRegex := regexp.MustCompile(`<script\s+[^>]*src\s*=\s*["']([^"']+)["'][^>]*>`)
 	matches := scriptSrcRegex.FindAllStringSubmatch(htmlContent, -1)
-	
+
 	for _, match := range matches {
 		if len(match) > 1 && match[1] != "" {
 			scripts = append(scripts, match[1])
 		}
 	}
-	
+
 	return scripts
 }
 
 // extractStylesAndLinks extracts style content and stylesheet links from HTML using regex
 func extractStylesAndLinks(htmlContent string) []string {
 	var styles []string
-	
+
 	// Match <link rel="stylesheet" href="..."> tags
 	linkRegex := regexp.MustCompile(`<link\s+[^>]*rel\s*=\s*["']stylesheet["'][^>]*href\s*=\s*["']([^"']+)["'][^>]*>`)
 	linkMatches := linkRegex.FindAllStringSubmatch(htmlContent, -1)
-	
+
 	for _, match := range linkMatches {
 		if len(match) > 1 && match[1] != "" {
 			styles = append(styles, match[1])
 		}
 	}
-	
+
 	// Also match href first format: <link ... href="..." ... rel="stylesheet">
 	linkRegex2 := regexp.MustCompile(`<link\s+[^>]*href\s*=\s*["']([^"']+)["'][^>]*rel\s*=\s*["']stylesheet["'][^>]*>`)
 	linkMatches2 := linkRegex2.FindAllStringSubmatch(htmlContent, -1)
-	
+
 	for _, match := range linkMatches2 {
 		if len(match) > 1 && match[1] != "" {
 			styles = append(styles, match[1])
 		}
 	}
-	
+
 	// Match <style>...</style> tags
 	styleRegex := regexp.MustCompile(`<style[^>]*>([\s\S]*?)</style>`)
 	styleMatches := styleRegex.FindAllStringSubmatch(htmlContent, -1)
-	
+
 	for _, match := range styleMatches {
 		if len(match) > 1 && strings.TrimSpace(match[1]) != "" {
 			styles = append(styles, match[1])
 		}
 	}
-	
+
 	return styles
 }
 
