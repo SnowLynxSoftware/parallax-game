@@ -601,6 +601,7 @@ func TestTeamService_ConsumeItemOnTeam_Success(t *testing.T) {
 	mockTeamRepo.On("GetTeamById", int64(1)).Return(team, nil).Times(2)
 	mockInventoryRepo.On("GetInventoryById", int64(10)).Return(invItem, nil)
 	mockLootItemRepo.On("GetLootItemById", int64(100)).Return(lootItem, nil)
+	mockTeamRepo.On("GetTeamsByUserIdWithSlot", int64(1), int64(10)).Return(nil, nil, nil) // Not equipped
 	mockTeamRepo.On("UpdateTeamStats", int64(1), 5.0, 2.0, 10).Return(nil)
 	mockInventoryRepo.On("ConsumeLoot", int64(10)).Return(nil)
 	mockGameCoreService.On("CalculateTeamStats", mock.Anything, mock.Anything).Return(&models.TeamStatsDTO{Speed: 10.0, Luck: 5.0, Power: 20})
@@ -742,6 +743,7 @@ func TestTeamService_ConsumeItemOnTeam_ConsumeRepositoryError(t *testing.T) {
 	mockTeamRepo.On("GetTeamById", int64(1)).Return(team, nil)
 	mockInventoryRepo.On("GetInventoryById", int64(10)).Return(invItem, nil)
 	mockLootItemRepo.On("GetLootItemById", int64(100)).Return(lootItem, nil)
+	mockTeamRepo.On("GetTeamsByUserIdWithSlot", int64(1), int64(10)).Return(nil, nil, nil) // Not equipped
 	mockTeamRepo.On("UpdateTeamStats", int64(1), 5.0, 2.0, 10).Return(nil)
 	mockInventoryRepo.On("ConsumeLoot", int64(10)).Return(errors.New("database error"))
 

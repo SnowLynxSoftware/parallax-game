@@ -129,19 +129,34 @@ func (r *UserInventoryRepository) AddLoot(userId int64, lootItemId int64, itemTy
 	}
 }
 
-// ConsumeLoot decrements quantity, deletes if quantity reaches 0
+// ConsumeLoot decrements quantity and archives item if quantity reaches 0
+// Uses a transaction to ensure atomicity and prevent race conditions
 func (r *UserInventoryRepository) ConsumeLoot(inventoryId int64) error {
+	tx, err := r.db.DB.Beginx()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
 	// First, decrement quantity
-	sql := `UPDATE user_inventory SET quantity = quantity - 1, modified_at = NOW() WHERE id = $1`
-	_, err := r.db.DB.Exec(sql, inventoryId)
+	_, err = tx.Exec(
+		`UPDATE user_inventory SET quantity = quantity - 1, modified_at = NOW() WHERE id = $1`,
+		inventoryId,
+	)
 	if err != nil {
 		return err
 	}
 
-	// Then check if quantity is 0 and delete if so
-	sql = `DELETE FROM user_inventory WHERE id = $1 AND quantity <= 0`
-	_, err = r.db.DB.Exec(sql, inventoryId)
-	return err
+	// Then archive if quantity is 0 or less (soft delete pattern)
+	_, err = tx.Exec(
+		`UPDATE user_inventory SET is_archived = true, modified_at = NOW() WHERE id = $1 AND quantity <= 0`,
+		inventoryId,
+	)
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
 }
 
 // HasItemByName checks if a user has a specific item by its name

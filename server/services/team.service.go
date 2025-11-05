@@ -233,6 +233,12 @@ func (s *TeamService) ConsumeItemOnTeam(userId, teamId, inventoryId int64) (*mod
 		return nil, fmt.Errorf("item is not consumable")
 	}
 
+	// Validate item is not equipped in any team slot
+	equippedTeam, _, err := s.teamRepository.GetTeamsByUserIdWithSlot(userId, inventoryId)
+	if err == nil && equippedTeam != nil {
+		return nil, fmt.Errorf("cannot consume an equipped item")
+	}
+
 	// Update team stats
 	err = s.teamRepository.UpdateTeamStats(teamId, lootItem.SpeedBonus, lootItem.LuckBonus, lootItem.PowerBonus)
 	if err != nil {
