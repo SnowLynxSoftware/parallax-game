@@ -23,30 +23,6 @@
 
 ---
 
-## ⚠️ Known Trade-offs & Limitations
-
-### 1. **Race Condition Risk**
-
-Multiple concurrent requests could spawn multiple resync goroutines. **Mitigation:** Use sync.Mutex or atomic flag to ensure only one resync runs at a time.
-
-### 2. **Data Staleness**
-
-Players may see up to 1-hour-old rankings. Two players might both see themselves at the same rank. **Acceptable for game jam scope.**
-
-### 3. **Random Tie-Breaking**
-
-Tied players will appear in random order on each cache rebuild. This is unpredictable but meets requirements. **Consider:** Use `user_id` for deterministic ordering instead.
-
-### 4. **No Pagination**
-
-Only top 20 shown. With 10-20 players, everyone will likely be visible. **Future:** Add pagination if player base grows.
-
-### 5. **Query Performance**
-
-Power Score calculation requires joining inventory → loot_items and summing weighted values. With small player base, this is fine. **Watch:** Query time as inventory grows.
-
----
-
 ## 📊 Database Schema Design
 
 ### New Tables
@@ -330,12 +306,15 @@ func (s *LeaderboardService) rebuildCache(leaderboardType string) error {
 ### Tie-Breaking Logic:
 
 ```go
-// After getting raw scores, assign ranks
+// After getting raw scores, assign ranks with deterministic tie-breaking
 items := s.repo.GetLegendaryItemCounts()
 
-// Shuffle items with same score for random tie-breaking
-rand.Shuffle(len(items), func(i, j int) {
-    items[i], items[j] = items[j], items[i]
+// Sort by user_id to break ties deterministically
+sort.Slice(items, func(i, j int) bool {
+    if items[i].Score == items[j].Score {
+        return items[i].UserID < items[j].UserID
+    }
+    return items[i].Score > items[j].Score
 })
 
 // Assign ranks
@@ -348,7 +327,7 @@ for i, item := range items {
 }
 ```
 
-**Note:** This shuffle happens on each rebuild, so tied players will see their relative positions change every hour. If this feels bad in testing, change to deterministic sorting (e.g., by `user_id`).
+**Note:** Tied players are sorted by `user_id` for consistent, predictable ordering across all cache rebuilds. This provides a fair and professional ranking experience.
 
 ### Tasks:
 
