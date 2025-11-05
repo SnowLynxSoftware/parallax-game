@@ -131,16 +131,17 @@ func (r *UserInventoryRepository) AddLoot(userId int64, lootItemId int64, itemTy
 
 // ConsumeLoot decrements quantity and archives item if quantity reaches 0
 // Uses a single atomic UPDATE with CASE to avoid CHECK constraint violations
-// Since quantity has CHECK (quantity >= 1), we must archive before quantity would become 0
+// Since quantity has CHECK (quantity >= 1), we must NOT let it go below 1
+// When quantity=1, we archive it. When quantity>1, we decrement.
 func (r *UserInventoryRepository) ConsumeLoot(inventoryId int64) error {
 	sql := `UPDATE user_inventory 
 			SET quantity = CASE 
 				WHEN quantity > 1 THEN quantity - 1
-				ELSE quantity
+				ELSE 1
 			END,
 			is_archived = CASE
 				WHEN quantity = 1 THEN true
-				ELSE is_archived
+				ELSE false
 			END,
 			modified_at = NOW()
 			WHERE id = $1`
