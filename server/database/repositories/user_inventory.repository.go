@@ -130,33 +130,23 @@ func (r *UserInventoryRepository) AddLoot(userId int64, lootItemId int64, itemTy
 }
 
 // ConsumeLoot decrements quantity and archives item if quantity reaches 0
-// Uses a transaction to ensure atomicity and prevent race conditions
+// Uses a single atomic UPDATE with CASE to avoid CHECK constraint violations
+// Since quantity has CHECK (quantity >= 1), we must archive before quantity would become 0
 func (r *UserInventoryRepository) ConsumeLoot(inventoryId int64) error {
-	tx, err := r.db.DB.Beginx()
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
-
-	// First, decrement quantity
-	_, err = tx.Exec(
-		`UPDATE user_inventory SET quantity = quantity - 1, modified_at = NOW() WHERE id = $1`,
-		inventoryId,
-	)
-	if err != nil {
-		return err
-	}
-
-	// Then archive if quantity is 0 or less (soft delete pattern)
-	_, err = tx.Exec(
-		`UPDATE user_inventory SET is_archived = true, modified_at = NOW() WHERE id = $1 AND quantity <= 0`,
-		inventoryId,
-	)
-	if err != nil {
-		return err
-	}
-
-	return tx.Commit()
+	sql := `UPDATE user_inventory 
+			SET quantity = CASE 
+				WHEN quantity > 1 THEN quantity - 1
+				ELSE quantity
+			END,
+			is_archived = CASE
+				WHEN quantity = 1 THEN true
+				ELSE is_archived
+			END,
+			modified_at = NOW()
+			WHERE id = $1`
+	
+	_, err := r.db.DB.Exec(sql, inventoryId)
+	return err
 }
 
 // HasItemByName checks if a user has a specific item by its name
