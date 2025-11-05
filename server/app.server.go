@@ -66,6 +66,7 @@ func (s *AppServer) Start() {
 	userInventoryRepository := repositories.NewUserInventoryRepository(s.dB)
 	expeditionRepository := repositories.NewExpeditionRepository(s.dB)
 	expeditionLootRepository := repositories.NewExpeditionLootRepository(s.dB)
+	leaderboardRepository := repositories.NewLeaderboardRepository(s.dB)
 
 	// Configure Services
 	featureFlagService := services.NewFeatureFlagService(featureFlagRepository)
@@ -82,6 +83,7 @@ func (s *AppServer) Start() {
 	riftService := services.NewRiftService(riftRepository, expeditionRepository)
 	teamService := services.NewTeamService(teamRepository, userInventoryRepository, lootItemRepository, expeditionRepository, riftRepository, gameCoreService)
 	inventoryService := services.NewInventoryService(userInventoryRepository, lootItemRepository, teamRepository)
+	leaderboardService := services.NewLeaderboardService(leaderboardRepository)
 	expeditionService := services.NewExpeditionService(
 		expeditionRepository,
 		expeditionLootRepository,
@@ -106,9 +108,10 @@ func (s *AppServer) Start() {
 	s.router.Mount("/api/teams", controllers.NewTeamController(teamService, authMiddleware).MapController())
 	s.router.Mount("/api/inventory", controllers.NewInventoryController(inventoryService, authMiddleware).MapController())
 	s.router.Mount("/api/expeditions", controllers.NewExpeditionController(expeditionService, authMiddleware).MapController())
+	s.router.Mount("/api/leaderboards", controllers.NewLeaderboardController(leaderboardService, authMiddleware).MapController())
 
 	// Configure UI Controller (at root level)
-	s.router.Mount("/", controllers.NewUIController(templateService, staticService, authMiddleware, featureFlagService, teamService, riftService, inventoryService).MapController())
+	s.router.Mount("/", controllers.NewUIController(templateService, staticService, authMiddleware, featureFlagService, teamService, riftService, inventoryService, leaderboardService).MapController())
 
 	util.LogInfo("Starting server on localhost:3000")
 	log.Fatal(http.ListenAndServe("0.0.0.0:3000", s.router))

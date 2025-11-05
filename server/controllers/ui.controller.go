@@ -15,24 +15,26 @@ import (
 )
 
 type UIController struct {
-	templateService    services.ITemplateService
-	staticService      services.IStaticService
-	authMiddleware     middleware.IAuthMiddleware
-	featureFlagService services.IFeatureFlagService
-	teamService        services.ITeamService
-	riftService        services.IRiftService
-	inventoryService   services.IInventoryService
+	templateService     services.ITemplateService
+	staticService       services.IStaticService
+	authMiddleware      middleware.IAuthMiddleware
+	featureFlagService  services.IFeatureFlagService
+	teamService         services.ITeamService
+	riftService         services.IRiftService
+	inventoryService    services.IInventoryService
+	leaderboardService  services.ILeaderboardService
 }
 
-func NewUIController(templateService services.ITemplateService, staticService services.IStaticService, authMiddleware middleware.IAuthMiddleware, featureFlagService services.IFeatureFlagService, teamService services.ITeamService, riftService services.IRiftService, inventoryService services.IInventoryService) IController {
+func NewUIController(templateService services.ITemplateService, staticService services.IStaticService, authMiddleware middleware.IAuthMiddleware, featureFlagService services.IFeatureFlagService, teamService services.ITeamService, riftService services.IRiftService, inventoryService services.IInventoryService, leaderboardService services.ILeaderboardService) IController {
 	return &UIController{
-		templateService:    templateService,
-		staticService:      staticService,
-		authMiddleware:     authMiddleware,
-		featureFlagService: featureFlagService,
-		teamService:        teamService,
-		riftService:        riftService,
-		inventoryService:   inventoryService,
+		templateService:     templateService,
+		staticService:       staticService,
+		authMiddleware:      authMiddleware,
+		featureFlagService:  featureFlagService,
+		teamService:         teamService,
+		riftService:         riftService,
+		inventoryService:    inventoryService,
+		leaderboardService:  leaderboardService,
 	}
 }
 
@@ -50,6 +52,7 @@ func (c *UIController) MapController() *chi.Mux {
 	router.Get("/fishing", c.fishing)
 	router.Get("/inventory", c.inventory)
 	router.Get("/dungeons", c.dungeons)
+	router.Get("/leaderboards", c.leaderboards)
 	router.Get("/account", c.account)
 	router.Get("/reset-password", c.resetPassword)
 	router.Get("/terms", c.terms)
@@ -460,6 +463,41 @@ func (c *UIController) dungeons(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(pageData.Data)
 
 	err = c.templateService.RenderTemplate(w, "dungeons", pageData)
+	if err != nil {
+		util.LogError(err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (c *UIController) leaderboards(w http.ResponseWriter, r *http.Request) {
+	util.LogDebug("Serving leaderboards page")
+
+	// Get authenticated user
+	user, err := c.authMiddleware.Authorize(r)
+	if err != nil || user == nil {
+		util.LogDebug("User not authenticated, redirecting to login")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	// Get navbar unlock state
+	navbarState, err := c.getNavbarUnlockState(int64(user.Id))
+	if err != nil {
+		util.LogError(err)
+		navbarState = make(map[string]bool)
+	}
+
+	pageData := services.PageData{
+		Title:       "Leaderboards",
+		Description: "Compete against explorers across all parallel worlds",
+		Data: map[string]interface{}{
+			"Username":    user.Username,
+			"NavbarState": navbarState,
+		},
+	}
+
+	err = c.templateService.RenderTemplate(w, "leaderboards", pageData)
 	if err != nil {
 		util.LogError(err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)

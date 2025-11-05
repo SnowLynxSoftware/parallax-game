@@ -367,9 +367,17 @@ GET /api/leaderboards/:type    -> Return JSON for specific leaderboard
 
 ```go
 type LeaderboardController struct {
-    service     ILeaderboardService
-    authMiddleware IAuthMiddleware
-    templateService ITemplateService
+    service         ILeaderboardService
+    authMiddleware  IAuthMiddleware
+    templateService services.ITemplateService
+}
+
+func NewLeaderboardController(service ILeaderboardService, authMiddleware IAuthMiddleware, templateService services.ITemplateService) IController {
+    return &LeaderboardController{
+        service:         service,
+        authMiddleware:  authMiddleware,
+        templateService: templateService,
+    }
 }
 
 func (c *LeaderboardController) MapController() chi.Router {
@@ -402,11 +410,12 @@ func (c *LeaderboardController) getLeaderboard(w http.ResponseWriter, r *http.Re
 
     result, err := c.service.GetLeaderboard(leaderboardType, user.ID)
     if err != nil {
-        log.Error().Err(err).Msg("Failed to get leaderboard")
+        util.LogError(err)
         http.Error(w, "Leaderboard temporarily unavailable", http.StatusServiceUnavailable)
         return
     }
 
+    w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(result)
 }
 
@@ -418,44 +427,43 @@ func (c *LeaderboardController) renderLeaderboardsPage(w http.ResponseWriter, r 
         "User":  user,
     }
 
-    c.templateService.RenderTemplate(w, "leaderboards.html", data)
+    err := c.templateService.RenderTemplate(w, "leaderboards", data)
+    if err != nil {
+        util.LogError(err)
+        http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+    }
 }
 ```
 
 ### Wiring (in `server/app.server.go`):
 
 ```go
-// In NewAppServer.Start(), after other controllers:
+// In NewAppServer.Start(), after game repositories:
+leaderboardRepository := repositories.NewLeaderboardRepository(s.dB)
 
-leaderboardRepo := repositories.NewLeaderboardRepository(db)
-leaderboardService := services.NewLeaderboardService(leaderboardRepo)
-leaderboardController := controllers.NewLeaderboardController(
-    leaderboardService,
-    authMiddleware,
-    templateService,
-)
+// In NewAppServer.Start(), after game services:
+leaderboardService := services.NewLeaderboardService(leaderboardRepository)
 
-router.Mount("/leaderboards", leaderboardController.MapController())
+// In NewAppServer.Start(), after game API controllers:
+s.router.Mount("/leaderboards", controllers.NewLeaderboardController(leaderboardService, authMiddleware, templateService).MapController())
 ```
 
 ### Tasks:
 
+- [x] Add leaderboards template to Template Service
 - [ ] Create controller file
 - [ ] Implement routes
 - [ ] Add validation for leaderboard types
 - [ ] Wire up in `app.server.go`
-- [ ] Test API endpoints with Postman/curl
 - [ ] Verify auth middleware works
 
-### Validation:
+### Notes:
 
-```bash
-# Test legendary leaderboard
-curl -H "Cookie: access_token=YOUR_TOKEN" \
-  http://localhost:3000/leaderboards/api/legendary
+**Template Service Integration:**
 
-# Should return JSON with top 20 + user rank
-```
+- The leaderboards template has been added to the Template Service's `pageFiles` list
+- Template name when calling `RenderTemplate` is "leaderboards" (not "leaderboards.html")
+- This follows the existing pattern used by other templates in the project
 
 ### Deliverable:
 
@@ -847,13 +855,7 @@ Working API endpoints that return cached leaderboard data.
 
 ### Template Service Registration:
 
-Add to `server/services/template.service.go`:
-
-```go
-templates = append(templates,
-    "server/services/templates/pages/leaderboards.html",
-)
-```
+✅ **Already completed in Phase 4!** The leaderboards template has been added to the `pageFiles` list in `server/services/template.service.go`.
 
 ### Add to Navbar:
 
