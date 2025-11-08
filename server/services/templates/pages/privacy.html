@@ -1,0 +1,1406 @@
+{{define "content"}}
+<div class="privacy-page bg-gradient-primary py-5">
+  <div class="container">
+    <!-- Top Back Button -->
+    <div class="mb-4">
+      <a href="/" class="btn btn-outline-light btn-sm">
+        <i class="fas fa-arrow-left me-2"></i>Back to Home
+      </a>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="privacy-content bg-white rounded-4 shadow-lg p-4 p-md-5 mb-4">
+      <!-- Header -->
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary mb-3">
+          <i class="fas fa-user-shield me-3"></i>Privacy Policy
+        </h1>
+        <p class="text-muted">
+          <i class="fas fa-calendar-alt me-2"></i>
+          <strong>Last Updated:</strong> {{.Data.PrivacyLastUpdated}}
+        </p>
+      </div>
+
+      <!-- Introduction Section -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-info-circle me-2"></i>Introduction
+        </h2>
+        <p class="text-secondary">
+          Welcome to Parallax, a link management and URL shortening service
+          operated by Snow Lynx Software, LLC ("Company," "we," "us," or "our").
+          This Privacy Policy explains how we collect, use, disclose, and
+          protect your personal information when you access or use our website,
+          services, and applications (collectively, the "Service").
+        </p>
+        <p class="text-secondary">
+          Parallax provides content creators with tools to create, manage, and
+          track shortened links, including analytics and health monitoring
+          features to protect affiliate revenue and monitor link performance. We
+          are committed to protecting your privacy and handling your data
+          responsibly and transparently. This Privacy Policy should be read in
+          conjunction with our Terms of Service, which govern your use of the
+          Service.
+        </p>
+        <p class="text-secondary">
+          By using Parallax, you acknowledge that you have read, understood, and
+          agree to the collection, use, and disclosure of your information as
+          described in this Privacy Policy. If you do not agree with this
+          Privacy Policy, you must discontinue use of the Service immediately.
+        </p>
+      </section>
+
+      <!-- Information We Collect -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-database me-2"></i>Information We Collect
+        </h2>
+        <p class="text-secondary">
+          The information we collect depends on how you use our Service. We
+          collect different types of information from Guest Users versus
+          Registered Users (Free and Pro accounts).
+        </p>
+
+        <h3 class="h5 fw-bold text-primary mt-4 mb-3">
+          Guest Users (No Account)
+        </h3>
+        <div class="alert alert-success border-success" role="alert">
+          <i class="fas fa-user-secret me-2"></i>
+          <strong>Privacy First:</strong> Guest users can create unlimited links
+          with a 7-day expiration period without creating an account. We do not
+          collect, store, or track any personal information or analytics data
+          for Guest Users. Your links are completely anonymous and automatically
+          expire after 7 days.
+        </div>
+
+        <h3 class="h5 fw-bold text-primary mt-4 mb-3">
+          Registered Users (Free and Pro Accounts)
+        </h3>
+        <p class="text-secondary">
+          For users who create an account, we collect the following types of
+          information:
+        </p>
+
+        <p class="text-secondary">
+          <strong>A. Information You Provide Directly:</strong>
+        </p>
+        <ul class="text-secondary">
+          <li>
+            <strong>Email Address:</strong> Required for account registration,
+            authentication, and communication
+          </li>
+          <li>
+            <strong>Username:</strong> A public-facing identifier that may be
+            visible to others when you use custom slugs for your shortened links
+            (e.g., parallax.com/username/custom-slug)
+          </li>
+          <li>
+            <strong>Password:</strong> Securely hashed using industry-standard
+            one-way hashing algorithms. We never store passwords in plain text
+            and cannot retrieve your original password
+          </li>
+          <li>
+            <strong>Payment Information:</strong> For Pro account subscriptions,
+            payment card information is collected and processed exclusively by
+            Stripe, our third-party payment processor. We do not store, process,
+            or have access to your payment card details on our servers
+          </li>
+        </ul>
+
+        <p class="text-secondary">
+          <strong>B. Information We Collect Automatically:</strong>
+        </p>
+        <ul class="text-secondary">
+          <li>
+            <strong>Link Analytics Data:</strong> For all shortened links (both
+            registered and guest users), we collect and analyze detailed click
+            event data including: IP-derived country information (via
+            third-party service ip-api.com), browser type and version, device
+            type (desktop/mobile/bot), raw user agent strings, referrer URLs,
+            bot detection flags, and timestamp of each click. This data is
+            stored individually for each redirect to provide comprehensive
+            analytics while maintaining an aggregate click counter for quick
+            access.
+          </li>
+          <li>
+            <strong>IP Addresses:</strong> We collect IP addresses for security
+            purposes, fraud prevention, and to derive geographic location
+            (country) for analytics. IP addresses are sent to ip-api.com, a free
+            third-party geolocation service, to determine the country of origin.
+            If this service is unavailable or rate-limited, geographic data will
+            be recorded as unknown. We do not store raw IP addresses in our
+            click tracking data.
+          </li>
+          <li>
+            <strong>Browser and Device Information:</strong> Information about
+            your browser type, operating system, device type, and screen
+            resolution
+          </li>
+          <li>
+            <strong>Authentication Cookies:</strong> We use secure, HTTPS-only
+            cookies to store a JSON Web Token (JWT) containing only your user ID
+            for authentication and session management. This cookie is verified
+            on every request to maintain your logged-in state
+          </li>
+          <li>
+            <strong>Usage Data:</strong> Information about how you interact with
+            the Service, including pages visited, features used, links created
+            and modified, and time spent on the platform
+          </li>
+        </ul>
+      </section>
+
+      <!-- How We Use Your Information -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-cogs me-2"></i>How We Use Your Information
+        </h2>
+        <p class="text-secondary">
+          We use the information we collect from registered users for the
+          following purposes:
+        </p>
+        <ol class="text-secondary">
+          <li>
+            <strong>Provide and Maintain the Service:</strong> To create and
+            manage your account, enable link creation and management, and
+            provide access to Service features based on your account tier (Free
+            or Pro)
+          </li>
+          <li>
+            <strong>Authentication and Security:</strong> To authenticate your
+            identity using JWT cookies, verify your user ID on every request,
+            prevent unauthorized access, and protect against fraud and abuse
+          </li>
+          <li>
+            <strong>Process Payments:</strong> To facilitate payment processing
+            through Stripe for Pro account subscriptions, manage billing cycles,
+            and handle payment-related communications
+          </li>
+          <li>
+            <strong>Generate Link Analytics:</strong> To track and display
+            analytics for your shortened links, including click counts,
+            geographic location data, referrer sources, device types, and
+            browser information
+          </li>
+          <li>
+            <strong>Send Communications:</strong> To send transactional emails
+            such as account verification, welcome messages, password reset
+            instructions, payment confirmations, and security alerts. We also
+            send service-related notifications including health check alerts for
+            Pro users monitoring link performance, and marketing communications
+            about product updates, new features, and promotions (which you may
+            opt out of)
+          </li>
+          <li>
+            <strong>Monitor Link Health:</strong> To check the status and
+            availability of your destination URLs and notify you of any issues
+            that could impact your affiliate revenue or link performance
+          </li>
+          <li>
+            <strong>Improve and Optimize the Service:</strong> To analyze usage
+            patterns, identify areas for improvement, develop new features, and
+            enhance overall Service performance and user experience
+          </li>
+          <li>
+            <strong>Prevent Fraud and Ensure Security:</strong> To detect and
+            prevent fraudulent activities, abuse of the Service, security
+            breaches, and violations of our Terms of Service
+          </li>
+          <li>
+            <strong>Comply with Legal Obligations:</strong> To respond to legal
+            requests, enforce our Terms of Service, protect our rights and
+            property, and comply with applicable laws and regulations
+          </li>
+        </ol>
+        <p class="text-secondary">
+          Please note that analytics tracking is an integral part of our Service
+          for registered users and cannot be disabled. If you do not wish to
+          have your link analytics tracked, you may use our Service as a Guest
+          User, which does not collect any data but provides links that expire
+          after 7 days.
+        </p>
+      </section>
+
+      <!-- Legal Basis for Processing -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-balance-scale me-2"></i>Legal Basis for Processing
+          (GDPR)
+        </h2>
+        <p class="text-secondary">
+          For users in the European Economic Area (EEA), United Kingdom, or
+          other jurisdictions with similar data protection requirements, we
+          process your personal information based on the following legal
+          grounds:
+        </p>
+        <ul class="text-secondary">
+          <li>
+            <strong>Performance of a Contract:</strong> Processing is necessary
+            to provide the Service you have requested, including account
+            creation, link management, analytics generation, and payment
+            processing for Pro subscriptions
+          </li>
+          <li>
+            <strong>Consent:</strong> You have given explicit consent for
+            specific processing activities, such as receiving marketing
+            communications or participating in optional features
+          </li>
+          <li>
+            <strong>Legitimate Interests:</strong> Processing is necessary for
+            our legitimate business interests, including improving the Service,
+            ensuring security and fraud prevention, analyzing usage patterns,
+            and maintaining the integrity of our platform, provided these
+            interests do not override your fundamental rights and freedoms
+          </li>
+          <li>
+            <strong>Legal Obligations:</strong> Processing is necessary to
+            comply with applicable laws, regulations, legal processes, or
+            enforceable governmental requests
+          </li>
+        </ul>
+        <p class="text-secondary">
+          You have the right to withdraw your consent at any time where we rely
+          on consent as the legal basis for processing. However, this will not
+          affect the lawfulness of processing based on consent before its
+          withdrawal.
+        </p>
+      </section>
+
+      <!-- Data Sharing and Disclosure -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-share-alt me-2"></i>Data Sharing and Disclosure
+        </h2>
+        <p class="text-secondary">
+          We value your privacy and do not sell, rent, or trade your personal
+          information to third parties for their marketing purposes. We only
+          share your information in the limited circumstances described below:
+        </p>
+
+        <p class="text-secondary">
+          <strong>Third-Party Service Providers:</strong>
+        </p>
+        <ul class="text-secondary">
+          <li>
+            <strong>Stripe:</strong> Payment card information for Pro account
+            subscriptions is collected and processed exclusively by Stripe, our
+            payment processor. We do not store, process, or have access to your
+            payment card details. Please review
+            <a
+              href="https://stripe.com/privacy"
+              target="_blank"
+              class="text-primary"
+              >Stripe's Privacy Policy</a
+            >
+            for information about their data practices
+          </li>
+          <li>
+            <strong>SendGrid:</strong> We use SendGrid to deliver transactional
+            and marketing emails. SendGrid may process your email address and
+            related communication data. Please review
+            <a
+              href="https://www.twilio.com/legal/privacy"
+              target="_blank"
+              class="text-primary"
+              >SendGrid's Privacy Policy</a
+            >
+          </li>
+          <li>
+            <strong>Digital Ocean:</strong> Our servers and infrastructure are
+            hosted on Digital Ocean droplets located in the New York City VPC
+            (United States). Your data is stored and processed on Digital
+            Ocean's infrastructure. Please review
+            <a
+              href="https://www.digitalocean.com/legal/privacy-policy"
+              target="_blank"
+              class="text-primary"
+              >Digital Ocean's Privacy Policy</a
+            >
+          </li>
+          <li>
+            <strong>Cloudflare:</strong> We use Cloudflare for content delivery
+            network (CDN) services, DDoS protection, and security features. All
+            requests to our Service are routed through Cloudflare. Please review
+            <a
+              href="https://www.cloudflare.com/privacypolicy/"
+              target="_blank"
+              class="text-primary"
+              >Cloudflare's Privacy Policy</a
+            >
+          </li>
+          <li>
+            <strong>Analytics Provider:</strong> We may use third-party
+            analytics services to help us understand and improve how users
+            interact with our Service. Any analytics provider we use will be
+            bound by appropriate data processing agreements
+          </li>
+        </ul>
+
+        <div class="alert alert-info border-info" role="alert">
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>Important:</strong> We never sell your personal information to
+          third parties. All third-party service providers are carefully
+          selected and contractually obligated to protect your data and use it
+          only for the specific purposes we authorize.
+        </div>
+
+        <p class="text-secondary">
+          <strong>Other Disclosure Circumstances:</strong>
+        </p>
+        <ul class="text-secondary">
+          <li>
+            <strong>Legal Requirements:</strong> We may disclose your
+            information if required to do so by law, court order, subpoena, or
+            other legal process, or if we believe in good faith that disclosure
+            is necessary to comply with applicable laws or respond to lawful
+            requests from public authorities
+          </li>
+          <li>
+            <strong>Protect Rights and Safety:</strong> We may disclose your
+            information when we believe it is necessary to enforce our Terms of
+            Service, protect our rights, property, or safety, or the rights,
+            property, or safety of our users or others, or to prevent fraud or
+            abuse of the Service
+          </li>
+          <li>
+            <strong>Business Transfers:</strong> If Snow Lynx Software, LLC is
+            involved in a merger, acquisition, asset sale, bankruptcy, or other
+            business transaction, your information may be transferred as part of
+            that transaction. We will notify you via email and/or a prominent
+            notice on our Service of any such change in ownership or control of
+            your personal information
+          </li>
+          <li>
+            <strong>With Your Consent:</strong> We may share your information
+            for any other purposes with your explicit consent or at your
+            direction
+          </li>
+        </ul>
+
+        <p class="text-secondary">
+          <strong>Important Note on User Responsibilities:</strong>
+        </p>
+        <p class="text-secondary">
+          You are solely responsible for the content of the destination URLs you
+          create shortened links for, including any affiliate links. If you use
+          our Service to manage affiliate links, you are responsible for
+          complying with all applicable disclosure requirements, including
+          Federal Trade Commission (FTC) guidelines and the terms of your
+          affiliate programs. We are not responsible for the privacy practices
+          or content of any third-party websites that your shortened links point
+          to.
+        </p>
+      </section>
+
+      <!-- Cookies and Tracking Technologies -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-cookie-bite me-2"></i>Cookies and Tracking
+          Technologies
+        </h2>
+        <p class="text-secondary">
+          We use cookies and similar tracking technologies to provide, maintain,
+          and improve our Service. A cookie is a small text file that is stored
+          on your device when you visit our website. Guest Users do not receive
+          any cookies, as no authentication or tracking is performed for Guest
+          links.
+        </p>
+
+        <p class="text-secondary"><strong>Types of Cookies We Use:</strong></p>
+        <ul class="text-secondary">
+          <li>
+            <strong>Essential Authentication Cookies:</strong> We use a secure,
+            HTTPS-only cookie to store a JSON Web Token (JWT) that contains only
+            your user ID. This cookie is essential for maintaining your
+            logged-in state and is verified on every request you make to our
+            Service. Without this cookie, you cannot remain authenticated and
+            use registered user features
+          </li>
+          <li>
+            <strong>Analytics Cookies:</strong> We use cookies to track usage
+            patterns, analyze Service performance, and understand how users
+            interact with our features. These cookies help us improve the
+            Service and develop new functionality
+          </li>
+          <li>
+            <strong>Session Management Cookies:</strong> These cookies help us
+            maintain your session state, remember your preferences, and provide
+            a seamless user experience across multiple pages
+          </li>
+        </ul>
+
+        <p class="text-secondary"><strong>Managing Cookies:</strong></p>
+        <p class="text-secondary">
+          Most web browsers allow you to control cookies through their settings
+          preferences. You can set your browser to refuse cookies or to alert
+          you when cookies are being sent. However, please note that disabling
+          cookies will prevent you from using registered user features of our
+          Service, as authentication cookies are essential for account
+          functionality. If you disable cookies, you may still use our Service
+          as a Guest User to create links that expire after 7 days.
+        </p>
+
+        <p class="text-secondary">
+          For more information about managing cookies in your specific browser,
+          please refer to your browser's help documentation.
+        </p>
+      </section>
+
+      <!-- Data Security -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-lock me-2"></i>Data Security
+        </h2>
+        <p class="text-secondary">
+          We take the security of your personal information seriously and
+          implement appropriate technical and organizational measures to protect
+          your data against unauthorized access, alteration, disclosure, or
+          destruction. Our security measures include:
+        </p>
+        <ul class="text-secondary">
+          <li>
+            <strong>HTTPS Encryption:</strong> All data transmitted between your
+            browser and our servers is encrypted using industry-standard
+            HTTPS/TLS protocols
+          </li>
+          <li>
+            <strong>Secure Cookie Storage:</strong> Authentication cookies are
+            marked as secure and HTTPS-only, preventing transmission over
+            unencrypted connections
+          </li>
+          <li>
+            <strong>Password Hashing:</strong> User passwords are hashed using
+            industry-standard one-way hashing algorithms. We never store
+            passwords in plain text and cannot retrieve your original password
+          </li>
+          <li>
+            <strong>Cloudflare Protection:</strong> All requests are routed
+            through Cloudflare, providing DDoS protection, web application
+            firewall capabilities, and additional security layers
+          </li>
+          <li>
+            <strong>Secure Infrastructure:</strong> Our servers run on regularly
+            updated Ubuntu LTS (Long Term Support) distributions hosted on
+            Digital Ocean's secure infrastructure in the New York City VPC
+          </li>
+          <li>
+            <strong>Access Controls:</strong> We implement strict access
+            controls and authentication mechanisms to limit who can access user
+            data and system resources
+          </li>
+          <li>
+            <strong>Payment Security:</strong> We do not store or process
+            payment card information on our servers. All payment processing is
+            handled by Stripe, a PCI-DSS compliant payment processor
+          </li>
+        </ul>
+
+        <div class="alert alert-warning border-warning" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <strong>Important Security Disclaimer:</strong> While we implement
+          industry-standard security measures to protect your personal
+          information, no method of transmission over the Internet or electronic
+          storage is 100% secure. We cannot guarantee the absolute security of
+          your data. You acknowledge and accept that you provide your personal
+          information at your own risk.
+        </div>
+
+        <p class="text-secondary">
+          If you have reason to believe that your account security has been
+          compromised or that your password has been obtained by unauthorized
+          parties, you must immediately notify us at support@smarterlynx.com and
+          change your password through our Service.
+        </p>
+
+        <p class="text-secondary"><strong>Data Breach Notification:</strong></p>
+        <p class="text-secondary">
+          In the event of a data breach that compromises your personal
+          information, we will notify affected users within 72 hours of becoming
+          aware of the breach, or as otherwise required by applicable law.
+          Notification will be provided via email to the address associated with
+          your account and may also include a prominent notice on our Service.
+          The notification will include information about the nature of the
+          breach, the types of data affected, the measures we are taking to
+          address the breach, and steps you can take to protect yourself.
+        </p>
+      </section>
+
+      <!-- Your Privacy Rights -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-user-check me-2"></i>Your Privacy Rights
+        </h2>
+        <p class="text-secondary">
+          Depending on your location and applicable data protection laws, you
+          may have certain rights regarding your personal information. We
+          respect these rights and provide mechanisms for you to exercise them.
+        </p>
+
+        <p class="text-secondary"><strong>Your Rights Include:</strong></p>
+        <ul class="text-secondary">
+          <li>
+            <strong>Right to Access:</strong> You have the right to request a
+            copy of the personal information we hold about you. We will provide
+            this information in a structured, commonly used, and
+            machine-readable format
+          </li>
+          <li>
+            <strong>Right to Correction:</strong> You have the right to request
+            that we correct any inaccurate or incomplete personal information we
+            hold about you. You can update most of your account information
+            directly through your account settings
+          </li>
+          <li>
+            <strong>Right to Deletion:</strong> You have the right to request
+            that we delete your personal information, subject to certain legal
+            exceptions. Please note that deleted data is soft-deleted and
+            retained for up to 1 year before permanent deletion, during which
+            time it may be restored by our support team if necessary
+          </li>
+          <li>
+            <strong>Right to Data Portability:</strong> You have the right to
+            receive your personal information in a portable format and to
+            request that we transfer it to another service provider where
+            technically feasible. You can export your link data and analytics in
+            CSV format through your account dashboard
+          </li>
+          <li>
+            <strong>Right to Object:</strong> You have the right to object to
+            certain types of data processing, including processing for direct
+            marketing purposes. You can unsubscribe from marketing emails at any
+            time using the unsubscribe link in any marketing email or by
+            contacting us
+          </li>
+          <li>
+            <strong>Right to Restrict Processing:</strong> You have the right to
+            request that we limit how we use your personal information in
+            certain circumstances, such as while we verify the accuracy of the
+            information or assess your objection to processing
+          </li>
+          <li>
+            <strong>Right to Withdraw Consent:</strong> Where we rely on your
+            consent as the legal basis for processing, you have the right to
+            withdraw that consent at any time. This will not affect the
+            lawfulness of processing based on consent before its withdrawal
+          </li>
+          <li>
+            <strong>Right to Lodge a Complaint:</strong> If you believe we have
+            violated your privacy rights or applicable data protection laws, you
+            have the right to lodge a complaint with the appropriate supervisory
+            authority in your jurisdiction
+          </li>
+        </ul>
+
+        <p class="text-secondary">
+          <strong>How to Exercise Your Rights:</strong>
+        </p>
+        <p class="text-secondary">
+          To exercise any of these rights, please contact us at
+          support@smarterlynx.com with your request. We will respond to your
+          request within a reasonable timeframe, typically within 30 days for
+          most requests, or as otherwise required by applicable law. We may need
+          to verify your identity before processing your request to ensure the
+          security of your personal information.
+        </p>
+
+        <p class="text-secondary">
+          Please note that some rights may be subject to limitations or
+          exceptions under applicable law. For example, we may need to retain
+          certain information to comply with legal obligations or to establish,
+          exercise, or defend legal claims.
+        </p>
+      </section>
+
+      <!-- Data Retention -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-archive me-2"></i>Data Retention
+        </h2>
+        <p class="text-secondary">
+          We retain your personal information for as long as necessary to
+          provide the Service, comply with our legal obligations, resolve
+          disputes, and enforce our agreements. The specific retention periods
+          vary depending on the type of information and the purposes for which
+          it is used.
+        </p>
+
+        <p class="text-secondary"><strong>Retention Periods:</strong></p>
+        <ul class="text-secondary">
+          <li>
+            <strong>Active Accounts:</strong> We retain your account
+            information, link data, and analytics for as long as your account
+            remains active and in good standing
+          </li>
+          <li>
+            <strong>Guest User Links:</strong> Links created by Guest Users
+            (without an account) automatically expire and are permanently
+            deleted 7 days after creation. Click event analytics data (country,
+            browser, device, user agent, referrer, bot detection) is collected
+            for these links and retained until the link expires and is deleted.
+            No personally identifiable information is collected from guests
+            creating links.
+          </li>
+          <li>
+            <strong>Soft-Deleted Data:</strong> When you delete your account or
+            request deletion of your data, we perform a "soft delete" that
+            removes the data from active use but retains it in our backup
+            systems. Soft-deleted data is retained for up to 1 year before
+            permanent deletion. During this retention period, soft-deleted data
+            may be restored by our support team if necessary (for example, if
+            you accidentally deleted your account)
+          </li>
+          <li>
+            <strong>Link Analytics:</strong> Click event analytics data for your
+            shortened links (including country, browser, device, user agent,
+            referrer, and bot detection) is retained while your account is
+            active or until you request its deletion. Once your account is
+            permanently deleted, all associated analytics data (both aggregate
+            counts and individual click events) is also permanently deleted
+          </li>
+          <li>
+            <strong>Communication Records:</strong> We may retain records of
+            communications with you (such as support tickets and email
+            correspondence) for as long as necessary to provide support and
+            maintain records of our communications
+          </li>
+          <li>
+            <strong>Legal and Compliance Purposes:</strong> We may retain
+            certain information for longer periods if required by law,
+            regulation, legal process, or to establish, exercise, or defend
+            legal claims. This may include retaining information related to
+            payment transactions, account security incidents, or Terms of
+            Service violations
+          </li>
+        </ul>
+
+        <p class="text-secondary">
+          After the applicable retention period expires, we will permanently
+          delete or anonymize your personal information in a secure manner that
+          prevents its reconstruction or identification.
+        </p>
+      </section>
+
+      <!-- Children's Privacy -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-child me-2"></i>Children's Privacy (COPPA Compliance)
+        </h2>
+        <p class="text-secondary">
+          Parallax is not directed to children under the age of 13, and we do
+          not knowingly collect personal information from children under 13
+          years of age. Our Service requires users to be at least 13 years of
+          age to create an account. Users between the ages of 13 and 18 must
+          have the consent of a parent or legal guardian to use the Service.
+        </p>
+        <p class="text-secondary">
+          We do not verify the age of our users beyond requiring them to accept
+          our Terms of Service, which includes age requirements. By creating an
+          account and using our Service, you represent and warrant that you are
+          at least 13 years of age and, if you are under 18 years of age, that
+          you have obtained permission from your parent or legal guardian to use
+          the Service.
+        </p>
+        <p class="text-secondary">
+          If we become aware that we have inadvertently collected personal
+          information from a child under 13 years of age, we will take immediate
+          steps to delete that information from our systems. If you are a parent
+          or legal guardian and believe that your child under the age of 13 has
+          provided us with personal information, please contact us immediately
+          at support@smarterlynx.com, and we will promptly delete the
+          information and terminate the account.
+        </p>
+      </section>
+
+      <!-- International Data Transfers -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-globe me-2"></i>International Data Transfers
+        </h2>
+        <p class="text-secondary">
+          Parallax is operated by Snow Lynx Software, LLC, a company based in
+          Louisiana, United States. Our servers and infrastructure are hosted on
+          Digital Ocean droplets located in the New York City Virtual Private
+          Cloud (VPC) in the United States. All data processing and storage
+          occurs within the United States.
+        </p>
+        <p class="text-secondary">
+          If you are accessing our Service from outside the United States,
+          please be aware that your information will be transferred to, stored,
+          and processed in the United States. The data protection laws in the
+          United States may differ from those in your country of residence. By
+          using our Service, you acknowledge and consent to the transfer of your
+          information to the United States and the processing of your
+          information in accordance with this Privacy Policy and applicable U.S.
+          law.
+        </p>
+        <p class="text-secondary">
+          For users in the European Economic Area (EEA), United Kingdom, or
+          Switzerland, we implement appropriate safeguards to ensure that your
+          personal information remains protected in accordance with this Privacy
+          Policy and applicable data protection laws. These safeguards include
+          implementing standard contractual clauses approved by the European
+          Commission, relying on adequacy decisions where applicable, and
+          ensuring that our third-party service providers adhere to appropriate
+          data protection standards.
+        </p>
+        <p class="text-secondary">
+          If you have questions or concerns about international data transfers,
+          please contact us at support@smarterlynx.com.
+        </p>
+      </section>
+
+      <!-- Third-Party Services and Links -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-link me-2"></i>Third-Party Services and Links
+        </h2>
+        <p class="text-secondary">
+          Our Service uses several third-party services to provide, maintain,
+          and improve functionality. These third-party services have their own
+          privacy policies and data handling practices. We encourage you to
+          review their privacy policies to understand how they collect, use, and
+          protect your information.
+        </p>
+
+        <p class="text-secondary">
+          <strong>Third-Party Services We Use:</strong>
+        </p>
+        <ul class="text-secondary">
+          <li>
+            <strong>Stripe:</strong> Payment processing for Pro account
+            subscriptions. View their privacy policy at
+            <a
+              href="https://stripe.com/privacy"
+              target="_blank"
+              class="text-primary"
+              >https://stripe.com/privacy</a
+            >
+          </li>
+          <li>
+            <strong>SendGrid (Twilio):</strong> Email delivery for transactional
+            and marketing communications. View their privacy policy at
+            <a
+              href="https://www.twilio.com/legal/privacy"
+              target="_blank"
+              class="text-primary"
+              >https://www.twilio.com/legal/privacy</a
+            >
+          </li>
+          <li>
+            <strong>Cloudflare:</strong> CDN, DDoS protection, and security
+            services. View their privacy policy at
+            <a
+              href="https://www.cloudflare.com/privacypolicy/"
+              target="_blank"
+              class="text-primary"
+              >https://www.cloudflare.com/privacypolicy/</a
+            >
+          </li>
+          <li>
+            <strong>Digital Ocean:</strong> Infrastructure and hosting services.
+            View their privacy policy at
+            <a
+              href="https://www.digitalocean.com/legal/privacy-policy"
+              target="_blank"
+              class="text-primary"
+              >https://www.digitalocean.com/legal/privacy-policy</a
+            >
+          </li>
+        </ul>
+
+        <p class="text-secondary">
+          <strong>Third-Party Links and Destination URLs:</strong>
+        </p>
+        <p class="text-secondary">
+          The primary function of Parallax is to create shortened links that
+          redirect to destination URLs you specify. We are not responsible for
+          the privacy practices, content, or security of any third-party
+          websites or services that your shortened links point to. When you
+          click on a shortened link and are redirected to a destination URL,
+          that website's privacy policy will govern the collection and use of
+          your information on that site.
+        </p>
+        <p class="text-secondary">
+          If you use Parallax to manage affiliate links or links to third-party
+          services, you are solely responsible for ensuring compliance with
+          those services' terms of use, privacy policies, and any applicable
+          disclosure requirements. We recommend that you review the privacy
+          policies and terms of service of any destination URLs you link to and
+          inform your users accordingly.
+        </p>
+      </section>
+
+      <!-- Do Not Track Signals -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-ban me-2"></i>Do Not Track Signals
+        </h2>
+        <p class="text-secondary">
+          Some web browsers offer a "Do Not Track" (DNT) signal that allows
+          users to indicate their preference not to be tracked across websites.
+          Currently, there is no industry-wide standard for recognizing or
+          responding to DNT signals, and different browsers implement DNT
+          functionality in different ways.
+        </p>
+        <p class="text-secondary">
+          At this time, Parallax does not respond to or honor Do Not Track
+          signals from web browsers. We collect and use information as described
+          in this Privacy Policy regardless of DNT signals. However, you can
+          control cookies through your browser settings as described in the
+          "Cookies and Tracking Technologies" section of this Privacy Policy.
+        </p>
+        <p class="text-secondary">
+          If a uniform standard for responding to DNT signals is established in
+          the future, we will reassess our policy and update this Privacy Policy
+          accordingly.
+        </p>
+      </section>
+
+      <!-- Email Communications -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-envelope-open-text me-2"></i>Email Communications
+        </h2>
+        <p class="text-secondary">
+          We use email to communicate with you about your account, the Service,
+          and important updates. The types of emails we send fall into the
+          following categories:
+        </p>
+
+        <p class="text-secondary">
+          <strong>Transactional Emails (Cannot Opt-Out):</strong>
+        </p>
+        <ul class="text-secondary">
+          <li>Account verification and welcome emails</li>
+          <li>Password reset and security alert notifications</li>
+          <li>Payment confirmations and billing-related communications</li>
+          <li>Critical service announcements and Terms of Service updates</li>
+        </ul>
+        <p class="text-secondary">
+          These emails are essential for the operation of your account and the
+          Service. You cannot opt out of receiving transactional emails while
+          maintaining an active account.
+        </p>
+
+        <p class="text-secondary">
+          <strong>Service Emails (Limited Opt-Out):</strong>
+        </p>
+        <ul class="text-secondary">
+          <li>
+            Health check alerts for Pro users monitoring link performance and
+            availability
+          </li>
+          <li>Account activity summaries and usage notifications</li>
+        </ul>
+        <p class="text-secondary">
+          These emails relate to Service features you have actively enabled. You
+          may adjust your preferences for some of these notifications in your
+          account settings, but certain alerts may be essential to the Service
+          features you use.
+        </p>
+
+        <p class="text-secondary">
+          <strong>Marketing Emails (Can Opt-Out):</strong>
+        </p>
+        <ul class="text-secondary">
+          <li>Product updates and new feature announcements</li>
+          <li>Promotional offers and subscription upgrade opportunities</li>
+          <li>Educational content and best practices for using the Service</li>
+        </ul>
+        <p class="text-secondary">
+          You can opt out of receiving marketing emails at any time by clicking
+          the "unsubscribe" link at the bottom of any marketing email or by
+          contacting us at support@smarterlynx.com. Opting out of marketing
+          emails will not affect transactional or service emails.
+        </p>
+      </section>
+
+      <!-- California Privacy Rights (CCPA) -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-balance-scale me-2"></i>California Privacy Rights
+          (CCPA)
+        </h2>
+        <p class="text-secondary">
+          If you are a California resident, the California Consumer Privacy Act
+          (CCPA) provides you with specific rights regarding your personal
+          information. This section describes your CCPA rights and how to
+          exercise them.
+        </p>
+
+        <p class="text-secondary">
+          <strong>Your California Privacy Rights:</strong>
+        </p>
+        <ul class="text-secondary">
+          <li>
+            <strong>Right to Know:</strong> You have the right to request that
+            we disclose what personal information we collect, use, disclose, and
+            sell about you. You can request to know the specific pieces of
+            personal information we have collected about you, as well as the
+            categories of sources, purposes for collection, and categories of
+            third parties with whom we share your information
+          </li>
+          <li>
+            <strong>Right to Delete:</strong> You have the right to request
+            deletion of your personal information that we have collected from
+            you, subject to certain exceptions under California law
+          </li>
+          <li>
+            <strong>Right to Opt-Out of Sale:</strong> You have the right to
+            opt-out of the sale of your personal information. Please note that
+            we do not sell your personal information to third parties for
+            monetary consideration or other valuable consideration
+          </li>
+          <li>
+            <strong>Right to Non-Discrimination:</strong> You have the right not
+            to receive discriminatory treatment for exercising your CCPA privacy
+            rights. We will not deny you goods or services, charge you different
+            prices, or provide you with a different level of quality for
+            exercising your CCPA rights
+          </li>
+        </ul>
+
+        <p class="text-secondary">
+          <strong>How to Exercise Your Rights:</strong>
+        </p>
+        <p class="text-secondary">
+          To exercise your California privacy rights, please contact us at
+          support@smarterlynx.com with your request. We will respond to
+          verifiable consumer requests within 45 days, or we will notify you if
+          we need additional time (up to a maximum of 90 days total). We may
+          need to verify your identity before processing your request by asking
+          you to provide information that matches the information we have on
+          file about you.
+        </p>
+
+        <p class="text-secondary">
+          You may designate an authorized agent to make a request on your
+          behalf. To do so, you must provide the authorized agent with written
+          permission to act on your behalf, and we may require you to verify
+          your identity directly with us.
+        </p>
+
+        <div class="alert alert-info border-info" role="alert">
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>Important:</strong> We do not sell your personal information.
+          We share information with third-party service providers as described
+          in the "Data Sharing and Disclosure" section of this Privacy Policy,
+          but these disclosures are for business purposes and do not constitute
+          a "sale" under the CCPA.
+        </div>
+      </section>
+
+      <!-- European Privacy Rights (GDPR) -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-shield-alt me-2"></i>European Privacy Rights (GDPR)
+        </h2>
+        <p class="text-secondary">
+          If you are a resident of the European Economic Area (EEA), United
+          Kingdom, or Switzerland, the General Data Protection Regulation (GDPR)
+          and equivalent local laws provide you with specific rights regarding
+          your personal information. Many of these rights are described in the
+          "Your Privacy Rights" section above, but this section provides
+          additional information specific to GDPR compliance.
+        </p>
+
+        <p class="text-secondary"><strong>Your GDPR Rights:</strong></p>
+        <ul class="text-secondary">
+          <li>
+            <strong>Right of Access:</strong> You have the right to obtain
+            confirmation of whether we process your personal data and to receive
+            a copy of that data in a structured, commonly used, and
+            machine-readable format
+          </li>
+          <li>
+            <strong>Right to Rectification:</strong> You have the right to
+            request correction of inaccurate or incomplete personal data
+          </li>
+          <li>
+            <strong>Right to Erasure (Right to be Forgotten):</strong> You have
+            the right to request deletion of your personal data in certain
+            circumstances, including when it is no longer necessary for the
+            purposes for which it was collected
+          </li>
+          <li>
+            <strong>Right to Restriction of Processing:</strong> You have the
+            right to request that we limit how we use your personal data in
+            certain circumstances
+          </li>
+          <li>
+            <strong>Right to Data Portability:</strong> You have the right to
+            receive your personal data in a portable format and to request that
+            we transfer it to another controller where technically feasible
+          </li>
+          <li>
+            <strong>Right to Object:</strong> You have the right to object to
+            processing based on legitimate interests or for direct marketing
+            purposes
+          </li>
+          <li>
+            <strong>Right to Withdraw Consent:</strong> Where processing is
+            based on consent, you have the right to withdraw that consent at any
+            time
+          </li>
+          <li>
+            <strong>Right to Lodge a Complaint:</strong> You have the right to
+            lodge a complaint with your local supervisory authority if you
+            believe we have violated your data protection rights
+          </li>
+        </ul>
+
+        <p class="text-secondary">
+          <strong>Legal Basis for Processing:</strong>
+        </p>
+        <p class="text-secondary">
+          As described in the "Legal Basis for Processing (GDPR)" section above,
+          we process your personal data based on one or more of the following
+          legal bases: performance of a contract, your consent, our legitimate
+          interests, or compliance with legal obligations.
+        </p>
+
+        <p class="text-secondary"><strong>Data Protection Officer:</strong></p>
+        <p class="text-secondary">
+          For questions or concerns about how we process your personal data or
+          to exercise your GDPR rights, please contact us at
+          support@smarterlynx.com. We will respond to your request within one
+          month, or we will notify you if we need additional time (up to a
+          maximum of three months total for complex requests).
+        </p>
+
+        <p class="text-secondary"><strong>Supervisory Authority:</strong></p>
+        <p class="text-secondary">
+          If you are unsatisfied with our response to your privacy concerns or
+          believe we have not complied with GDPR requirements, you have the
+          right to lodge a complaint with the supervisory authority in your
+          country or the supervisory authority where you believe the
+          infringement occurred.
+        </p>
+      </section>
+
+      <!-- Changes to This Policy -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-sync-alt me-2"></i>Changes to This Privacy Policy
+        </h2>
+        <p class="text-secondary">
+          We reserve the right to modify, update, or replace this Privacy Policy
+          at any time at our sole discretion. Changes may be necessary to
+          reflect updates to our Service, changes in applicable laws and
+          regulations, improvements to our data practices, or for other
+          operational, legal, or regulatory reasons.
+        </p>
+        <p class="text-secondary">
+          If we make material changes to this Privacy Policy that significantly
+          affect how we collect, use, or share your personal information, we
+          will notify you by:
+        </p>
+        <ul class="text-secondary">
+          <li>
+            Updating the "Last Updated" date at the top of this Privacy Policy
+          </li>
+          <li>
+            Sending an email notification to the address associated with your
+            account (for registered users)
+          </li>
+          <li>
+            Displaying a prominent notice on our Service, such as a banner or
+            pop-up notification
+          </li>
+        </ul>
+        <p class="text-secondary">
+          For non-material changes, such as minor wording updates,
+          clarifications, or corrections of typographical errors, we will update
+          the "Last Updated" date but may not provide additional notification.
+        </p>
+        <p class="text-secondary">
+          Your continued use of the Service after any changes to this Privacy
+          Policy constitutes your acceptance of the modified Privacy Policy. If
+          you do not agree to the modified Privacy Policy, you must discontinue
+          your use of the Service and may request deletion of your account and
+          personal information as described in the "Your Privacy Rights"
+          section.
+        </p>
+        <p class="text-secondary">
+          We encourage you to review this Privacy Policy periodically to stay
+          informed about how we collect, use, and protect your information. You
+          can always find the most current version of this Privacy Policy on our
+          website.
+        </p>
+      </section>
+
+      <!-- Governing Law -->
+      <section class="privacy-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-landmark me-2"></i>Governing Law and Jurisdiction
+        </h2>
+        <p class="text-secondary">
+          This Privacy Policy and any disputes arising out of or related to your
+          privacy or our data practices shall be governed by and construed in
+          accordance with the laws of the State of Louisiana, United States,
+          without regard to its conflict of law provisions.
+        </p>
+        <p class="text-secondary">
+          Any legal action or proceeding arising out of or related to this
+          Privacy Policy or our data practices will be brought exclusively in
+          the federal or state courts located in Louisiana, and you hereby
+          consent to personal jurisdiction and venue in those courts. This
+          choice of jurisdiction does not prevent you from asserting rights
+          under data protection laws in your jurisdiction, such as GDPR or CCPA
+          rights.
+        </p>
+        <p class="text-secondary">
+          This Privacy Policy is consistent with and incorporated into our Terms
+          of Service. In the event of any conflict between this Privacy Policy
+          and the Terms of Service, the Terms of Service shall control with
+          respect to matters not specifically addressed in this Privacy Policy.
+        </p>
+      </section>
+
+      <!-- Contact Information -->
+      <section class="privacy-section mb-4">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-envelope me-2"></i>Contact Information
+        </h2>
+        <p class="text-secondary">
+          If you have any questions, concerns, or feedback about this Privacy
+          Policy, please don't hesitate to contact us. We're here to help and
+          will respond to your inquiry as quickly as possible.
+        </p>
+        <div class="card border-primary">
+          <div class="card-body">
+            <h5 class="card-title text-primary">
+              <i class="fas fa-paper-plane me-2"></i>Get in Touch
+            </h5>
+            <p class="card-text text-secondary mb-2">
+              <i class="fas fa-building me-2"></i><strong>Company:</strong>
+              Snow Lynx Software, LLC
+            </p>
+            <p class="card-text text-secondary mb-2">
+              <i class="fas fa-envelope me-2"></i><strong>Email:</strong>
+              support@smarterlynx.com
+            </p>
+            <p class="card-text text-secondary mb-0">
+              <i class="fas fa-globe me-2"></i><strong>Website:</strong>
+              <a href="https://parallax.com" class="text-primary"
+                >parallax.com</a
+              >
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Bottom Back Button -->
+    <div class="text-center mb-4">
+      <a href="/" class="btn btn-outline-light btn-lg">
+        <i class="fas fa-arrow-left me-2"></i>Back to Home
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Back to Top Button -->
+<button
+  type="button"
+  id="backToTopBtn"
+  class="btn btn-primary rounded-circle back-to-top-btn shadow-lg"
+  aria-label="Back to top"
+>
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<style>
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Prevent layout shifts */
+  html,
+  body {
+    overflow-x: hidden;
+    width: 100%;
+    font-family: "Roboto", sans-serif;
+  }
+
+  /* Privacy page specific styles */
+  .privacy-page {
+    position: relative;
+    width: 100%;
+  }
+
+  .privacy-content {
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  /* Section spacing and styling */
+  .privacy-section {
+    scroll-margin-top: 2rem;
+  }
+
+  .privacy-section h2 {
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--md-sys-color-primary-container);
+    margin-bottom: 1.5rem;
+  }
+
+  .privacy-section p,
+  .privacy-section li {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .privacy-section ul,
+  .privacy-section ol {
+    padding-left: 1.5rem;
+  }
+
+  .privacy-section li {
+    margin-bottom: 0.75rem;
+  }
+
+  /* Back to top button */
+  .back-to-top-btn {
+    position: fixed !important;
+    bottom: 2rem !important;
+    right: 2rem !important;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+    max-width: 56px;
+    max-height: 56px;
+    border: none;
+    opacity: 1;
+    visibility: visible;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    pointer-events: auto;
+  }
+
+  .back-to-top-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .back-to-top-btn:active {
+    transform: translateY(-2px);
+  }
+
+  .back-to-top-btn:focus {
+    outline: 2px solid var(--md-sys-color-primary);
+    outline-offset: 2px;
+  }
+
+  /* Fade in animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Alert customization */
+  .alert {
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .privacy-content {
+      padding: 1.5rem !important;
+    }
+
+    .privacy-section h2 {
+      font-size: 1.5rem;
+    }
+
+    .back-to-top-btn {
+      bottom: 1rem;
+      right: 1rem;
+      width: 48px;
+      height: 48px;
+      font-size: 1rem;
+    }
+
+    .display-4 {
+      font-size: 2rem;
+    }
+  }
+
+  /* Card styling for contact section */
+  .card {
+    border-radius: 1rem;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Link styling in content */
+  .privacy-section a {
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+  }
+
+  .privacy-section a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  // Back to top button functionality
+  (function () {
+    "use strict";
+
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+    if (!backToTopBtn) return;
+
+    // Scroll to top when button is clicked
+    backToTopBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Use instant scroll to avoid layout issues
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+
+      return false;
+    });
+
+    // Add keyboard accessibility
+    backToTopBtn.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        e.stopPropagation();
+
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "smooth",
+        });
+
+        return false;
+      }
+    });
+  })();
+</script>
+
+{{end}}

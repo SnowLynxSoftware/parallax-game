@@ -1,0 +1,357 @@
+{{define "content"}}
+<div
+  class="register-section bg-gradient-primary min-vh-100 d-flex align-items-center py-5"
+>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-7">
+        <div
+          class="register-card bg-white rounded-4 shadow-lg overflow-hidden fade-in"
+        >
+          <!-- Header Section -->
+          <div class="register-header text-center p-4 pb-3">
+            <div class="brand-icon mb-3">
+              <i class="fas fa-link text-primary" style="font-size: 2.5rem"></i>
+            </div>
+            <h2 class="fw-bold text-primary mb-2">Join Parallax</h2>
+            <p class="text-muted mb-0">
+              Create your account and track link performance to maximize your
+              outreach
+            </p>
+          </div>
+
+          <!-- Form Section -->
+          <div class="register-form px-4 pb-4 mt-4">
+            <!-- Success/Error Messages -->
+            <div id="alertContainer" class="mb-3" style="display: none">
+              <div id="alertMessage" class="alert" role="alert"></div>
+            </div>
+
+            <form id="registerForm" class="needs-validation" novalidate>
+              <!-- Username Field -->
+              <div class="mb-4">
+                <label
+                  class="form-label fw-medium text-dark"
+                  for="inputUsername"
+                >
+                  <i class="fas fa-user me-2 text-primary"></i>Display Name
+                </label>
+                <div class="input-group">
+                  <input
+                    class="form-control form-control-lg border-2 rounded-3"
+                    id="inputUsername"
+                    type="text"
+                    name="display_name"
+                    placeholder="Choose a username"
+                    required
+                    minlength="3"
+                  />
+                  <div class="invalid-feedback">
+                    Please choose a display name (min 3 characters).
+                  </div>
+                </div>
+              </div>
+
+              <!-- Email Field -->
+              <div class="mb-4">
+                <label class="form-label fw-medium text-dark" for="inputEmail">
+                  <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                </label>
+                <div class="input-group">
+                  <input
+                    class="form-control form-control-lg border-2 rounded-3"
+                    id="inputEmail"
+                    type="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    required
+                  />
+                  <div class="invalid-feedback">
+                    Please provide a valid email address.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Password Field -->
+              <div class="mb-4">
+                <label
+                  class="form-label fw-medium text-dark"
+                  for="inputPassword"
+                >
+                  <i class="fas fa-lock me-2 text-primary"></i>Password
+                </label>
+                <div class="input-group position-relative">
+                  <input
+                    class="form-control form-control-lg border-2 rounded-3"
+                    id="inputPassword"
+                    type="password"
+                    name="password"
+                    placeholder="Create a secure password"
+                    required
+                    minlength="8"
+                  />
+                  <button
+                    class="btn btn-outline-secondary border-0 position-absolute end-0 top-50 translate-middle-y me-2"
+                    type="button"
+                    id="togglePassword"
+                    style="z-index: 5"
+                  >
+                    <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                  </button>
+                  <div class="invalid-feedback">
+                    Password must be at least 8 characters long.
+                  </div>
+                </div>
+                <small class="text-muted">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Use 8+ characters with a mix of letters, numbers & symbols
+                </small>
+              </div>
+
+              <!-- Confirm Password Field -->
+              <div class="mb-4">
+                <label
+                  class="form-label fw-medium text-dark"
+                  for="inputConfirmPassword"
+                >
+                  <i class="fas fa-lock me-2 text-primary"></i>Confirm Password
+                </label>
+                <div class="input-group">
+                  <input
+                    class="form-control form-control-lg border-2 rounded-3"
+                    id="inputConfirmPassword"
+                    type="password"
+                    name="confirm_password"
+                    placeholder="Confirm your password"
+                    required
+                  />
+                  <div class="invalid-feedback">Passwords do not match.</div>
+                </div>
+              </div>
+
+              <!-- Terms Checkbox -->
+              <div class="mb-4">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="agreeTerms"
+                    required
+                  />
+                  <label class="form-check-label text-muted" for="agreeTerms">
+                    I agree to the
+                    <a
+                      href="/terms"
+                      class="text-primary text-decoration-none"
+                      target="_blank"
+                      >Terms of Service</a
+                    >
+                    and
+                    <a
+                      href="/privacy"
+                      class="text-primary text-decoration-none"
+                      target="_blank"
+                      >Privacy Policy</a
+                    >
+                  </label>
+                  <div class="invalid-feedback">
+                    You must agree to the terms of service and privacy policy to
+                    continue.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="d-grid mb-4">
+                <button
+                  class="btn btn-primary btn-lg py-3 rounded-3 fw-medium"
+                  type="submit"
+                  id="submitBtn"
+                >
+                  <span id="submitText">
+                    <i class="fas fa-user-plus me-2"></i>
+                    Create My Account
+                  </span>
+                  <span id="loadingText" style="display: none">
+                    <i class="fas fa-spinner fa-spin me-2"></i>
+                    Creating Account...
+                  </span>
+                </button>
+              </div>
+
+              <!-- Sign In Link -->
+              <div class="text-center">
+                <p class="text-muted mb-0">
+                  Already have an account?
+                  <a
+                    href="/login"
+                    class="text-primary text-decoration-none fw-medium"
+                  >
+                    Sign in here
+                  </a>
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Back to Home -->
+        <div class="text-center mt-4">
+          <a href="/" class="btn btn-outline-light btn-lg rounded-pill px-4">
+            <i class="fas fa-arrow-left me-2"></i>
+            Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  html,
+  body {
+    font-family: "Roboto", sans-serif;
+  }
+</style>
+
+<script>
+  // DOM Elements
+  const form = document.getElementById("registerForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const submitText = document.getElementById("submitText");
+  const loadingText = document.getElementById("loadingText");
+  const alertContainer = document.getElementById("alertContainer");
+  const alertMessage = document.getElementById("alertMessage");
+  const password = document.getElementById("inputPassword");
+  const confirmPassword = document.getElementById("inputConfirmPassword");
+
+  // Show alert message
+  function showAlert(message, type = "danger") {
+    alertMessage.className = `alert alert-${type}`;
+    alertMessage.innerHTML = `<i class="fas fa-${
+      type === "success" ? "check-circle" : "exclamation-triangle"
+    } me-2"></i>${message}`;
+    alertContainer.style.display = "block";
+    alertContainer.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  // Hide alert message
+  function hideAlert() {
+    alertContainer.style.display = "none";
+  }
+
+  // Toggle loading state
+  function setLoading(loading) {
+    if (loading) {
+      submitBtn.disabled = true;
+      submitText.style.display = "none";
+      loadingText.style.display = "inline";
+    } else {
+      submitBtn.disabled = false;
+      submitText.style.display = "inline";
+      loadingText.style.display = "none";
+    }
+  }
+
+  // Password toggle functionality
+  document
+    .getElementById("togglePassword")
+    .addEventListener("click", function () {
+      const icon = document.getElementById("togglePasswordIcon");
+
+      if (password.type === "password") {
+        password.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash");
+      } else {
+        password.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye");
+      }
+    });
+
+  // Custom password confirmation validation
+  function validatePasswordMatch() {
+    if (password.value !== confirmPassword.value) {
+      confirmPassword.setCustomValidity("Passwords do not match");
+    } else {
+      confirmPassword.setCustomValidity("");
+    }
+  }
+
+  password.addEventListener("input", validatePasswordMatch);
+  confirmPassword.addEventListener("input", validatePasswordMatch);
+
+  // Form submission handler
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    hideAlert();
+    validatePasswordMatch();
+
+    if (!form.checkValidity()) {
+      form.classList.add("was-validated");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Collect form data
+      const formData = {
+        display_name: document
+          .getElementById("inputUsername")
+          .value.trim()
+          .toLowerCase(),
+        email: document.getElementById("inputEmail").value.trim().toLowerCase(),
+        password: password.value,
+        confirm_password: confirmPassword.value,
+      };
+
+      // Validate passwords match
+      if (formData.password !== formData.confirm_password) {
+        throw new Error("Passwords do not match");
+      }
+
+      // Check terms agreement
+      if (!document.getElementById("agreeTerms").checked) {
+        throw new Error(
+          "You must agree to the Terms of Service and Privacy Policy"
+        );
+      }
+
+      // Remove confirm_password from payload (server doesn't need it)
+      delete formData.confirm_password;
+
+      // Submit form via FETCH
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const result = await response.text();
+        showAlert(result, "success");
+        form.reset();
+        form.classList.remove("was-validated");
+      } else {
+        const errorText = await response.text();
+        throw new Error(
+          errorText || `Registration failed (${response.status})`
+        );
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      showAlert(
+        error.message ||
+          "An error occurred during registration. Please try again later or contact support if the issue persists."
+      );
+    } finally {
+      setLoading(false);
+    }
+  });
+</script>
+{{end}}

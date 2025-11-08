@@ -1,0 +1,487 @@
+{{define "content"}}
+
+<style>
+  /* Full-page background */
+  .leaderboards-container {
+    min-height: 100vh;
+    background-image: url("/static/images/welcome_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  /* Dark overlay */
+  .leaderboards-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 0;
+  }
+
+  /* Content layer */
+  .content-layer {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Page header */
+  .page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: #8a6edc;
+    font-family: "Cinzel", serif;
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px rgba(138, 110, 220, 0.8),
+      0 4px 12px rgba(0, 0, 0, 0.8);
+  }
+
+  .subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+  }
+
+  /* Tab Navigation */
+  .leaderboard-tabs {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    padding: 1rem 2rem;
+    border: 2px solid rgba(103, 80, 164, 0.5);
+    background: rgba(26, 26, 46, 0.85);
+    color: #fff;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: "Cinzel", serif;
+    backdrop-filter: blur(10px);
+  }
+
+  .tab-btn:hover {
+    background: rgba(103, 80, 164, 0.5);
+    border-color: rgba(138, 110, 220, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(103, 80, 164, 0.5);
+  }
+
+  .tab-btn.active {
+    background: linear-gradient(135deg, #6750a4, #8b75c1);
+    border-color: #8b75c1;
+    box-shadow: 0 6px 20px rgba(103, 80, 164, 0.6);
+  }
+
+  .tab-btn i {
+    margin-right: 0.5rem;
+  }
+
+  /* Leaderboard Content */
+  #leaderboard-content {
+    background: rgba(26, 26, 46, 0.85);
+    border: 2px solid rgba(103, 80, 164, 0.3);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    padding: 2rem;
+    min-height: 400px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 3rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+  }
+
+  .loading i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+    color: #8a6edc;
+  }
+
+  /* Leaderboard Header */
+  .leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(103, 80, 164, 0.3);
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .leaderboard-title {
+    font-size: 1.5rem;
+    color: #8a6edc;
+    font-family: "Cinzel", serif;
+    font-weight: 600;
+  }
+
+  .last-updated {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+  }
+
+  .last-updated i {
+    margin-right: 0.5rem;
+  }
+
+  /* Leaderboard Table */
+  .leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .leaderboard-table th {
+    text-align: left;
+    padding: 1rem;
+    color: #8a6edc;
+    font-weight: bold;
+    font-family: "Cinzel", serif;
+    border-bottom: 2px solid rgba(103, 80, 164, 0.3);
+  }
+
+  .leaderboard-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(103, 80, 164, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .leaderboard-table tr:hover {
+    background: rgba(103, 80, 164, 0.2);
+  }
+
+  .leaderboard-table tr.current-user {
+    background: rgba(255, 193, 7, 0.15);
+    border-left: 4px solid #ffc107;
+  }
+
+  .leaderboard-table tr.current-user:hover {
+    background: rgba(255, 193, 7, 0.25);
+  }
+
+  /* Rank Badges */
+  .rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  .rank-1 {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #000;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5);
+  }
+  .rank-2 {
+    background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+    color: #000;
+    box-shadow: 0 4px 12px rgba(192, 192, 192, 0.5);
+  }
+  .rank-3 {
+    background: linear-gradient(135deg, #cd7f32, #daa520);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(205, 127, 50, 0.5);
+  }
+  .rank-other {
+    background: rgba(103, 80, 164, 0.5);
+    color: #fff;
+  }
+
+  /* Score Value */
+  .score-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #8a6edc;
+  }
+
+  /* Current User Section */
+  .current-user-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid rgba(103, 80, 164, 0.3);
+  }
+
+  .current-user-section h3 {
+    color: #ffc107;
+    margin-bottom: 1rem;
+    font-family: "Cinzel", serif;
+  }
+
+  .current-user-section h3 i {
+    margin-right: 0.5rem;
+  }
+
+  /* Error Message */
+  .error-message {
+    text-align: center;
+    padding: 2rem;
+    color: #ff5252;
+    font-size: 1.1rem;
+  }
+
+  .error-message i {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .leaderboards-container {
+      padding: 0;
+    }
+
+    .content-layer .container {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.8rem;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    #leaderboard-content {
+      padding: 1rem;
+    }
+
+    .leaderboard-table {
+      font-size: 0.9rem;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+      padding: 0.75rem 0.5rem;
+    }
+
+    .rank-badge {
+      width: 32px;
+      height: 32px;
+      font-size: 0.9rem;
+    }
+
+    .score-value {
+      font-size: 1rem;
+    }
+
+    .leaderboard-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<div class="leaderboards-container">
+  {{template "navbar" .}}
+
+  <div class="content-layer">
+    <div class="container py-5">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>
+          <i class="fas fa-trophy"></i>
+          Dimensional Leaderboards
+        </h1>
+        <p class="subtitle">
+          Compete against explorers across all parallel worlds
+        </p>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="leaderboard-tabs">
+        <button class="tab-btn active" data-type="legendary">
+          <i class="fas fa-gem"></i> Legendary Items
+        </button>
+        <button class="tab-btn" data-type="power">
+          <i class="fas fa-bolt"></i> Dimensional Power
+        </button>
+        <button class="tab-btn" data-type="expeditions">
+          <i class="fas fa-rocket"></i> Total Expeditions
+        </button>
+      </div>
+
+      <!-- Leaderboard Content (populated via JS) -->
+      <div id="leaderboard-content">
+        <div class="loading">
+          <i class="fas fa-spinner fa-spin"></i> Loading leaderboard...
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentType = "legendary";
+
+  // Tab switching
+  document.querySelectorAll(".tab-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document
+        .querySelectorAll(".tab-btn")
+        .forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentType = btn.dataset.type;
+      loadLeaderboard(currentType);
+    });
+  });
+
+  // Load leaderboard data
+  async function loadLeaderboard(type) {
+    const content = document.getElementById("leaderboard-content");
+    content.innerHTML =
+      '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+
+    try {
+      const response = await fetch(`/api/leaderboards/${type}`);
+
+      if (!response.ok) {
+        throw new Error("Failed to load leaderboard");
+      }
+
+      const data = await response.json();
+      renderLeaderboard(data);
+    } catch (error) {
+      console.error("Error loading leaderboard:", error);
+      content.innerHTML =
+        '<div class="error-message"><i class="fas fa-exclamation-triangle"></i> Leaderboard temporarily unavailable. Please try again later.</div>';
+    }
+  }
+
+  // Render leaderboard HTML
+  function renderLeaderboard(data) {
+    const typeNames = {
+      legendary: "Legendary Items Collected",
+      power: "Dimensional Power Score",
+      expeditions: "Total Expeditions Completed",
+    };
+
+    let html = `
+            <div class="leaderboard-header">
+                <h2 class="leaderboard-title">${
+                  typeNames[data.leaderboard_type]
+                }</h2>
+                <span class="last-updated">
+                    <i class="fas fa-sync-alt"></i> Updated: ${formatDate(
+                      data.last_synced
+                    )}
+                </span>
+            </div>
+
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">Rank</th>
+                        <th>Explorer</th>
+                        <th style="text-align: right;">Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+    data.top_players.forEach((player) => {
+      const rankClass = player.rank <= 3 ? `rank-${player.rank}` : "rank-other";
+      const rowClass = player.is_current_user ? "current-user" : "";
+
+      html += `
+                <tr class="${rowClass}">
+                    <td>
+                        <div class="rank-badge ${rankClass}">${
+        player.rank
+      }</div>
+                    </td>
+                    <td>
+                        ${player.username}
+                        ${
+                          player.is_current_user
+                            ? '<span style="color: #ffc107;"><i class="fas fa-user"></i> You</span>'
+                            : ""
+                        }
+                    </td>
+                    <td style="text-align: right;">
+                        <span class="score-value">${player.score.toLocaleString()}</span>
+                    </td>
+                </tr>
+            `;
+    });
+
+    html += "</tbody></table>";
+
+    // Show current user rank if outside top 20
+    if (data.current_user_rank && !data.current_user_rank.is_current_user) {
+      html += `
+                <div class="current-user-section">
+                    <h3><i class="fas fa-user"></i> Your Ranking</h3>
+                    <table class="leaderboard-table">
+                        <tbody>
+                            <tr class="current-user">
+                                <td style="width: 80px;">
+                                    <div class="rank-badge rank-other">${
+                                      data.current_user_rank.rank
+                                    }</div>
+                                </td>
+                                <td>${data.current_user_rank.username}</td>
+                                <td style="text-align: right;">
+                                    <span class="score-value">${data.current_user_rank.score.toLocaleString()}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+    }
+
+    document.getElementById("leaderboard-content").innerHTML = html;
+  }
+
+  // Format date
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMinutes = Math.floor((now - date) / 60000);
+
+    if (diffMinutes < 1) return "Just now";
+    if (diffMinutes < 60) return `${diffMinutes}m ago`;
+    if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}h ago`;
+    return date.toLocaleDateString();
+  }
+
+  // Load default leaderboard on page load
+  document.addEventListener("DOMContentLoaded", function () {
+    loadLeaderboard(currentType);
+  });
+
+  // Auto-refresh every 5 minutes
+  setInterval(() => {
+    loadLeaderboard(currentType);
+  }, 300000);
+</script>
+
+{{end}}

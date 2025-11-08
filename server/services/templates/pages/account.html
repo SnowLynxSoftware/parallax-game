@@ -1,0 +1,434 @@
+{{define "content"}}
+<div class="account-section bg-light min-vh-100">
+  {{template "navbar" .}}
+
+  <!-- BACK TO TEAMS BUTTON -->
+  <div class="container mt-3">
+    <a href="/teams" class="btn btn-outline-secondary btn-sm">
+      <i class="fas fa-arrow-left me-2"></i>Go Back
+    </a>
+  </div>
+
+  <!-- PAGE HEADING -->
+  <div class="container text-center my-4">
+    <h2 class="fw-bold">Account Settings</h2>
+  </div>
+
+  <!-- TAB NAVIGATION -->
+  <div class="container">
+    <ul
+      class="nav nav-pills justify-content-center mb-4"
+      id="accountTabs"
+      role="tablist"
+    >
+      <li class="nav-item" role="presentation">
+        <a
+          class="nav-link active px-4"
+          id="info-tab"
+          data-tab="info"
+          href="#"
+          role="tab"
+          aria-controls="info-content"
+          aria-selected="true"
+        >
+          <i class="fas fa-info-circle me-2"></i>Info
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- TAB CONTENT CONTAINERS -->
+  <div class="container pb-5">
+    <!-- Info Tab Content (Default Active) -->
+    <div
+      id="info-content"
+      class="tab-pane active"
+      role="tabpanel"
+      aria-labelledby="info-tab"
+    >
+      <!-- Info Tab Content -->
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+          <!-- PROFILE INFORMATION CARD -->
+          <div class="card shadow-sm border rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+              <h5 class="fw-bold mb-0">
+                <i class="fas fa-user-circle text-primary me-2"></i>Profile
+                Information
+              </h5>
+            </div>
+            <div class="card-body px-4 pb-4">
+              <!-- Email Address (Read-Only) -->
+              <div class="mb-3">
+                <label for="email" class="form-label fw-medium text-muted small"
+                  >Email Address</label
+                >
+                <div class="input-group">
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    value="{{.Data.Email}}"
+                    disabled
+                    readonly
+                    style="background-color: #f8f9fa; cursor: not-allowed"
+                  />
+                  <span
+                    class="input-group-text bg-light border-start-0"
+                    style="cursor: default"
+                  >
+                    <i class="fas fa-envelope text-muted"></i>
+                  </span>
+                </div>
+                <small class="text-muted"
+                  >Your email address cannot be changed.</small
+                >
+              </div>
+
+              <!-- Display Name (Read-Only) -->
+              <div class="mb-3">
+                <label
+                  for="display-name"
+                  class="form-label fw-medium text-muted small"
+                  >Display Name</label
+                >
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="display-name"
+                    value="{{.Data.Username}}"
+                    disabled
+                    readonly
+                    style="background-color: #f8f9fa; cursor: not-allowed"
+                  />
+                  <span
+                    class="input-group-text bg-light border-start-0"
+                    style="cursor: default"
+                  >
+                    <i class="fas fa-user text-muted"></i>
+                  </span>
+                </div>
+                <small class="text-muted"
+                  >Your display name cannot be changed.</small
+                >
+              </div>
+
+              <!-- Account Created Date (Read-Only Display) -->
+              <div class="mb-0">
+                <label class="form-label fw-medium text-muted small"
+                  >Account Created</label
+                >
+                <div
+                  class="d-flex align-items-center p-3 bg-light rounded-3 border"
+                >
+                  <i class="fas fa-calendar-alt text-primary me-3 fs-5"></i>
+                  <div>
+                    <span class="fw-medium" id="account-created-date"
+                      >Loading...</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECURITY SETTINGS CARD -->
+          <div class="card shadow-sm border rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+              <h5 class="fw-bold mb-0">
+                <i class="fas fa-shield-alt text-primary me-2"></i>Security
+              </h5>
+            </div>
+            <div class="card-body px-4 pb-4">
+              <!-- Success/Error Alert for Password Reset -->
+              <div
+                id="passwordResetAlertContainer"
+                class="mb-3"
+                style="display: none"
+              >
+                <div
+                  id="passwordResetAlertMessage"
+                  class="alert"
+                  role="alert"
+                ></div>
+              </div>
+
+              <!-- Password Reset Button -->
+              <div class="d-grid gap-2">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  id="request-password-reset"
+                >
+                  <span id="passwordResetText">
+                    <i class="fas fa-key me-2"></i>Request Password Reset
+                  </span>
+                  <span id="passwordResetLoading" style="display: none">
+                    <i class="fas fa-spinner fa-spin me-2"></i>Sending...
+                  </span>
+                </button>
+              </div>
+
+              <!-- Informational Text -->
+              <div
+                class="alert alert-info mt-3 mb-0 d-flex align-items-start"
+                role="alert"
+              >
+                <i class="fas fa-info-circle me-2 mt-1"></i>
+                <small>
+                  Click the button above to receive a secure password reset link
+                  at your registered email address.
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STYLES -->
+  <style>
+    html,
+    body {
+      font-family: "Roboto", sans-serif;
+    }
+  </style>
+  <style>
+    /* Tab Navigation Styling */
+    #accountTabs .nav-link {
+      color: #6c757d;
+      border: none;
+      border-bottom: 3px solid transparent;
+      border-radius: 0;
+      transition: all 0.1s ease;
+      font-weight: 500;
+    }
+
+    #accountTabs .nav-link:hover {
+      color: #0d6efd;
+      background-color: transparent;
+    }
+
+    #accountTabs .nav-link.active {
+      color: #0d6efd;
+      background-color: transparent;
+      border-bottom: 3px solid #0d6efd;
+    }
+
+    /* Tab Content Transition */
+    .tab-pane {
+      opacity: 0;
+      transition: opacity 0.1s ease-in-out;
+    }
+
+    .tab-pane.active {
+      opacity: 1;
+    }
+
+    /* Responsive Navbar Brand */
+    @media (max-width: 576px) {
+      .navbar-brand span {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Info Tab Styling */
+    .card {
+      transition: box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .card-header h5 {
+      font-size: 1.1rem;
+    }
+
+    /* Disabled Input Styling */
+    input:disabled,
+    input[readonly] {
+      opacity: 0.8;
+    }
+
+    .input-group-text {
+      border-left: 0;
+    }
+
+    /* Account Created Date Box */
+    .bg-light.rounded-3 {
+      background-color: #f8f9fa !important;
+    }
+
+    /* Alert Info Box */
+    .alert-info {
+      background-color: #e7f3ff;
+      border-color: #b3d9ff;
+      color: #004085;
+    }
+  </style>
+
+  <!-- SCRIPTS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Tab Switching Logic
+      const tabButtons = document.querySelectorAll("#accountTabs .nav-link");
+      const tabPanes = document.querySelectorAll(".tab-pane");
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          const targetTab = this.getAttribute("data-tab");
+
+          // Remove active class from all tabs and buttons
+          tabButtons.forEach((btn) => {
+            btn.classList.remove("active");
+            btn.setAttribute("aria-selected", "false");
+          });
+          tabPanes.forEach((pane) => {
+            pane.classList.remove("active");
+            pane.style.display = "none";
+          });
+
+          // Add active class to clicked button and corresponding pane
+          this.classList.add("active");
+          this.setAttribute("aria-selected", "true");
+
+          const targetPane = document.getElementById(targetTab + "-content");
+          if (targetPane) {
+            targetPane.style.display = "block";
+            // Small delay to trigger CSS transition
+            setTimeout(() => {
+              targetPane.classList.add("active");
+            }, 10);
+          }
+        });
+      });
+
+      // Format and Display Account Creation Date
+      function formatAccountCreationDate() {
+        const createdAtStr = "{{.Data.CreatedAt}}"; // ISO timestamp from backend
+
+        if (createdAtStr) {
+          try {
+            const createdDate = new Date(createdAtStr);
+            const options = {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            };
+            const formattedDate = createdDate.toLocaleDateString(
+              "en-US",
+              options
+            );
+
+            document.getElementById("account-created-date").textContent =
+              formattedDate;
+          } catch (error) {
+            console.error("Error parsing date:", error);
+            document.getElementById("account-created-date").textContent =
+              "Date unavailable";
+          }
+        } else {
+          document.getElementById("account-created-date").textContent =
+            "Date unavailable";
+        }
+      }
+
+      // Initialize on page load
+      formatAccountCreationDate();
+
+      // Password Reset Functionality
+      const passwordResetBtn = document.getElementById(
+        "request-password-reset"
+      );
+      const passwordResetText = document.getElementById("passwordResetText");
+      const passwordResetLoading = document.getElementById(
+        "passwordResetLoading"
+      );
+      const passwordResetAlertContainer = document.getElementById(
+        "passwordResetAlertContainer"
+      );
+      const passwordResetAlertMessage = document.getElementById(
+        "passwordResetAlertMessage"
+      );
+
+      // Get user email from template
+      const userEmail = "{{.Data.Email}}";
+
+      // Show password reset alert message
+      function showPasswordResetAlert(message, type = "danger") {
+        passwordResetAlertMessage.className = `alert alert-${type}`;
+        passwordResetAlertMessage.innerHTML = `<i class="fas fa-${
+          type === "success" ? "check-circle" : "exclamation-triangle"
+        } me-2"></i>${message}`;
+        passwordResetAlertContainer.style.display = "block";
+        passwordResetAlertContainer.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }
+
+      // Hide password reset alert message
+      function hidePasswordResetAlert() {
+        passwordResetAlertContainer.style.display = "none";
+      }
+
+      // Toggle password reset button loading state
+      function setPasswordResetLoading(loading) {
+        if (loading) {
+          passwordResetBtn.disabled = true;
+          passwordResetText.style.display = "none";
+          passwordResetLoading.style.display = "inline";
+        } else {
+          passwordResetBtn.disabled = false;
+          passwordResetText.style.display = "inline";
+          passwordResetLoading.style.display = "none";
+        }
+      }
+
+      // Password reset button click handler
+      passwordResetBtn.addEventListener("click", async function () {
+        hidePasswordResetAlert();
+        setPasswordResetLoading(true);
+
+        try {
+          // Send password reset email request
+          const response = await fetch("/api/auth/send-reset-password-email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify({
+              email: userEmail,
+            }),
+          });
+
+          if (response.ok) {
+            showPasswordResetAlert(
+              "Password reset link sent! Please check your email inbox and spam folder for instructions.",
+              "success"
+            );
+          } else {
+            const errorText = await response.text();
+            throw new Error(
+              errorText || `Failed to send reset email (${response.status})`
+            );
+          }
+        } catch (error) {
+          console.error("Password reset error:", error);
+          showPasswordResetAlert(
+            error.message || "Failed to send reset email. Please try again."
+          );
+        } finally {
+          setPasswordResetLoading(false);
+        }
+      });
+    });
+  </script>
+</div>
+{{end}}

@@ -1,0 +1,143 @@
+{{define "content"}}
+<div class="fishing-section bg-light min-vh-100">
+  {{template "navbar" .}}
+  <style>
+    @import url("https://rocketcatmultiverse.github.io/multiversal-fishing-simulator/styles.css");
+    .fishing-section {
+      padding-top: 70px; /* Adjust based on navbar height */
+      background-color: black !important;
+    }
+  </style>
+
+  <!-- Newsfeed Section -->
+  <div id="newsfeed">
+    <div id="newsfeed-content">
+      <span class="news-item"
+        >Local fisherman discovers fish can be caught with buttons!</span
+      >
+      <span class="news-item"
+        >Scientists baffled by exponential fish growth patterns</span
+      >
+      <span class="news-item"
+        >Breaking: New pond discovered in neighboring universe</span
+      >
+      <span class="news-item"
+        >Fish prices skyrocket as demand reaches infinity</span
+      >
+      <span class="news-item"
+        >Multiversal fishing license now required for advanced anglers</span
+      >
+    </div>
+  </div>
+
+  <!-- Main Game Area -->
+  <div id="game-container">
+    <!-- Fish Counter -->
+    <div id="fish-counter">
+      <h1>Fish: <span id="fish-display">0</span></h1>
+    </div>
+
+    <!-- Fishing Controls -->
+    <div id="fishing-controls">
+      <div class="button-container">
+        <button id="catch-fish-btn" class="game-button primary">
+          Catch Fish
+        </button>
+        <div id="fishing-progress" class="progress-overlay hidden">
+          <div id="fishing-progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Net Controls -->
+    <div id="net-controls">
+      <div class="button-container">
+        <button id="collect-nets-btn" class="game-button secondary">
+          Collect Nets (<span id="net-count">0</span>)
+        </button>
+        <div id="net-auto-collect-progress" class="progress-overlay hidden">
+          <div id="net-auto-collect-progress-fill"></div>
+        </div>
+      </div>
+      <div id="net-progress" class="progress-bar">
+        <div id="net-progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Upgrade Sections -->
+    <div id="upgrades-container">
+      <!-- Local Upgrades (apply to current tier only) -->
+      <div class="upgrade-section">
+        <h3>Local Upgrades</h3>
+        <div id="local-upgrades"></div>
+      </div>
+
+      <!-- General Upgrades (persist across tiers) -->
+      <div class="upgrade-section">
+        <h3>General Upgrades</h3>
+        <div id="general-upgrades"></div>
+      </div>
+
+      <!-- Progression Upgrades (Multiply and Ascend) -->
+      <div class="upgrade-section">
+        <h3>Progression</h3>
+        <div id="progression-upgrades"></div>
+      </div>
+
+      <!-- Autobuyers removed -->
+    </div>
+
+    <!-- Multiverse Display -->
+    <div id="containers-display">
+      <h3>Multiverse</h3>
+      <div id="containers-list"></div>
+    </div>
+
+    <!-- Purchased Upgrades -->
+    <div id="purchased-upgrades-display">
+      <h3>Purchased Upgrades</h3>
+      <div id="purchased-upgrades-list"></div>
+    </div>
+
+    <!-- Universe Information removed -->
+  </div>
+
+  <!-- Parallel Multiverses Display -->
+  <div id="parallel-multiverses-display" style="display: none">
+    <h3>
+      Parallel Multiverses:
+      <span id="parallel-multiverses-count">2 (1.20x)</span>
+    </h3>
+    <div id="parallelized-propagation-fps" style="display: none">
+      <div>
+        Parallelized Propagation FPS:
+        <span id="parallelized-propagation-fps-value">0</span>
+      </div>
+      <div>
+        Adjusted fish per tick:
+        <span id="parallelized-propagation-fish-per-tick">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div id="infinity-progress">
+    <div id="infinity-progress-fill"></div>
+    <div id="infinity-text">Progress to Infinity Fish</div>
+  </div>
+
+  <!-- Debug Console (hidden by default) -->
+  <div id="debug-console" class="hidden">
+    <h3>Debug Console</h3>
+    <input type="text" id="debug-input" placeholder="Enter debug command..." />
+    <div id="debug-output"></div>
+  </div>
+
+  <script src="https://rocketcatmultiverse.github.io/multiversal-fishing-simulator/game-engine.js"></script>
+  <script src="https://rocketcatmultiverse.github.io/multiversal-fishing-simulator/game-state.js"></script>
+  <script src="https://rocketcatmultiverse.github.io/multiversal-fishing-simulator/fishing-mechanics.js"></script>
+  <script src="https://rocketcatmultiverse.github.io/multiversal-fishing-simulator/progression-system.js"></script>
+  <script src="https://rocketcatmultiverse.github.io/multiversal-fishing-simulator/ui-manager.js"></script>
+  <script src="https://rocketcatmultiverse.github.io/multiversal-fishing-simulator/main.js"></script>
+</div>
+{{end}}

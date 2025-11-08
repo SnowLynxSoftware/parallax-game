@@ -1,0 +1,318 @@
+{{define "content"}}
+
+<style>
+  /* Full-page background styling */
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .welcome-container {
+    min-height: 100vh;
+    background-image: url("/static/images/welcome_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  /* Dark overlay for better text readability */
+  .welcome-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+
+  /* Cherry blossom petals animation */
+  .cherry-blossom {
+    position: fixed;
+    top: -10%;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+  }
+
+  .petal {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: radial-gradient(
+      circle,
+      rgba(255, 182, 193, 0.8),
+      rgba(255, 105, 180, 0.6)
+    );
+    border-radius: 50% 0 50% 0;
+    animation: fall linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes fall {
+    0% {
+      top: -10%;
+      opacity: 0;
+      transform: translateX(0) rotate(0deg);
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 0.7;
+    }
+    100% {
+      top: 110%;
+      opacity: 0;
+      transform: translateX(100px) rotate(360deg);
+    }
+  }
+
+  /* Generate petals with varying speeds and positions */
+  .petal:nth-child(1) {
+    left: 10%;
+    animation-duration: 12s;
+    animation-delay: 0s;
+  }
+  .petal:nth-child(2) {
+    left: 25%;
+    animation-duration: 15s;
+    animation-delay: 2s;
+  }
+  .petal:nth-child(3) {
+    left: 40%;
+    animation-duration: 10s;
+    animation-delay: 4s;
+  }
+  .petal:nth-child(4) {
+    left: 55%;
+    animation-duration: 13s;
+    animation-delay: 1s;
+  }
+  .petal:nth-child(5) {
+    left: 70%;
+    animation-duration: 11s;
+    animation-delay: 3s;
+  }
+  .petal:nth-child(6) {
+    left: 85%;
+    animation-duration: 14s;
+    animation-delay: 5s;
+  }
+  .petal:nth-child(7) {
+    left: 15%;
+    animation-duration: 16s;
+    animation-delay: 2.5s;
+  }
+  .petal:nth-child(8) {
+    left: 35%;
+    animation-duration: 12s;
+    animation-delay: 4.5s;
+  }
+  .petal:nth-child(9) {
+    left: 60%;
+    animation-duration: 13s;
+    animation-delay: 1.5s;
+  }
+  .petal:nth-child(10) {
+    left: 80%;
+    animation-duration: 15s;
+    animation-delay: 3.5s;
+  }
+
+  /* Main content wrapper */
+  .content-wrapper {
+    position: relative;
+    z-index: 3;
+    padding-top: 10vh;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in 0.75s forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Semi-transparent card styling */
+  .glass-card {
+    background: rgba(15, 15, 35, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 40px rgba(147, 51, 234, 0.2);
+    padding: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Hero section styling */
+  .hero-title {
+    font-size: 4.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #a855f7, #ec4899, #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
+    margin-bottom: 0.5rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .hero-subtitle {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .button-container {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+
+  /* Description card styling */
+  .description-card {
+    margin: 0 auto;
+  }
+
+  .description-card h3 {
+    color: var(--fantasy-gold-light);
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .description-card p {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    text-align: center;
+  }
+
+  .feature-icon {
+    color: var(--fantasy-pink);
+    font-size: 1.3rem;
+    margin-right: 0.5rem;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
+    }
+
+    .glass-card {
+      padding: 2rem;
+    }
+
+    .button-container {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .btn-fantasy-primary,
+    .btn-fantasy-secondary {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+</style>
+
+<div class="welcome-container">
+  <!-- Cherry blossom effect -->
+  <div class="cherry-blossom">
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+  </div>
+
+  <!-- Main content -->
+  <div class="content-wrapper">
+    <div class="container">
+      <!-- Hero Section -->
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="glass-card text-center">
+            <h1 class="hero-title">Parallax</h1>
+            <p class="hero-subtitle">by Snow Lynx Software</p>
+
+            {{ if not .Data.PrelaunchMode }}
+            <div class="button-container">
+              <a href="/login" class="btn btn-fantasy-primary">
+                <i class="fas fa-sign-in-alt me-2"></i>Log In
+              </a>
+              <a href="register" class="btn btn-fantasy-secondary">
+                <i class="fas fa-user-plus me-2"></i>Register
+              </a>
+            </div>
+            {{ else }}
+            <p class="mt-4 text-warning">
+              <i class="fas fa-info-circle me-2"></i>
+              Game will be enabled soon!.
+            </p>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Description Section -->
+      <div class="row justify-content-center mt-4 pb-4">
+        <div class="col-lg-8">
+          <div class="glass-card description-card">
+            <h3>
+              <i class="fas fa-portal-enter feature-icon"></i>Explore Parallel
+              Dimensions
+            </h3>
+            <p>
+              Dive into an adventure across infinite realities! Command
+              expedition teams as they venture through dimensional rifts to
+              parallel Earths—each with unique laws of physics and untold
+              treasures. From volcanic wastelands to frozen tundras, cyberpunk
+              sprawls to overgrown jungles, every world offers rare artifacts
+              waiting to be discovered.
+            </p>
+            <p class="mt-3">
+              <i class="fas fa-gem feature-icon"></i>
+              Send your teams on timed expeditions, collect legendary loot,
+              upgrade your squads, and rise through the ranks. Are you ready to
+              unlock the secrets of the multiverse?
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}

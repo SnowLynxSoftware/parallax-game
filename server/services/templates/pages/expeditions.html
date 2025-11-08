@@ -1,0 +1,1017 @@
+{{define "content"}}
+
+<style>
+  /* Expeditions Page Styles - Matching Teams Page Design */
+
+  /* Full-page background */
+  .expeditions-container {
+    min-height: 100vh;
+    background-image: url("/static/images/welcome_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  /* Dark overlay */
+  .expeditions-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 0;
+  }
+
+  /* Content layer */
+  .content-layer {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Page header */
+  .page-header {
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Team Selector Section */
+  .team-selector-section {
+    background: rgba(26, 26, 46, 0.85);
+    border: 2px solid rgba(103, 80, 164, 0.3);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .team-selector-card {
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(103, 80, 164, 0.3);
+    border-radius: 12px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-height: 120px;
+  }
+
+  .team-selector-card:hover {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: rgba(103, 80, 164, 0.5);
+    transform: translateY(-3px);
+  }
+
+  .team-selector-card.selected {
+    border-color: rgba(138, 110, 220, 0.9);
+    background: rgba(103, 80, 164, 0.3);
+    box-shadow: 0 0 20px rgba(138, 110, 220, 0.6);
+  }
+
+  .team-selector-card .team-number {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #8a6edc;
+  }
+
+  .team-selector-card .team-stats {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* No teams available message */
+  .no-teams-message {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(220, 38, 38, 0.2);
+    border: 2px solid rgba(220, 38, 38, 0.4);
+    border-radius: 12px;
+  }
+
+  /* Rift Cards - Glass morphism */
+  .rift-card {
+    background: rgba(26, 26, 46, 0.85);
+    border: 2px solid rgba(103, 80, 164, 0.3);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .rift-card:not(.locked):hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 48px rgba(103, 80, 164, 0.6);
+    border-color: rgba(103, 80, 164, 0.6);
+  }
+
+  .rift-card.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+  }
+
+  .rift-card.locked:hover {
+    transform: none;
+  }
+
+  /* Rift icon styling */
+  .rift-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px rgba(103, 80, 164, 0.5));
+  }
+
+  /* World type colors */
+  .world-fire .rift-icon {
+    color: #ef4444;
+  }
+  .world-ice .rift-icon {
+    color: #60a5fa;
+  }
+  .world-tech .rift-icon {
+    color: #22d3ee;
+  }
+  .world-nature .rift-icon {
+    color: #10b981;
+  }
+  .world-void .rift-icon {
+    color: #a855f7;
+  }
+  .world-tutorial .rift-icon {
+    color: #9ca3af;
+  }
+
+  /* Difficulty badges */
+  .difficulty-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+  }
+
+  .difficulty-tutorial {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+  }
+
+  .difficulty-easy {
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+
+  .difficulty-medium {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+
+  .difficulty-hard {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+  }
+
+  .difficulty-legendary {
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+  }
+
+  /* Rarity indicators */
+  .rarity-indicators {
+    margin-top: 1rem;
+  }
+
+  .rarity-bar {
+    height: 6px;
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rarity-bar-fill {
+    height: 100%;
+    transition: width 0.5s ease;
+  }
+
+  .rarity-common {
+    background: #9e9e9e;
+  }
+  .rarity-uncommon {
+    background: #4caf50;
+  }
+  .rarity-rare {
+    background: #2196f3;
+  }
+  .rarity-epic {
+    background: #9c27b0;
+  }
+  .rarity-legendary {
+    background: #ff9800;
+  }
+
+  /* Locked overlay */
+  .locked-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+  }
+
+  /* Expedition Details Panel (bottom slide-up) */
+  .expedition-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(15, 10, 30, 0.98);
+    backdrop-filter: blur(20px);
+    border-top: 3px solid rgba(103, 80, 164, 0.8);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1050;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .expedition-panel.active {
+    transform: translateY(0);
+  }
+
+  .expedition-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(103, 80, 164, 0.3);
+  }
+
+  .expedition-panel-body {
+    padding: 2rem;
+  }
+
+  .close-panel-btn {
+    background: rgba(220, 38, 38, 0.2);
+    border: 1px solid rgba(220, 38, 38, 0.5);
+    color: #fca5a5;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .close-panel-btn:hover {
+    background: rgba(220, 38, 38, 0.4);
+    border-color: rgba(220, 38, 38, 0.8);
+    color: #fff;
+  }
+
+  .launch-expedition-btn {
+    background: linear-gradient(135deg, #8a6edc, #6750a4);
+    border: none;
+    color: white;
+    padding: 1rem 3rem;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(103, 80, 164, 0.5);
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .launch-expedition-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(103, 80, 164, 0.8);
+  }
+
+  .launch-expedition-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Error/Success Messages */
+  .message-box {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  .message-box.error {
+    background: rgba(220, 38, 38, 0.2);
+    border: 1px solid rgba(220, 38, 38, 0.5);
+    color: #fca5a5;
+  }
+
+  .message-box.success {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    color: #6ee7b7;
+  }
+
+  /* Stat mini-cards */
+  .stat-mini {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    padding: 0.5rem;
+    text-align: center;
+  }
+
+  .stat-mini-icon {
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-mini-value {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+  }
+
+  .stat-mini-label {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+</style>
+
+<div class="expeditions-container">
+  {{template "navbar" .}}
+
+  <div class="container py-5 content-layer">
+    <!-- Page Header -->
+    <div class="text-center mb-5 page-header">
+      <h1 class="display-4 text-white fw-bold mb-3">
+        <i class="fas fa-dungeon me-3"></i>Launch Expedition
+      </h1>
+      <p class="lead text-white-50">
+        Choose a team and select a dimensional rift to explore
+      </p>
+    </div>
+
+    <!-- Team Selector Section -->
+    <div class="team-selector-section">
+      <h4 class="text-white mb-3">
+        <i class="fas fa-users me-2"></i>Select Your Team
+      </h4>
+
+      {{if .Data.Teams}}
+      <div class="row g-3">
+        {{range .Data.Teams}}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+          <div
+            class="team-selector-card"
+            data-team-id="{{.ID}}"
+            data-team-number="{{.TeamNumber}}"
+          >
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="team-number">
+                <i class="fas fa-shield-alt me-1"></i>Team {{.TeamNumber}}
+              </div>
+              <div class="badge bg-success" style="font-size: 0.7rem">
+                <i class="fas fa-check-circle"></i> Ready
+              </div>
+            </div>
+            <div class="team-stats">
+              <div class="row g-1">
+                <div class="col-4">
+                  <div class="stat-mini">
+                    <div class="stat-mini-icon">
+                      <i class="fas fa-bolt text-warning"></i>
+                    </div>
+                    <div class="stat-mini-value">
+                      {{printf "%.0f" .TotalStats.Speed}}
+                    </div>
+                    <div class="stat-mini-label">Speed</div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="stat-mini">
+                    <div class="stat-mini-icon">
+                      <i class="fas fa-clover text-success"></i>
+                    </div>
+                    <div class="stat-mini-value">
+                      {{printf "%.0f" .TotalStats.Luck}}
+                    </div>
+                    <div class="stat-mini-label">Luck</div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="stat-mini">
+                    <div class="stat-mini-icon">
+                      <i class="fas fa-fist-raised text-danger"></i>
+                    </div>
+                    <div class="stat-mini-value">{{.TotalStats.Power}}</div>
+                    <div class="stat-mini-label">Power</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{end}}
+      </div>
+      {{else}}
+      <div class="no-teams-message">
+        <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+        <h5 class="text-white">No Teams Available</h5>
+        <p class="text-white-50 mb-0">
+          All your teams are currently on expeditions. Visit the
+          <a href="/teams" class="text-primary">Teams page</a> to check their
+          progress.
+        </p>
+      </div>
+      {{end}}
+    </div>
+
+    <!-- Rifts Grid -->
+    {{if .Data.Teams}}
+    <div>
+      <h4 class="text-white mb-4">
+        <i class="fas fa-portal me-2"></i>Available Rifts
+      </h4>
+      <div class="row g-4">
+        {{range .Data.Rifts}}
+        <div class="col-lg-4 col-md-6">
+          <div
+            class="rift-card world-{{.WorldType}} {{if not .IsUnlocked}}locked{{end}}"
+            data-rift-id="{{.ID}}"
+            data-rift-name="{{.Name}}"
+            data-rift-description="{{.Description}}"
+            data-rift-duration="{{.DurationMinutes}}"
+            data-rift-difficulty="{{.Difficulty}}"
+            data-rift-unlocked="{{.IsUnlocked}}"
+          >
+            <div class="p-4 position-relative">
+              <!-- Rift Icon -->
+              <div class="text-center">
+                <div class="rift-icon">
+                  {{if eq .WorldType "tutorial"}}<i class="fas fa-book-open"></i
+                  >{{end}} {{if eq .WorldType "fire"}}<i class="fas fa-fire"></i
+                  >{{end}} {{if eq .WorldType "ice"}}<i
+                    class="fas fa-snowflake"
+                  ></i
+                  >{{end}} {{if eq .WorldType "tech"}}<i
+                    class="fas fa-microchip"
+                  ></i
+                  >{{end}} {{if eq .WorldType "nature"}}<i
+                    class="fas fa-leaf"
+                  ></i
+                  >{{end}} {{if eq .WorldType "void"}}<i
+                    class="fas fa-circle-notch"
+                  ></i
+                  >{{end}}
+                </div>
+              </div>
+
+              <!-- Rift Name -->
+              <h5 class="text-white text-center mb-2">{{.Name}}</h5>
+
+              <!-- Difficulty & Duration -->
+              <div class="d-flex justify-content-center gap-2 mb-3">
+                <span class="difficulty-badge difficulty-{{.Difficulty}}">
+                  {{.Difficulty}}
+                </span>
+                <span class="badge bg-secondary">
+                  <i class="fas fa-clock me-1"></i>
+                  {{if eq .DurationMinutes 5}}5 min{{end}} {{if eq
+                  .DurationMinutes 15}}15 min{{end}} {{if eq .DurationMinutes
+                  30}}30 min{{end}} {{if eq .DurationMinutes 60}}1 hour{{end}}
+                  {{if eq .DurationMinutes 120}}2 hours{{end}}
+                </span>
+              </div>
+
+              <!-- Description -->
+              <p
+                class="text-white-50 small text-center mb-3"
+                style="min-height: 40px"
+              >
+                {{.Description}}
+              </p>
+
+              <!-- Loot Rarity Chances -->
+              <div class="rarity-indicators">
+                <div class="small text-white-50 mb-2 text-center">
+                  Drop Rates:
+                </div>
+
+                {{if eq .Difficulty "tutorial"}}
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px"
+                    >Common</small
+                  >
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-common"
+                      style="width: 100%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px"
+                    >100%</small
+                  >
+                </div>
+                {{end}} {{if eq .Difficulty "easy"}}
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px"
+                    >Common</small
+                  >
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-common"
+                      style="width: 70%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">70%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px"
+                    >Uncommon</small
+                  >
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-uncommon"
+                      style="width: 25%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">25%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px">Rare</small>
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-rare"
+                      style="width: 5%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">5%</small>
+                </div>
+                {{end}} {{if eq .Difficulty "medium"}}
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px"
+                    >Common</small
+                  >
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-common"
+                      style="width: 50%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">50%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px"
+                    >Uncommon</small
+                  >
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-uncommon"
+                      style="width: 30%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">30%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px">Rare</small>
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-rare"
+                      style="width: 15%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">15%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px">Epic</small>
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-epic"
+                      style="width: 5%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">5%</small>
+                </div>
+                {{end}} {{if eq .Difficulty "hard"}}
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px"
+                    >Common</small
+                  >
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-common"
+                      style="width: 30%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">30%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px"
+                    >Uncommon</small
+                  >
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-uncommon"
+                      style="width: 35%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">35%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px">Rare</small>
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-rare"
+                      style="width: 25%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">25%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px">Epic</small>
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-epic"
+                      style="width: 9%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">9%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px"
+                    >Legendary</small
+                  >
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-legendary"
+                      style="width: 1%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">1%</small>
+                </div>
+                {{end}} {{if eq .Difficulty "legendary"}}
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px"
+                    >Common</small
+                  >
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-common"
+                      style="width: 10%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">10%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px"
+                    >Uncommon</small
+                  >
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-uncommon"
+                      style="width: 25%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">25%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px">Rare</small>
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-rare"
+                      style="width: 35%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">35%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px">Epic</small>
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-epic"
+                      style="width: 25%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">25%</small>
+                </div>
+                <div class="d-flex align-items-center mb-1">
+                  <small class="text-white-50" style="width: 80px"
+                    >Legendary</small
+                  >
+                  <div class="rarity-bar flex-grow-1">
+                    <div
+                      class="rarity-bar-fill rarity-legendary"
+                      style="width: 5%"
+                    ></div>
+                  </div>
+                  <small class="text-white ms-2" style="width: 40px">5%</small>
+                </div>
+                {{end}}
+              </div>
+
+              <!-- Locked Overlay -->
+              {{if not .IsUnlocked}}
+              <div class="locked-overlay">
+                <div class="text-center">
+                  <i
+                    class="fas fa-lock fa-3x text-white mb-3"
+                    style="opacity: 0.5"
+                  ></i>
+                  {{if .UnlockRequirementText}}
+                  <p class="text-white-50 mb-0">{{.UnlockRequirementText}}</p>
+                  {{else}}
+                  <p class="text-white-50 mb-0">Locked</p>
+                  {{end}}
+                </div>
+              </div>
+              {{end}}
+            </div>
+          </div>
+        </div>
+        {{end}}
+      </div>
+    </div>
+    {{end}}
+  </div>
+
+  <!-- Expedition Details Panel (Slide-up from bottom) -->
+  <div class="expedition-panel" id="expeditionPanel">
+    <div class="expedition-panel-header">
+      <h4 class="text-white mb-0">
+        <i class="fas fa-rocket me-2"></i>Confirm Expedition
+      </h4>
+      <button class="close-panel-btn" onclick="closeExpeditionPanel()">
+        <i class="fas fa-times me-1"></i>Close
+      </button>
+    </div>
+    <div class="expedition-panel-body">
+      <div id="messageBox" class="message-box"></div>
+
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <h5 class="text-white-50 mb-3">Selected Team</h5>
+          <div id="selectedTeamDisplay" class="text-white">
+            <p class="mb-0">Please select a team first</p>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <h5 class="text-white-50 mb-3">Selected Rift</h5>
+          <div id="selectedRiftDisplay" class="text-white">
+            <p class="mb-0">Please select a rift</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <button
+          class="launch-expedition-btn"
+          id="launchBtn"
+          onclick="launchExpedition()"
+          disabled
+        >
+          <i class="fas fa-rocket me-2"></i>Launch Expedition
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // State management
+  let selectedTeamId = null;
+  let selectedTeamNumber = null;
+  let selectedRiftId = null;
+  let selectedRiftData = null;
+
+  // Initialize on page load
+  document.addEventListener("DOMContentLoaded", function () {
+    initializeTeamSelection();
+    initializeRiftSelection();
+  });
+
+  // Team selection
+  function initializeTeamSelection() {
+    const teamCards = document.querySelectorAll(".team-selector-card");
+
+    teamCards.forEach((card) => {
+      card.addEventListener("click", function () {
+        // Remove selection from all cards
+        teamCards.forEach((c) => c.classList.remove("selected"));
+
+        // Add selection to clicked card
+        this.classList.add("selected");
+
+        // Store selected team data
+        selectedTeamId = parseInt(this.dataset.teamId);
+        selectedTeamNumber = parseInt(this.dataset.teamNumber);
+
+        // Update display
+        updateSelectedTeamDisplay();
+        updateLaunchButton();
+      });
+    });
+  }
+
+  // Rift selection
+  function initializeRiftSelection() {
+    const riftCards = document.querySelectorAll(".rift-card");
+
+    riftCards.forEach((card) => {
+      card.addEventListener("click", function () {
+        const isUnlocked = this.dataset.riftUnlocked === "true";
+
+        if (!isUnlocked) {
+          showMessage(
+            "This rift is locked. Complete the requirements to unlock it.",
+            "error"
+          );
+          return;
+        }
+
+        if (!selectedTeamId) {
+          showMessage(
+            "Please select a team first before choosing a rift.",
+            "error"
+          );
+          return;
+        }
+
+        // Store selected rift data
+        selectedRiftId = parseInt(this.dataset.riftId);
+        selectedRiftData = {
+          name: this.dataset.riftName,
+          description: this.dataset.riftDescription,
+          duration: parseInt(this.dataset.riftDuration),
+          difficulty: this.dataset.riftDifficulty,
+        };
+
+        // Update display and show panel
+        updateSelectedRiftDisplay();
+        updateLaunchButton();
+        showExpeditionPanel();
+      });
+    });
+  }
+
+  // Update team display in panel
+  function updateSelectedTeamDisplay() {
+    const display = document.getElementById("selectedTeamDisplay");
+    if (selectedTeamId && selectedTeamNumber) {
+      display.innerHTML = `
+        <div class="d-flex align-items-center">
+          <i class="fas fa-shield-alt fa-2x me-3" style="color: #8a6edc;"></i>
+          <div>
+            <h5 class="mb-0">Team ${selectedTeamNumber}</h5>
+            <small class="text-white-50">Ready for deployment</small>
+          </div>
+        </div>
+      `;
+    } else {
+      display.innerHTML =
+        '<p class="mb-0 text-white-50">Please select a team</p>';
+    }
+  }
+
+  // Update rift display in panel
+  function updateSelectedRiftDisplay() {
+    const display = document.getElementById("selectedRiftDisplay");
+    if (selectedRiftData) {
+      const durationText = formatDuration(selectedRiftData.duration);
+      display.innerHTML = `
+        <div>
+          <h5 class="mb-2">${selectedRiftData.name}</h5>
+          <p class="text-white-50 small mb-2">${selectedRiftData.description}</p>
+          <div class="d-flex gap-2">
+            <span class="difficulty-badge difficulty-${selectedRiftData.difficulty}">${selectedRiftData.difficulty}</span>
+            <span class="badge bg-secondary">
+              <i class="fas fa-clock me-1"></i>${durationText}
+            </span>
+          </div>
+        </div>
+      `;
+    } else {
+      display.innerHTML =
+        '<p class="mb-0 text-white-50">Please select a rift</p>';
+    }
+  }
+
+  // Format duration for display
+  function formatDuration(minutes) {
+    if (minutes < 60) {
+      return minutes + " min";
+    } else {
+      const hours = Math.floor(minutes / 60);
+      return hours + " hour" + (hours > 1 ? "s" : "");
+    }
+  }
+
+  // Update launch button state
+  function updateLaunchButton() {
+    const launchBtn = document.getElementById("launchBtn");
+    if (selectedTeamId && selectedRiftId) {
+      launchBtn.disabled = false;
+    } else {
+      launchBtn.disabled = true;
+    }
+  }
+
+  // Show expedition panel
+  function showExpeditionPanel() {
+    const panel = document.getElementById("expeditionPanel");
+    panel.classList.add("active");
+  }
+
+  // Close expedition panel
+  function closeExpeditionPanel() {
+    const panel = document.getElementById("expeditionPanel");
+    panel.classList.remove("active");
+    hideMessage();
+  }
+
+  // Show message
+  function showMessage(text, type = "error") {
+    const messageBox = document.getElementById("messageBox");
+    messageBox.textContent = text;
+    messageBox.className = "message-box " + type;
+    messageBox.style.display = "block";
+
+    // Auto-hide success messages after 3 seconds
+    if (type === "success") {
+      setTimeout(() => {
+        hideMessage();
+      }, 3000);
+    }
+  }
+
+  // Hide message
+  function hideMessage() {
+    const messageBox = document.getElementById("messageBox");
+    messageBox.style.display = "none";
+  }
+
+  // Launch expedition
+  async function launchExpedition() {
+    if (!selectedTeamId || !selectedRiftId) {
+      showMessage("Please select both a team and a rift.", "error");
+      return;
+    }
+
+    const launchBtn = document.getElementById("launchBtn");
+    launchBtn.disabled = true;
+    launchBtn.innerHTML =
+      '<i class="fas fa-spinner fa-spin me-2"></i>Launching...';
+
+    try {
+      const response = await fetch("/api/expeditions/start", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          team_id: selectedTeamId,
+          rift_id: selectedRiftId,
+        }),
+      });
+
+      if (response.ok) {
+        showMessage(
+          "Expedition launched successfully! Redirecting...",
+          "success"
+        );
+
+        // Redirect to teams page after 1.5 seconds
+        setTimeout(() => {
+          window.location.href = "/teams";
+        }, 1500);
+      } else {
+        const errorData = await response.json();
+        showMessage(
+          errorData.error || "Failed to launch expedition. Please try again.",
+          "error"
+        );
+        launchBtn.disabled = false;
+        launchBtn.innerHTML =
+          '<i class="fas fa-rocket me-2"></i>Launch Expedition';
+      }
+    } catch (error) {
+      console.error("Error launching expedition:", error);
+      showMessage("An error occurred. Please try again.", "error");
+      launchBtn.disabled = false;
+      launchBtn.innerHTML =
+        '<i class="fas fa-rocket me-2"></i>Launch Expedition';
+    }
+  }
+
+  // Close panel with Escape key
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      closeExpeditionPanel();
+    }
+  });
+</script>
+
+{{end}}

@@ -1,0 +1,515 @@
+{{define "content"}}
+<div class="terms-page bg-gradient-primary py-5">
+  <div class="container">
+    <!-- Top Back Button -->
+    <div class="mb-4">
+      <a href="/" class="btn btn-outline-light btn-sm">
+        <i class="fas fa-arrow-left me-2"></i>Back to Home
+      </a>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="terms-content bg-white rounded-4 shadow-lg p-4 p-md-5 mb-4">
+      <!-- Header -->
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary mb-3">
+          <i class="fas fa-file-contract me-3"></i>Terms of Service
+        </h1>
+        <p class="text-muted">
+          <i class="fas fa-calendar-alt me-2"></i>
+          <strong>Last Updated:</strong> {{.Data.LastUpdated}}
+        </p>
+      </div>
+
+      <!-- Introduction Section -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-info-circle me-2"></i>Introduction
+        </h2>
+        <p class="text-secondary">
+          Welcome to Parallax, a link management and URL shortening service operated by Snow Lynx Software, LLC ("Company," "we," "us," or "our"). These Terms of Service ("Terms") govern your access to and use of our website, services, and applications (collectively, the "Service").
+        </p>
+        <p class="text-secondary">
+          Parallax provides content creators with tools to create, manage, and track shortened links, including analytics and health monitoring features to protect affiliate revenue and monitor link performance. By using our Service, you agree to be bound by these Terms and our Privacy Policy.
+        </p>
+      </section>
+
+      <!-- Acceptance of Terms -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-handshake me-2"></i>Acceptance of Terms
+        </h2>
+        <p class="text-secondary">
+          By accessing or using Parallax, you acknowledge that you have read, understood, and agree to be bound by these Terms. If you do not agree to these Terms, you must not access or use our Service. You must be at least 13 years of age to use Parallax. If you are under 18 years of age, you represent that you have obtained permission from your parent or legal guardian to use the Service.
+        </p>
+        <ul class="text-secondary">
+          <li>
+            You agree to provide accurate, current, and complete information during registration and to update such information as necessary
+          </li>
+          <li>You are responsible for maintaining the confidentiality of your account credentials</li>
+          <li>
+            You are responsible for all activities that occur under your account
+          </li>
+          <li>You agree to immediately notify us of any unauthorized use of your account</li>
+        </ul>
+      </section>
+
+      <!-- Use License -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-certificate me-2"></i>Use License and Service Tiers
+        </h2>
+        <p class="text-secondary">
+          Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable, revocable license to access and use the Service for your personal or commercial purposes. Your access to features depends on your account tier:
+        </p>
+        <p class="text-secondary">
+          <strong>Guest Users (No Account):</strong> Create unlimited links with a 7-day expiration period. No tracking, analytics, or link modification capabilities. <strong>Free Account:</strong> Create up to 5 permanent links with limited analytics and tracking features. <strong>Pro Account:</strong> Unlimited permanent links with full analytics, custom slugs for personalized links, daily health checks to monitor link status, and advanced tracking features. Failed payments for Pro accounts will result in automatic downgrade to Free tier, which may cause some links to become inactive if the 5-link limit is exceeded.
+        </p>
+      </section>
+
+      <!-- User Responsibilities -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-user-check me-2"></i>User Responsibilities
+        </h2>
+        <p class="text-secondary">
+          As a user of Parallax, you agree to use the Service responsibly and in compliance with all applicable laws and regulations. You are solely responsible for the content of the destination URLs you create shortened links for, as well as any consequences arising from the use of those links.
+        </p>
+        <ol class="text-secondary">
+          <li>
+            You will not use the Service for any unlawful purpose or in violation of these Terms
+          </li>
+          <li>
+            You are responsible for ensuring that your use of the Service, including any linked content, complies with all applicable laws, regulations, and third-party rights
+          </li>
+          <li>You will maintain accurate account information and protect your login credentials</li>
+          <li>
+            You acknowledge that you are solely responsible for any legal obligations related to your affiliate links, including compliance with FTC disclosure requirements and affiliate program terms
+          </li>
+        </ol>
+      </section>
+
+      <!-- Prohibited Uses -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-ban me-2"></i>Prohibited Uses
+        </h2>
+        <p class="text-secondary">
+          You may not use Parallax for any illegal or unauthorized purpose. You agree not to use the Service in any way that could damage, disable, overburden, or impair our servers or networks, or interfere with any other party's use of the Service.
+        </p>
+        <div class="alert alert-warning border-warning" role="alert">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <strong>Warning:</strong> Violation of these prohibited uses may result in immediate account termination and may be reported to law enforcement authorities where appropriate.
+        </div>
+        <ul class="text-secondary">
+          <li>
+            Creating links to illegal content, including but not limited to content that violates copyright laws, trade secrets, or other intellectual property rights
+          </li>
+          <li>Distributing malware, viruses, or any other malicious code or software</li>
+          <li>Promoting hate speech, violence, discrimination, or harassment</li>
+          <li>Engaging in phishing, fraud, or any deceptive practices</li>
+          <li>Circumventing or attempting to circumvent any security features of the Service</li>
+          <li>Using automated systems or bots to abuse the Service or create excessive links</li>
+          <li>Attempting to reverse engineer, decompile, or discover the source code of the Service</li>
+          <li>Reselling or redistributing the Service without our express written permission</li>
+        </ul>
+      </section>
+
+      <!-- Intellectual Property -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-lightbulb me-2"></i>Intellectual Property and Data Ownership
+        </h2>
+        <p class="text-secondary">
+          The Service, including its original content, features, functionality, and all related intellectual property rights, is and will remain the exclusive property of Snow Lynx Software, LLC and its licensors. Our trademarks, logos, and service marks displayed on the Service are our property or the property of third parties. You may not use these marks without our prior written consent.
+        </p>
+        <p class="text-secondary">
+          Snow Lynx Software, LLC retains ownership of all shortened links, analytics data, and other information generated through your use of the Service. However, you retain ownership of the content at your destination URLs. Upon request, you may export your link data and analytics in CSV format. Please note that deleted links and data are subject to soft deletion and may be restored by our support team if necessary. All data handling is subject to our Privacy Policy.
+        </p>
+      </section>
+
+      <!-- Termination -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-times-circle me-2"></i>Termination
+        </h2>
+        <p class="text-secondary">
+          We reserve the right to suspend or terminate your account and access to the Service at any time, with or without notice, for any reason, including but not limited to violation of these Terms, creation of links to illegal content, or engagement in prohibited activities. Accounts found to be distributing illegal content, malware, or engaging in other violations will be immediately terminated without prior notice.
+        </p>
+        <p class="text-secondary">
+          You may terminate your account at any time by contacting our support team. Upon termination, your right to use the Service will immediately cease. For Pro accounts, failure to make timely payment will result in automatic downgrade to a Free account tier. If your Free account contains more than 5 links at the time of downgrade, links exceeding this limit may become inactive. Guest user links will automatically expire 7 days after creation. Upon account termination, we may delete or anonymize your data in accordance with our data retention policies, though soft-deleted data may be retained for recovery purposes.
+        </p>
+      </section>
+
+      <!-- Limitation of Liability -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-shield-alt me-2"></i>Limitation of Liability and Disclaimers
+        </h2>
+        <p class="text-secondary">
+          THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. We do not guarantee that the Service will be uninterrupted, secure, or error-free, nor do we provide any service level agreements (SLA) or uptime guarantees.
+        </p>
+        <div class="alert alert-info border-info" role="alert">
+          <i class="fas fa-info-circle me-2"></i>
+          <strong>Important:</strong> TO THE MAXIMUM EXTENT PERMITTED BY LAW, SNOW LYNX SOFTWARE, LLC SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS, REVENUE, DATA, OR USE, ARISING OUT OF OR RELATED TO YOUR USE OF THE SERVICE, EVEN IF WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+        </p>
+        <p class="text-secondary">
+          Our total liability to you for any claims arising from or related to the Service shall not exceed the amount you have paid us in the twelve (12) months preceding the claim, or $100 USD, whichever is greater. Some jurisdictions do not allow the exclusion or limitation of certain warranties or damages, so some of the above limitations may not apply to you.
+        </p>
+      </section>
+
+      <!-- Privacy Policy -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-user-shield me-2"></i>Privacy Policy
+        </h2>
+        <p class="text-secondary">
+          Your privacy is important to us. Our collection, use, and disclosure of your personal information is governed by our Privacy Policy, which is incorporated into these Terms by reference. By using the Service, you consent to the collection and use of your information as described in our Privacy Policy.
+        </p>
+        <p class="text-secondary">
+          Please review our <a href="/privacy" class="text-primary">Privacy Policy</a> to understand how we collect, use, protect, and share your personal information. If you do not agree with our Privacy Policy, you must discontinue use of the Service immediately.
+        </p>
+      </section>
+
+      <!-- Payment Terms -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-credit-card me-2"></i>Payment Terms
+        </h2>
+        <p class="text-secondary">
+          Pro account subscriptions are billed on a monthly or annual basis, as selected by you during signup. All payments are processed securely through Stripe, our third-party payment processor. We do not store your credit card information or payment details on our servers. By providing payment information, you authorize us to charge the applicable fees to your payment method.
+        </p>
+        <p class="text-secondary">
+          Refunds are not available as a self-service option. If you experience issues with our Service or have concerns about billing, please contact our support team at support@smarterlynx.com, and we will review your situation on a case-by-case basis. Failure to pay subscription fees will result in automatic downgrade of your account to the Free tier, which may cause some of your links to become inactive if you exceed the 5-link limit for Free accounts.
+        </p>
+      </section>
+
+      <!-- Indemnification -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-balance-scale me-2"></i>Indemnification
+        </h2>
+        <p class="text-secondary">
+          You agree to indemnify, defend, and hold harmless Snow Lynx Software, LLC, its officers, directors, employees, agents, and affiliates from and against any claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising from: (a) your use of the Service; (b) your violation of these Terms; (c) your violation of any third-party rights, including intellectual property rights; (d) the content of destination URLs you create links for; or (e) any illegal activity conducted through your account.
+        </p>
+        <p class="text-secondary">
+          This indemnification obligation will survive termination of these Terms and your use of the Service. We reserve the right to assume exclusive defense and control of any matter subject to indemnification by you, in which case you agree to cooperate with our defense of such claim.
+        </p>
+      </section>
+
+      <!-- Copyright and DMCA -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-copyright me-2"></i>Copyright Infringement and DMCA
+        </h2>
+        <p class="text-secondary">
+          We respect the intellectual property rights of others and expect our users to do the same. If you believe that content accessible through a shortened link created using our Service infringes your copyright, please contact our support team at support@smarterlynx.com with the following information: (a) identification of the copyrighted work; (b) identification of the infringing material and its location; (c) your contact information; (d) a statement of good faith belief that the use is unauthorized; and (e) a statement, under penalty of perjury, that the information is accurate and you are authorized to act on behalf of the copyright owner.
+        </p>
+        <p class="text-secondary">
+          Upon receiving a valid notice of copyright infringement, we will investigate the claim and take appropriate action on a case-by-case basis, which may include removing or disabling access to the allegedly infringing link.
+        </p>
+      </section>
+
+      <!-- Dispute Resolution and Arbitration -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-gavel me-2"></i>Dispute Resolution and Arbitration
+        </h2>
+        <p class="text-secondary">
+          <strong>PLEASE READ THIS SECTION CAREFULLY.</strong> It affects your legal rights, including your right to file a lawsuit in court.
+        </p>
+        <p class="text-secondary">
+          Any dispute, claim, or controversy arising out of or relating to these Terms or your use of the Service shall be resolved by binding arbitration, rather than in court, except that you may assert claims in small claims court if your claims qualify. The Federal Arbitration Act and federal arbitration law apply to these Terms.
+        </p>
+        <p class="text-secondary">
+          The arbitration will be conducted by a single arbitrator in accordance with the rules of the American Arbitration Association (AAA). The arbitrator's decision will be final and binding, and judgment on the award may be entered in any court having jurisdiction. You and Snow Lynx Software, LLC agree that any dispute resolution proceedings will be conducted only on an individual basis and not in a class, consolidated, or representative action. By agreeing to these Terms, you are waiving your right to participate in a class action lawsuit or class-wide arbitration.
+        </p>
+      </section>
+
+      <!-- Governing Law -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-landmark me-2"></i>Governing Law
+        </h2>
+        <p class="text-secondary">
+          These Terms shall be governed by and construed in accordance with the laws of the State of Louisiana, United States, without regard to its conflict of law provisions. Any legal action or proceeding arising under these Terms will be brought exclusively in the federal or state courts located in Louisiana, and the parties hereby consent to personal jurisdiction and venue therein.
+        </p>
+      </section>
+
+      <!-- Changes to Terms -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-sync-alt me-2"></i>Changes to Terms
+        </h2>
+        <p class="text-secondary">
+          We reserve the right to modify or replace these Terms at any time at our sole discretion. If we make material changes to these Terms, we will notify you by updating the "Last Updated" date at the top of this page and, where appropriate, by sending you an email notification or displaying a prominent notice on our Service.
+        </p>
+        <p class="text-secondary">
+          Your continued use of the Service after any changes to these Terms constitutes your acceptance of the new Terms. If you do not agree to the modified Terms, you must discontinue your use of the Service. We encourage you to review these Terms periodically to stay informed of any updates.
+        </p>
+      </section>
+
+      <!-- Miscellaneous -->
+      <section class="tos-section mb-5">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-list-ul me-2"></i>Miscellaneous
+        </h2>
+        <p class="text-secondary">
+          <strong>Entire Agreement:</strong> These Terms, together with our Privacy Policy, constitute the entire agreement between you and Snow Lynx Software, LLC regarding the Service and supersede all prior agreements and understandings.
+        </p>
+        <p class="text-secondary">
+          <strong>Severability:</strong> If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary, and the remaining provisions will remain in full force and effect.
+        </p>
+        <p class="text-secondary">
+          <strong>Waiver:</strong> No waiver of any term of these Terms shall be deemed a further or continuing waiver of such term or any other term, and our failure to assert any right or provision under these Terms shall not constitute a waiver of such right or provision.
+        </p>
+        <p class="text-secondary">
+          <strong>Assignment:</strong> You may not assign or transfer these Terms or your rights hereunder without our prior written consent. We may assign these Terms without restriction.
+        </p>
+      </section>
+
+      <!-- Contact Information -->
+      <section class="tos-section mb-4">
+        <h2 class="h3 fw-bold text-primary mb-3">
+          <i class="fas fa-envelope me-2"></i>Contact Information
+        </h2>
+        <p class="text-secondary">
+          If you have any questions, concerns, or feedback about these Terms of Service, please don't hesitate to contact us. We're here to help and will respond to your inquiry as quickly as possible.
+        </p>
+        <div class="card border-primary">
+          <div class="card-body">
+            <h5 class="card-title text-primary">
+              <i class="fas fa-paper-plane me-2"></i>Get in Touch
+            </h5>
+            <p class="card-text text-secondary mb-2">
+              <i class="fas fa-building me-2"></i><strong>Company:</strong>
+              Snow Lynx Software, LLC
+            </p>
+            <p class="card-text text-secondary mb-2">
+              <i class="fas fa-envelope me-2"></i><strong>Email:</strong>
+              support@smarterlynx.com
+            </p>
+            <p class="card-text text-secondary mb-0">
+              <i class="fas fa-globe me-2"></i><strong>Website:</strong>
+              <a href="https://parallax.com" class="text-primary"
+                >parallax.com</a
+              >
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Bottom Back Button -->
+    <div class="text-center mb-4">
+      <a href="/" class="btn btn-outline-light btn-lg">
+        <i class="fas fa-arrow-left me-2"></i>Back to Home
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Back to Top Button -->
+<button
+  type="button"
+  id="backToTopBtn"
+  class="btn btn-primary rounded-circle back-to-top-btn shadow-lg"
+  aria-label="Back to top"
+>
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<style>
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Prevent layout shifts */
+  html,
+  body {
+    overflow-x: hidden;
+    width: 100%;
+    font-family: "Roboto", sans-serif;
+  }
+
+  /* Terms page specific styles */
+  .terms-page {
+    position: relative;
+    width: 100%;
+  }
+
+  .terms-content {
+    max-width: 900px;
+    margin: 0 auto;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  /* Section spacing and styling */
+  .tos-section {
+    scroll-margin-top: 2rem;
+  }
+
+  .tos-section h2 {
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--md-sys-color-primary-container);
+    margin-bottom: 1.5rem;
+  }
+
+  .tos-section p,
+  .tos-section li {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .tos-section ul,
+  .tos-section ol {
+    padding-left: 1.5rem;
+  }
+
+  .tos-section li {
+    margin-bottom: 0.75rem;
+  }
+
+  /* Back to top button */
+  .back-to-top-btn {
+    position: fixed !important;
+    bottom: 2rem !important;
+    right: 2rem !important;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+    max-width: 56px;
+    max-height: 56px;
+    border: none;
+    opacity: 1;
+    visibility: visible;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    pointer-events: auto;
+  }
+
+  .back-to-top-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .back-to-top-btn:active {
+    transform: translateY(-2px);
+  }
+
+  .back-to-top-btn:focus {
+    outline: 2px solid var(--md-sys-color-primary);
+    outline-offset: 2px;
+  }
+
+  /* Fade in animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Alert customization */
+  .alert {
+    border-width: 1px;
+    border-style: solid;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .terms-content {
+      padding: 1.5rem !important;
+    }
+
+    .tos-section h2 {
+      font-size: 1.5rem;
+    }
+
+    .back-to-top-btn {
+      bottom: 1rem;
+      right: 1rem;
+      width: 48px;
+      height: 48px;
+      font-size: 1rem;
+    }
+
+    .display-4 {
+      font-size: 2rem;
+    }
+  }
+
+  /* Card styling for contact section */
+  .card {
+    border-radius: 1rem;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Link styling in content */
+  .tos-section a {
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+  }
+
+  .tos-section a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  // Back to top button functionality
+  (function () {
+    "use strict";
+
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+    if (!backToTopBtn) return;
+
+    // Scroll to top when button is clicked
+    backToTopBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Use instant scroll to avoid layout issues
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      });
+
+      return false;
+    });
+
+    // Add keyboard accessibility
+    backToTopBtn.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        e.stopPropagation();
+
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "smooth",
+        });
+
+        return false;
+      }
+    });
+  })();
+</script>
+
+{{end}}

@@ -1,0 +1,22 @@
+{{define "content"}}
+<style>
+  .dungeons-section {
+    background-color: black !important;
+  }
+</style>
+<div class="dungeons-section bg-light min-vh-100">
+  {{template "navbar" .}} {{/* Inject extracted stylesheets */}} {{range
+  .Data.Styles}}
+  <link rel="stylesheet" href="https://weshould.run{{.}}" />
+  {{end}} {{/* Main root container for external content */}}
+  <div id="root" style="padding-top: 70px"></div>
+
+  {{/* Inject external scripts in order */}} {{range .Data.Scripts}}
+  <script src="https://weshould.run{{.}}"></script>
+  {{end}} {{/* Inject inline scripts */}} {{range .Data.InlineScripts}}
+  <script>
+    {{.}}
+  </script>
+  {{end}}
+</div>
+{{end}}

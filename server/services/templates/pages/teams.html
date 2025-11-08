@@ -1,0 +1,1339 @@
+{{define "content"}}
+
+<style>
+  /* High-Fantasy Theme Styles */
+
+  /* Full-page background */
+  .teams-container {
+    min-height: 100vh;
+    background-image: url("/static/images/welcome_bg.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+  }
+
+  /* Dark overlay */
+  .teams-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 0;
+  }
+
+  /* Content layer */
+  .content-layer {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Team cards - Glass morphism with fantasy borders */
+  .team-card {
+    background: rgba(26, 26, 46, 0.85);
+    border: 2px solid rgba(103, 80, 164, 0.3);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+  }
+
+  .team-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 48px rgba(103, 80, 164, 0.6);
+    border-color: rgba(103, 80, 164, 0.6);
+  }
+
+  /* Status badges */
+  .status-badge {
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+  }
+
+  .status-badge.available {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+
+  .status-badge.expedition {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    animation: pulse 2s infinite;
+  }
+
+  .status-badge.locked {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  /* Equipment slots */
+  .equipment-slot {
+    border: 3px solid transparent;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 1rem;
+    transition: all 0.3s;
+    cursor: pointer;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .equipment-slot:hover {
+    transform: scale(1.05);
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  /* Rarity border colors */
+  .rarity-common {
+    border-color: #9e9e9e;
+  }
+  .rarity-uncommon {
+    border-color: #4caf50;
+  }
+  .rarity-rare {
+    border-color: #2196f3;
+  }
+  .rarity-epic {
+    border-color: #9c27b0;
+  }
+  .rarity-legendary {
+    border-color: #ff9800;
+    box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
+  }
+
+  /* Expedition timer */
+  .expedition-timer {
+    font-family: "Courier New", monospace;
+    font-size: 1.1rem;
+    color: #60a5fa;
+    text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+    font-weight: bold;
+  }
+
+  /* Stats cards */
+  .stat-card {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s;
+  }
+
+  .stat-card:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: translateY(-2px);
+  }
+
+  /* Locked team overlay */
+  .locked-overlay {
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 12px;
+    padding: 3rem 1rem;
+  }
+
+  /* Progress bar custom styling */
+  .expedition-progress {
+    height: 10px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+  }
+
+  .expedition-progress .progress-bar {
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    transition: width 1s ease;
+  }
+
+  /* Page header */
+  .page-header {
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Bootstrap popover custom styling */
+  .popover {
+    background: rgba(26, 26, 46, 0.95);
+    border: 2px solid rgba(103, 80, 164, 0.5);
+    backdrop-filter: blur(10px);
+  }
+
+  .popover-body {
+    color: #fff;
+  }
+
+  .popover-header {
+    background: rgba(103, 80, 164, 0.3);
+    border-bottom: 1px solid rgba(103, 80, 164, 0.5);
+    color: #fff;
+  }
+
+  .bs-popover-top > .popover-arrow::after,
+  .bs-popover-auto[data-popper-placement^="top"] > .popover-arrow::after {
+    border-top-color: rgba(26, 26, 46, 0.95);
+  }
+
+  /* Claim Rewards Button */
+  .claim-rewards-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
+    width: 100%;
+    margin-top: 0.5rem;
+    animation: claimPulse 2s infinite;
+    display: none;
+  }
+
+  .claim-rewards-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.8);
+  }
+
+  .claim-rewards-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    animation: none;
+  }
+
+  @keyframes claimPulse {
+    0%,
+    100% {
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
+    }
+    50% {
+      box-shadow: 0 4px 30px rgba(16, 185, 129, 0.8);
+    }
+  }
+
+  /* Rewards Modal Styling */
+  .rewards-modal .modal-content {
+    background: rgba(26, 26, 46, 0.98);
+    border: 2px solid rgba(103, 80, 164, 0.6);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  }
+
+  .rewards-modal .modal-header {
+    border-bottom: 1px solid rgba(103, 80, 164, 0.3);
+    padding: 1.5rem;
+  }
+
+  .rewards-modal .modal-title {
+    color: #fff;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-shadow: 0 2px 10px rgba(138, 110, 220, 0.5);
+  }
+
+  .rewards-modal .modal-body {
+    padding: 2rem;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .rewards-modal .modal-footer {
+    border-top: 1px solid rgba(103, 80, 164, 0.3);
+    padding: 1rem 1.5rem;
+  }
+
+  .rewards-modal .btn-close {
+    filter: invert(1) brightness(2);
+    opacity: 0.8;
+  }
+
+  .rewards-modal .btn-close:hover {
+    opacity: 1;
+  }
+
+  /* Loot Item Cards */
+  .loot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .loot-item-card {
+    background: rgba(0, 0, 0, 0.5);
+    border: 3px solid;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .loot-item-card:hover {
+    transform: translateY(-5px) scale(1.05);
+  }
+
+  .loot-item-card.rarity-common {
+    border-color: #9e9e9e;
+  }
+
+  .loot-item-card.rarity-uncommon {
+    border-color: #4caf50;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+  }
+
+  .loot-item-card.rarity-rare {
+    border-color: #2196f3;
+    box-shadow: 0 0 20px rgba(33, 150, 243, 0.4);
+  }
+
+  .loot-item-card.rarity-epic {
+    border-color: #9c27b0;
+    box-shadow: 0 0 25px rgba(156, 39, 176, 0.5);
+  }
+
+  .loot-item-card.rarity-legendary {
+    border-color: #ff9800;
+    box-shadow: 0 0 30px rgba(255, 152, 0, 0.6);
+    animation: legendaryGlow 2s infinite;
+  }
+
+  @keyframes legendaryGlow {
+    0%,
+    100% {
+      box-shadow: 0 0 30px rgba(255, 152, 0, 0.6);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(255, 152, 0, 0.9);
+    }
+  }
+
+  .loot-item-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+  }
+
+  .loot-item-name {
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .loot-item-rarity {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .loot-item-rarity.common {
+    color: #9e9e9e;
+  }
+  .loot-item-rarity.uncommon {
+    color: #4caf50;
+  }
+  .loot-item-rarity.rare {
+    color: #2196f3;
+  }
+  .loot-item-rarity.epic {
+    color: #9c27b0;
+  }
+  .loot-item-rarity.legendary {
+    color: #ff9800;
+  }
+
+  .loot-item-quantity {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  .loot-item-type-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background: rgba(103, 80, 164, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Continue Button */
+  .continue-btn {
+    background: linear-gradient(135deg, #8a6edc, #6750a4);
+    border: none;
+    color: white;
+    padding: 0.75rem 3rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(103, 80, 164, 0.5);
+  }
+
+  .continue-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(103, 80, 164, 0.8);
+  }
+
+  /* No Loot Message */
+  .no-loot-message {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .no-loot-message i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  /* Error Message in Modal */
+  .modal-error-message {
+    background: rgba(220, 38, 38, 0.2);
+    border: 1px solid rgba(220, 38, 38, 0.5);
+    color: #fca5a5;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+
+  /* Confetti Canvas */
+  #confettiCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Loot Stats in Popover */
+  .loot-stats {
+    font-size: 0.85rem;
+  }
+
+  .loot-stats-row {
+    margin: 0.25rem 0;
+  }
+</style>
+
+<div class="teams-container">
+  {{template "navbar" .}}
+
+  <div class="container py-5 content-layer">
+    <!-- Page Header -->
+    <div class="text-center mb-5 page-header">
+      <h1 class="display-4 text-white fw-bold mb-3">
+        <i class="fas fa-users me-3"></i>Your Expedition Teams
+      </h1>
+      <p class="lead text-white-50">
+        Manage your teams and prepare for dimensional rifts
+      </p>
+    </div>
+
+    <!-- Teams Grid -->
+    <div class="row g-4">
+      {{range .Data.Teams}}
+      <div class="col-lg-4 col-md-6">
+        <div class="team-card p-4">
+          <!-- Team Header -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="text-white mb-0">
+              <i class="fas fa-shield-alt me-2" style="color: #6750a4"></i>Team
+              {{.TeamNumber}}
+            </h3>
+
+            <!-- Status Badge -->
+            {{if .IsUnlocked}} {{if .OnExpedition}}
+            <span class="status-badge expedition badge rounded-pill">
+              <i class="fas fa-rocket me-1"></i>On Expedition
+            </span>
+            {{else}}
+            <span class="status-badge available badge rounded-pill">
+              <i class="fas fa-check-circle me-1"></i>Available
+            </span>
+            {{end}} {{else}}
+            <span class="status-badge locked badge rounded-pill">
+              <i class="fas fa-lock me-1"></i>Locked
+            </span>
+            {{end}}
+          </div>
+
+          <!-- If Locked, show unlock requirements -->
+          {{if not .IsUnlocked}}
+          <div class="locked-overlay text-center">
+            <i
+              class="fas fa-lock fa-4x text-muted mb-4"
+              style="opacity: 0.3"
+            ></i>
+            <p class="text-white-50 fs-5 mb-0">{{.UnlockRequirement}}</p>
+          </div>
+          {{else}}
+
+          <!-- If On Expedition, show expedition details -->
+          {{if .OnExpedition}}
+          <div
+            class="mb-4 p-3 rounded"
+            style="
+              background: rgba(59, 130, 246, 0.1);
+              border: 1px solid rgba(59, 130, 246, 0.3);
+            "
+          >
+            <div class="d-flex align-items-center mb-2">
+              <i class="fas fa-dungeon me-2 text-primary"></i>
+              <span class="text-white fw-bold"
+                >{{.ExpeditionData.RiftName}}</span
+              >
+            </div>
+            <div
+              class="expedition-timer text-center my-3"
+              data-expedition-id="{{.ExpeditionData.ID}}"
+              data-completion-time="{{.ExpeditionData.CompletionTime}}"
+              data-duration-minutes="{{.ExpeditionData.DurationMinutes}}"
+              data-time-remaining="{{if .ExpeditionData.TimeRemaining}}{{.ExpeditionData.TimeRemaining}}{{else}}0{{end}}"
+              data-is-claimed="{{.ExpeditionData.IsClaimed}}"
+            >
+              Calculating...
+            </div>
+            <div class="expedition-progress progress">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                style="width: 0%"
+                data-expedition-id="{{.ExpeditionData.ID}}"
+              ></div>
+            </div>
+            <!-- Claim Rewards Button (shown via JavaScript when complete) -->
+            <button
+              class="claim-rewards-btn"
+              data-expedition-id="{{.ExpeditionData.ID}}"
+            >
+              <i class="fas fa-treasure-chest me-2"></i>Claim Rewards
+            </button>
+          </div>
+          {{end}}
+
+          <!-- Team Stats -->
+          <div class="mb-4">
+            <h5 class="text-white-50 mb-3 d-flex align-items-center">
+              <i class="fas fa-chart-line me-2"></i>Stats
+            </h5>
+            <div class="row g-2">
+              <div class="col-4">
+                <div class="stat-card text-center">
+                  <i class="fas fa-bolt text-warning fs-4 mb-1"></i>
+                  <div class="text-white fw-bold fs-5">
+                    {{printf "%.1f" .TotalStats.Speed}}
+                  </div>
+                  <small class="text-white-50">Speed</small>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-card text-center">
+                  <i class="fas fa-clover text-success fs-4 mb-1"></i>
+                  <div class="text-white fw-bold fs-5">
+                    {{printf "%.1f" .TotalStats.Luck}}
+                  </div>
+                  <small class="text-white-50">Luck</small>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-card text-center">
+                  <i class="fas fa-fist-raised text-danger fs-4 mb-1"></i>
+                  <div class="text-white fw-bold fs-5">
+                    {{.TotalStats.Power}}
+                  </div>
+                  <small class="text-white-50">Power</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Equipment Slots -->
+          <div>
+            <h5 class="text-white-50 mb-3 d-flex align-items-center">
+              <i class="fas fa-boxes-stacked me-2"></i>Equipment
+            </h5>
+            <div class="row g-3">
+              <!-- Weapon Slot -->
+              <div class="col-6">
+                {{if and .EquippedWeapon .EquippedWeapon.Name}}
+                <div
+                  class="equipment-slot rarity-{{.EquippedWeapon.Rarity}}"
+                  onclick="showEquipmentModal({{.ID}}, {{.TeamNumber}}, 'weapon', {
+                           name: '{{.EquippedWeapon.Name}}',
+                           rarity: '{{.EquippedWeapon.Rarity}}',
+                           icon: 'fas fa-wand-sparkles',
+                           description: '',
+                           speed_bonus: {{.EquippedWeapon.SpeedBonus}},
+                           luck_bonus: {{.EquippedWeapon.LuckBonus}},
+                           power_bonus: {{.EquippedWeapon.PowerBonus}},
+                           elemental_affinity: '{{if .EquippedWeapon.ElementalAffinity}}{{.EquippedWeapon.ElementalAffinity}}{{else}}none{{end}}'
+                         })"
+                  style="cursor: pointer"
+                >
+                  <i class="fas fa-wand-sparkles fa-2x text-white mb-1"></i>
+                  <div class="small text-white-50">Weapon</div>
+                </div>
+                {{else}}
+                <div class="equipment-slot">
+                  <i
+                    class="fas fa-wand-sparkles fa-2x text-muted mb-1"
+                    style="opacity: 0.3"
+                  ></i>
+                  <div class="small text-white-50">Empty</div>
+                </div>
+                {{end}}
+              </div>
+
+              <!-- Armor Slot -->
+              <div class="col-6">
+                {{if and .EquippedArmor .EquippedArmor.Name}}
+                <div
+                  class="equipment-slot rarity-{{.EquippedArmor.Rarity}}"
+                  onclick="showEquipmentModal({{.ID}}, {{.TeamNumber}}, 'armor', {
+                           name: '{{.EquippedArmor.Name}}',
+                           rarity: '{{.EquippedArmor.Rarity}}',
+                           icon: 'fas fa-shield',
+                           description: '',
+                           speed_bonus: {{.EquippedArmor.SpeedBonus}},
+                           luck_bonus: {{.EquippedArmor.LuckBonus}},
+                           power_bonus: {{.EquippedArmor.PowerBonus}},
+                           elemental_affinity: '{{if .EquippedArmor.ElementalAffinity}}{{.EquippedArmor.ElementalAffinity}}{{else}}none{{end}}'
+                         })"
+                  style="cursor: pointer"
+                >
+                  <i class="fas fa-shield fa-2x text-white mb-1"></i>
+                  <div class="small text-white-50">Armor</div>
+                </div>
+                {{else}}
+                <div class="equipment-slot">
+                  <i
+                    class="fas fa-shield fa-2x text-muted mb-1"
+                    style="opacity: 0.3"
+                  ></i>
+                  <div class="small text-white-50">Empty</div>
+                </div>
+                {{end}}
+              </div>
+
+              <!-- Accessory Slot -->
+              <div class="col-4">
+                {{if and .EquippedAccessory .EquippedAccessory.Name}}
+                <div
+                  class="equipment-slot rarity-{{.EquippedAccessory.Rarity}}"
+                  onclick="showEquipmentModal({{.ID}}, {{.TeamNumber}}, 'accessory', {
+                           name: '{{.EquippedAccessory.Name}}',
+                           rarity: '{{.EquippedAccessory.Rarity}}',
+                           icon: 'fas fa-ring',
+                           description: '',
+                           speed_bonus: {{.EquippedAccessory.SpeedBonus}},
+                           luck_bonus: {{.EquippedAccessory.LuckBonus}},
+                           power_bonus: {{.EquippedAccessory.PowerBonus}},
+                           elemental_affinity: '{{if .EquippedAccessory.ElementalAffinity}}{{.EquippedAccessory.ElementalAffinity}}{{else}}none{{end}}'
+                         })"
+                  style="cursor: pointer"
+                >
+                  <i class="fas fa-ring fa-2x text-white mb-1"></i>
+                  <div class="small text-white-50">Accessory</div>
+                </div>
+                {{else}}
+                <div class="equipment-slot">
+                  <i
+                    class="fas fa-ring fa-2x text-muted mb-1"
+                    style="opacity: 0.3"
+                  ></i>
+                  <div class="small text-white-50">Empty</div>
+                </div>
+                {{end}}
+              </div>
+
+              <!-- Artifact Slot -->
+              <div class="col-4">
+                {{if and .EquippedArtifact .EquippedArtifact.Name}}
+                <div
+                  class="equipment-slot rarity-{{.EquippedArtifact.Rarity}}"
+                  onclick="showEquipmentModal({{.ID}}, {{.TeamNumber}}, 'artifact', {
+                           name: '{{.EquippedArtifact.Name}}',
+                           rarity: '{{.EquippedArtifact.Rarity}}',
+                           icon: 'fas fa-scroll',
+                           description: '',
+                           speed_bonus: {{.EquippedArtifact.SpeedBonus}},
+                           luck_bonus: {{.EquippedArtifact.LuckBonus}},
+                           power_bonus: {{.EquippedArtifact.PowerBonus}},
+                           elemental_affinity: '{{if .EquippedArtifact.ElementalAffinity}}{{.EquippedArtifact.ElementalAffinity}}{{else}}none{{end}}'
+                         })"
+                  style="cursor: pointer"
+                >
+                  <i class="fas fa-scroll fa-2x text-white mb-1"></i>
+                  <div class="small text-white-50">Artifact</div>
+                </div>
+                {{else}}
+                <div class="equipment-slot">
+                  <i
+                    class="fas fa-scroll fa-2x text-muted mb-1"
+                    style="opacity: 0.3"
+                  ></i>
+                  <div class="small text-white-50">Empty</div>
+                </div>
+                {{end}}
+              </div>
+
+              <!-- Relic Slot -->
+              <div class="col-4">
+                {{if and .EquippedRelic .EquippedRelic.Name}}
+                <div
+                  class="equipment-slot rarity-{{.EquippedRelic.Rarity}}"
+                  onclick="showEquipmentModal({{.ID}}, {{.TeamNumber}}, 'relic', {
+                           name: '{{.EquippedRelic.Name}}',
+                           rarity: '{{.EquippedRelic.Rarity}}',
+                           icon: 'fas fa-hat-wizard',
+                           description: '',
+                           speed_bonus: {{.EquippedRelic.SpeedBonus}},
+                           luck_bonus: {{.EquippedRelic.LuckBonus}},
+                           power_bonus: {{.EquippedRelic.PowerBonus}},
+                           elemental_affinity: '{{if .EquippedRelic.ElementalAffinity}}{{.EquippedRelic.ElementalAffinity}}{{else}}none{{end}}'
+                         })"
+                  style="cursor: pointer"
+                >
+                  <i class="fas fa-hat-wizard fa-2x text-white mb-1"></i>
+                  <div class="small text-white-50">Relic</div>
+                </div>
+                {{else}}
+                <div class="equipment-slot">
+                  <i
+                    class="fas fa-hat-wizard fa-2x text-muted mb-1"
+                    style="opacity: 0.3"
+                  ></i>
+                  <div class="small text-white-50">Empty</div>
+                </div>
+                {{end}}
+              </div>
+            </div>
+          </div>
+          {{end}}
+        </div>
+      </div>
+      {{end}}
+    </div>
+  </div>
+
+  <!-- Rewards Modal -->
+  <div
+    class="modal fade rewards-modal"
+    id="rewardsModal"
+    tabindex="-1"
+    aria-labelledby="rewardsModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <h3 class="modal-title" id="rewardsModalLabel">
+              <i class="fas fa-trophy me-2" style="color: #fbbf24"></i>
+              <span id="modalTitle">Expedition Complete!</span>
+            </h3>
+            <p class="text-white-50 mb-0" id="modalSubtitle"></p>
+          </div>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div
+            id="modalErrorMessage"
+            class="modal-error-message"
+            style="display: none"
+          ></div>
+          <div id="lootContainer"></div>
+        </div>
+        <div class="modal-footer">
+          <div class="text-center w-100">
+            <p class="text-white-50 mb-3" id="lootSummary"></p>
+            <button type="button" class="continue-btn" data-bs-dismiss="modal">
+              <i class="fas fa-check me-2"></i>Awesome!
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Equipment Detail Modal -->
+  <div
+    class="modal fade rewards-modal"
+    id="equipmentModal"
+    tabindex="-1"
+    aria-labelledby="equipmentModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <h5 class="modal-title" id="equipmentModalLabel">
+              <span id="equipmentItemName">Item Name</span>
+              <span id="equipmentRarityBadge" class="rarity-badge ms-2"
+                >Common</span
+              >
+            </h5>
+          </div>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12 text-center mb-3">
+              <div
+                id="equipmentItemIcon"
+                class="modal-item-icon rarity-common"
+                style="font-size: 4rem"
+              >
+                <i class="fas fa-question"></i>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="modal-stats">
+                <h6 class="text-white mb-3">Stats</h6>
+                <div id="equipmentStats">
+                  <!-- Stats will be dynamically inserted here -->
+                </div>
+              </div>
+              <div class="mt-3">
+                <h6 class="text-white mb-2">Description</h6>
+                <p id="equipmentDescription" class="text-white-50"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Unequip Button -->
+          <div class="mt-3">
+            <button id="unequipButton" class="unequip-btn w-100">
+              <i class="fas fa-times me-2"></i>Unequip from Team
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Modal styles for equipment modal (same as rewards modal) */
+  .modal-item-icon {
+    margin-bottom: 1rem;
+  }
+
+  .modal-item-icon.rarity-common {
+    color: #9e9e9e;
+  }
+  .modal-item-icon.rarity-uncommon {
+    color: #4caf50;
+  }
+  .modal-item-icon.rarity-rare {
+    color: #2196f3;
+  }
+  .modal-item-icon.rarity-epic {
+    color: #9c27b0;
+  }
+  .modal-item-icon.rarity-legendary {
+    color: #ff9800;
+    filter: drop-shadow(0 0 10px rgba(255, 152, 0, 0.6));
+  }
+
+  .modal-stats {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    padding: 1rem;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .stat-row:last-child {
+    border-bottom: none;
+  }
+
+  .stat-label {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .stat-value {
+    color: #fff;
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  // Initialize Bootstrap popovers and timers
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize popovers
+    const popoverTriggerList = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="popover"]')
+    );
+    popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl);
+    });
+
+    // Add click handlers to claim buttons
+    document.querySelectorAll(".claim-rewards-btn").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const expeditionId = this.dataset.expeditionId;
+        claimRewards(expeditionId);
+      });
+    });
+
+    // Start countdown timers
+    updateTimers();
+    setInterval(updateTimers, 1000);
+
+    // Handle modal close - reload page
+    const rewardsModal = document.getElementById("rewardsModal");
+    rewardsModal.addEventListener("hidden.bs.modal", function () {
+      window.location.reload();
+    });
+  });
+
+  function updateTimers() {
+    document.querySelectorAll(".expedition-timer").forEach((timer) => {
+      const timeRemaining = parseInt(timer.dataset.timeRemaining);
+      const durationMinutes = parseInt(timer.dataset.durationMinutes);
+      const expeditionId = timer.dataset.expeditionId;
+      const isClaimed = timer.dataset.isClaimed === "true";
+
+      if (timeRemaining > 0) {
+        // Calculate time display
+        const hours = Math.floor(timeRemaining / 3600);
+        const minutes = Math.floor((timeRemaining % 3600) / 60);
+        const seconds = timeRemaining % 60;
+
+        // Format with leading zeros
+        const hoursStr = hours > 0 ? hours + "h " : "";
+        const minutesStr = minutes.toString().padStart(2, "0") + "m ";
+        const secondsStr = seconds.toString().padStart(2, "0") + "s";
+
+        timer.textContent = hoursStr + minutesStr + secondsStr + " remaining";
+
+        // Update progress bar
+        const progressBar = document.querySelector(
+          `.progress-bar[data-expedition-id="${expeditionId}"]`
+        );
+        if (progressBar) {
+          const totalSeconds = durationMinutes * 60;
+          const elapsedSeconds = totalSeconds - timeRemaining;
+          const progressPercent = (elapsedSeconds / totalSeconds) * 100;
+          progressBar.style.width = progressPercent + "%";
+        }
+
+        // Decrement time remaining
+        timer.dataset.timeRemaining = timeRemaining - 1;
+      } else if (timeRemaining === 0 && !isClaimed) {
+        timer.textContent = "Expedition Complete!";
+        timer.style.color = "#10b981";
+
+        // Set progress bar to 100%
+        const progressBar = document.querySelector(
+          `.progress-bar[data-expedition-id="${expeditionId}"]`
+        );
+        if (progressBar) {
+          progressBar.style.width = "100%";
+          progressBar.style.background =
+            "linear-gradient(90deg, #10b981, #059669)";
+        }
+
+        // Show claim button
+        const claimBtn = document.querySelector(
+          `.claim-rewards-btn[data-expedition-id="${expeditionId}"]`
+        );
+        if (claimBtn) {
+          claimBtn.style.display = "block";
+        }
+      }
+    });
+  }
+
+  // Claim rewards function
+  async function claimRewards(expeditionId) {
+    const claimBtn = document.querySelector(
+      `.claim-rewards-btn[data-expedition-id="${expeditionId}"]`
+    );
+
+    // Disable button and show loading
+    claimBtn.disabled = true;
+    claimBtn.innerHTML =
+      '<i class="fas fa-spinner fa-spin me-2"></i>Claiming...';
+
+    try {
+      const response = await fetch(`/api/expeditions/${expeditionId}/claim`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const rewards = await response.json();
+        showRewardsModal(rewards);
+      } else {
+        const errorData = await response.json();
+        showModalError(
+          errorData.error || "Failed to claim rewards. Please try again."
+        );
+        claimBtn.disabled = false;
+        claimBtn.innerHTML =
+          '<i class="fas fa-treasure-chest me-2"></i>Claim Rewards';
+      }
+    } catch (error) {
+      console.error("Error claiming rewards:", error);
+      showModalError(
+        "An error occurred while claiming rewards. Please try again."
+      );
+      claimBtn.disabled = false;
+      claimBtn.innerHTML =
+        '<i class="fas fa-treasure-chest me-2"></i>Claim Rewards';
+    }
+  }
+
+  // Show rewards modal
+  function showRewardsModal(rewards) {
+    const modal = new bootstrap.Modal(document.getElementById("rewardsModal"));
+    const lootContainer = document.getElementById("lootContainer");
+    const lootSummary = document.getElementById("lootSummary");
+    const modalErrorMessage = document.getElementById("modalErrorMessage");
+
+    // Hide error message
+    modalErrorMessage.style.display = "none";
+
+    // Check if there's loot
+    if (!rewards.loot || rewards.loot.length === 0) {
+      lootContainer.innerHTML = `
+        <div class="no-loot-message">
+          <i class="fas fa-sad-cry"></i>
+          <h5 class="text-white">No Loot Found</h5>
+          <p>Better luck next time!</p>
+        </div>
+      `;
+      lootSummary.textContent = "";
+      modal.show();
+      return;
+    }
+
+    // Check for legendary items for confetti
+    const hasLegendary = rewards.loot.some(
+      (item) => item.rarity === "legendary"
+    );
+    if (hasLegendary) {
+      triggerConfetti();
+    }
+
+    // Build loot grid
+    let lootHTML = '<div class="loot-grid">';
+    rewards.loot.forEach((item) => {
+      const quantity = item.quantity || 1;
+      const showQuantity = item.item_type === "consumable" && quantity > 1;
+      const quantityBadge = showQuantity
+        ? `<div class="loot-item-quantity">x${quantity}</div>`
+        : "";
+
+      // Build tooltip content
+      const tooltipContent = buildLootTooltip(item);
+
+      lootHTML += `
+        <div class="loot-item-card rarity-${item.rarity}" 
+             data-bs-toggle="popover"
+             data-bs-trigger="hover"
+             data-bs-placement="top"
+             data-bs-html="true"
+             data-bs-content='${tooltipContent}'>
+          ${quantityBadge}
+          <div class="loot-item-icon">
+            <i class="${item.icon}"></i>
+          </div>
+          <div class="loot-item-name">${item.name}</div>
+          <div class="loot-item-rarity ${item.rarity}">${item.rarity}</div>
+          <div class="loot-item-type-badge">${item.item_type}</div>
+        </div>
+      `;
+    });
+    lootHTML += "</div>";
+
+    lootContainer.innerHTML = lootHTML;
+
+    // Initialize popovers for loot items
+    const popoverTriggerList = [].slice.call(
+      lootContainer.querySelectorAll('[data-bs-toggle="popover"]')
+    );
+    popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl);
+    });
+
+    // Update summary
+    const itemCount = rewards.loot.length;
+    lootSummary.textContent = `${itemCount} item${
+      itemCount !== 1 ? "s" : ""
+    } collected`;
+
+    // Show modal
+    modal.show();
+  }
+
+  // Build tooltip content for loot item
+  function buildLootTooltip(item) {
+    let html = `<div class="loot-stats"><strong>${item.name}</strong><br>`;
+    html += `<small class="text-white-50">${item.rarity}</small><hr class="my-1">`;
+    html += `<div class="loot-stats-row">${item.description}</div><hr class="my-1">`;
+
+    if (item.speed_bonus > 0) {
+      html += `<div class="loot-stats-row"><i class="fas fa-bolt text-warning"></i> Speed: +${item.speed_bonus}</div>`;
+    }
+    if (item.luck_bonus > 0) {
+      html += `<div class="loot-stats-row"><i class="fas fa-clover text-success"></i> Luck: +${item.luck_bonus}</div>`;
+    }
+    if (item.power_bonus > 0) {
+      html += `<div class="loot-stats-row"><i class="fas fa-fist-raised text-danger"></i> Power: +${item.power_bonus}</div>`;
+    }
+    if (item.elemental_affinity && item.elemental_affinity !== "none") {
+      html += `<div class="loot-stats-row"><i class="fas fa-magic text-primary"></i> Element: ${item.elemental_affinity}</div>`;
+    }
+
+    html += `</div>`;
+    return html.replace(/'/g, "&apos;");
+  }
+
+  // Show error in modal
+  function showModalError(message) {
+    const modal = new bootstrap.Modal(document.getElementById("rewardsModal"));
+    const modalErrorMessage = document.getElementById("modalErrorMessage");
+    const lootContainer = document.getElementById("lootContainer");
+    const lootSummary = document.getElementById("lootSummary");
+
+    modalErrorMessage.textContent = message;
+    modalErrorMessage.style.display = "block";
+    lootContainer.innerHTML = "";
+    lootSummary.textContent = "";
+
+    modal.show();
+  }
+
+  // Confetti animation for legendary items
+  function triggerConfetti() {
+    const canvas = document.getElementById("confettiCanvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.style.display = "block";
+
+    const confettiPieces = [];
+    const confettiCount = 150;
+    const colors = ["#ff9800", "#fbbf24", "#f59e0b", "#d97706", "#b45309"];
+
+    // Create confetti pieces
+    for (let i = 0; i < confettiCount; i++) {
+      confettiPieces.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        rotation: Math.random() * 360,
+        rotationSpeed: Math.random() * 10 - 5,
+        velocity: Math.random() * 3 + 2,
+        size: Math.random() * 8 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        opacity: 1,
+      });
+    }
+
+    // Animate confetti
+    let frame = 0;
+    const maxFrames = 180;
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      confettiPieces.forEach((piece) => {
+        ctx.save();
+        ctx.translate(piece.x, piece.y);
+        ctx.rotate((piece.rotation * Math.PI) / 180);
+        ctx.globalAlpha = piece.opacity;
+        ctx.fillStyle = piece.color;
+        ctx.fillRect(
+          -piece.size / 2,
+          -piece.size / 2,
+          piece.size,
+          piece.size * 2
+        );
+        ctx.restore();
+
+        // Update position
+        piece.y += piece.velocity;
+        piece.rotation += piece.rotationSpeed;
+
+        // Fade out towards the end
+        if (frame > maxFrames * 0.7) {
+          piece.opacity -= 0.015;
+        }
+      });
+
+      frame++;
+
+      if (frame < maxFrames) {
+        requestAnimationFrame(animateConfetti);
+      } else {
+        canvas.style.display = "none";
+      }
+    }
+
+    animateConfetti();
+  }
+
+  // Show equipment detail modal
+  function showEquipmentModal(teamId, teamNumber, slot, itemData) {
+    if (!itemData || !itemData.name) return;
+
+    const modal = new bootstrap.Modal(
+      document.getElementById("equipmentModal")
+    );
+
+    // Update modal content
+    document.getElementById("equipmentItemName").textContent = itemData.name;
+    document.getElementById("equipmentRarityBadge").textContent =
+      itemData.rarity;
+    document.getElementById(
+      "equipmentRarityBadge"
+    ).className = `rarity-badge ${itemData.rarity} ms-2`;
+
+    document.getElementById(
+      "equipmentItemIcon"
+    ).innerHTML = `<i class="${itemData.icon}"></i>`;
+    document.getElementById(
+      "equipmentItemIcon"
+    ).className = `modal-item-icon rarity-${itemData.rarity}`;
+
+    document.getElementById("equipmentDescription").textContent =
+      itemData.description || "No description available.";
+
+    // Build stats
+    let statsHtml = "";
+    if (itemData.speed_bonus > 0) {
+      statsHtml += `
+        <div class="stat-row">
+          <span class="stat-label"><i class="fas fa-bolt text-warning"></i> Speed</span>
+          <span class="stat-value">+${itemData.speed_bonus}</span>
+        </div>`;
+    }
+    if (itemData.luck_bonus > 0) {
+      statsHtml += `
+        <div class="stat-row">
+          <span class="stat-label"><i class="fas fa-clover text-success"></i> Luck</span>
+          <span class="stat-value">+${itemData.luck_bonus}</span>
+        </div>`;
+    }
+    if (itemData.power_bonus > 0) {
+      statsHtml += `
+        <div class="stat-row">
+          <span class="stat-label"><i class="fas fa-fist-raised text-danger"></i> Power</span>
+          <span class="stat-value">+${itemData.power_bonus}</span>
+        </div>`;
+    }
+    if (itemData.elemental_affinity && itemData.elemental_affinity !== "none") {
+      statsHtml += `
+        <div class="stat-row">
+          <span class="stat-label"><i class="fas fa-magic text-primary"></i> Element</span>
+          <span class="stat-value">${capitalizeFirst(
+            itemData.elemental_affinity
+          )}</span>
+        </div>`;
+    }
+
+    if (statsHtml === "") {
+      statsHtml = '<div class="text-white-50">No special stats</div>';
+    }
+
+    document.getElementById("equipmentStats").innerHTML = statsHtml;
+
+    // Setup unequip button
+    const unequipBtn = document.getElementById("unequipButton");
+    unequipBtn.textContent = `Unequip from Team ${teamNumber}`;
+    unequipBtn.innerHTML = `<i class="fas fa-times me-2"></i>Unequip from Team ${teamNumber}`;
+    unequipBtn.onclick = () => unequipFromTeamsPage(teamId, slot);
+
+    // Show modal
+    modal.show();
+  }
+
+  // Unequip item from team
+  async function unequipFromTeamsPage(teamId, slot) {
+    try {
+      const response = await fetch("/api/teams/unequip", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          team_id: teamId,
+          slot: slot,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error || "Failed to unequip item");
+      }
+
+      // Reload page to refresh team display
+      window.location.reload();
+    } catch (error) {
+      console.error("Error unequipping item:", error);
+      alert("Failed to unequip item: " + error.message);
+    }
+  }
+
+  // Utility function
+  function capitalizeFirst(str) {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+</script>
+
+{{end}}
