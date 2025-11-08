@@ -267,6 +267,7 @@
             <h1 class="hero-title">Parallax</h1>
             <p class="hero-subtitle">by Snow Lynx Software</p>
 
+            {{ if not .Data.PrelaunchMode }}
             <div class="button-container">
               <a href="/login" class="btn btn-fantasy-primary">
                 <i class="fas fa-sign-in-alt me-2"></i>Log In
@@ -275,6 +276,12 @@
                 <i class="fas fa-user-plus me-2"></i>Register
               </a>
             </div>
+            {{ else }}
+            <p class="mt-4 text-warning">
+              <i class="fas fa-info-circle me-2"></i>
+              Game will be enabled soon!.
+            </p>
+            {{ end }}
           </div>
         </div>
       </div>
@@ -307,20 +314,5 @@
     </div>
   </div>
 </div>
-
-<script>
-  // Placeholder button handlers - no implementation yet
-  $(document).ready(function () {
-    $("#loginBtn").on("click", function () {
-      // TODO: Implement login navigation
-      console.log("Login button clicked");
-    });
-
-    $("#registerBtn").on("click", function () {
-      // TODO: Implement register navigation
-      console.log("Register button clicked");
-    });
-  });
-</script>
 
 {{end}}
