@@ -15,26 +15,26 @@ import (
 )
 
 type UIController struct {
-	templateService     services.ITemplateService
-	staticService       services.IStaticService
-	authMiddleware      middleware.IAuthMiddleware
-	featureFlagService  services.IFeatureFlagService
-	teamService         services.ITeamService
-	riftService         services.IRiftService
-	inventoryService    services.IInventoryService
-	leaderboardService  services.ILeaderboardService
+	templateService    services.ITemplateService
+	staticService      services.IStaticService
+	authMiddleware     middleware.IAuthMiddleware
+	featureFlagService services.IFeatureFlagService
+	teamService        services.ITeamService
+	riftService        services.IRiftService
+	inventoryService   services.IInventoryService
+	leaderboardService services.ILeaderboardService
 }
 
 func NewUIController(templateService services.ITemplateService, staticService services.IStaticService, authMiddleware middleware.IAuthMiddleware, featureFlagService services.IFeatureFlagService, teamService services.ITeamService, riftService services.IRiftService, inventoryService services.IInventoryService, leaderboardService services.ILeaderboardService) IController {
 	return &UIController{
-		templateService:     templateService,
-		staticService:       staticService,
-		authMiddleware:      authMiddleware,
-		featureFlagService:  featureFlagService,
-		teamService:         teamService,
-		riftService:         riftService,
-		inventoryService:    inventoryService,
-		leaderboardService:  leaderboardService,
+		templateService:    templateService,
+		staticService:      staticService,
+		authMiddleware:     authMiddleware,
+		featureFlagService: featureFlagService,
+		teamService:        teamService,
+		riftService:        riftService,
+		inventoryService:   inventoryService,
+		leaderboardService: leaderboardService,
 	}
 }
 

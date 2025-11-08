@@ -145,7 +145,7 @@ func (r *UserInventoryRepository) ConsumeLoot(inventoryId int64) error {
 			END,
 			modified_at = NOW()
 			WHERE id = $1`
-	
+
 	_, err := r.db.DB.Exec(sql, inventoryId)
 	return err
 }

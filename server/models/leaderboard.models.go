@@ -11,8 +11,8 @@ type LeaderboardEntry struct {
 
 // LeaderboardResponse represents the full leaderboard response
 type LeaderboardResponse struct {
-	LeaderboardType string            `json:"leaderboard_type"`
-	LastSynced      string            `json:"last_synced"` // RFC3339
+	LeaderboardType string             `json:"leaderboard_type"`
+	LastSynced      string             `json:"last_synced"` // RFC3339
 	TopPlayers      []LeaderboardEntry `json:"top_players"`
-	CurrentUserRank *LeaderboardEntry `json:"current_user_rank,omitempty"` // nil if in top 20
+	CurrentUserRank *LeaderboardEntry  `json:"current_user_rank,omitempty"` // nil if in top 20
 }
